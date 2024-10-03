@@ -31,6 +31,7 @@ const ChannelImage = styled.img`
 const Image = styled.img`
   height: ${(props) => (props.type === "sm" ? "110px" : "160px")};
   flex: 1;
+  border-radius: 2%;
 `;
 
 const Texts = styled.div``;

@@ -33,6 +33,9 @@ const Logo = styled.div`
   gap: 7.5px;
   font-weight: bold;
   margin-bottom: 25px;
+  color: #e1a5c8;
+
+  font-size: 18px;
 `;
 
 const Img = styled.img`
@@ -48,12 +51,12 @@ const Item = styled.div`
   padding-right: 5px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.soft};
+    background-color: ${({ theme }) => theme.bg};
   }
 `;
 
 const Hr = styled.hr`
-  margin: 5px 0px;
+  margin: 10px 0px;
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
