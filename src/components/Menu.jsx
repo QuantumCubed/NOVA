@@ -30,16 +30,17 @@ const Wrapper = styled.div`
 const Logo = styled.div`
   display: flex;
   align-items: center;
-  gap: 7.5px;
+  gap: 8px;
   font-weight: bold;
   margin-bottom: 25px;
   color: #e1a5c8;
-
-  font-size: 18px;
+  font-size: 24px;
 `;
 
 const Img = styled.img`
-  height: 25px;
+  height: 35px;
+  width: auto;
+  border-radius: 20px;
 `;
 
 const Item = styled.div`
