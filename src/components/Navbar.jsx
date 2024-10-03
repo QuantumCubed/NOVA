@@ -1,6 +1,7 @@
 import LoginIcon from "@mui/icons-material/LoginOutlined";
 import SearchIcon from "@mui/icons-material/SearchOutlined";
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -65,9 +66,11 @@ const Navbar = () => {
           <Input placeholder="Search" />
           <SearchIcon />
         </Search>
-        <Button>
-          <LoginIcon></LoginIcon>SIGN IN
-        </Button>
+        <Link to="signin" style={{ textDecoration: "none" }}>
+          <Button>
+            <LoginIcon></LoginIcon>SIGN IN
+          </Button>
+        </Link>
       </Wrapper>
     </Container>
   );

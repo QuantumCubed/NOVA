@@ -18,13 +18,12 @@ const Container = styled.div`
 const Content = styled.div`
   flex: 5;
 `;
-
 const VideoWrapper = styled.div``;
 
 const Title = styled.h1`
   font-size: 18px;
   font-weight: 400;
-  margin-top: 15px;
+  margin-top: 20px;
   margin-bottom: 10px;
   color: ${({ theme }) => theme.text};
 `;
@@ -54,13 +53,12 @@ const Button = styled.div`
 
 const Hr = styled.hr`
   margin: 15px 0px;
-  border: 0.5px solid ${({ theme }) => theme.textSoft};
+  border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
 const Recommendation = styled.div`
   flex: 2;
 `;
-
 const Channel = styled.div`
   display: flex;
   justify-content: space-between;
@@ -83,7 +81,7 @@ const ChannelDetail = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-const ChannelName = styled.div`
+const ChannelName = styled.span`
   font-weight: 500;
 `;
 
@@ -147,8 +145,8 @@ function Video() {
           <ChannelInfo>
             <Image src={pfp_default}></Image>
             <ChannelDetail>
-              <ChannelName>Rudolf Steiner</ChannelName>
-              <ChannelCounter>40K subscribers</ChannelCounter>
+              <ChannelName>Steiner</ChannelName>
+              <ChannelCounter>40K Subscribers</ChannelCounter>
               <Description>
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Laudantium officiis expedita hic in magni neque amet totam eaque

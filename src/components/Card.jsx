@@ -8,7 +8,7 @@ const Container = styled.div`
   width: ${(props) => props.type !== "sm" && "360px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
-  max-width: 250px;
+  max-width: 284px;
   padding-left: 0px;
   display: ${(props) => props.type === "sm" && "flex"};
   gap: 10px;
@@ -17,7 +17,7 @@ const Container = styled.div`
 const Details = styled.div`
   display: flex;
   margin-top: ${(props) => props.type !== "sm" && "16px"};
-  gap: 15px;
+  gap: 12px;
   flex: 1;
 `;
 
@@ -29,7 +29,6 @@ const ChannelImage = styled.img`
 `;
 
 const Image = styled.img`
-  height: 100%;
   height: ${(props) => (props.type === "sm" ? "110px" : "160px")};
   flex: 1;
 `;
@@ -43,13 +42,13 @@ const Title = styled.h1`
 `;
 
 const ChannelName = styled.h2`
-  font-size: 14px;
+  font-size: ${(props) => (props.type === "sm" ? "14px" : "13px")};
   color: ${({ theme }) => theme.textSoft};
-  margin: 9px 0px;
+  margin: 5px 0px;
 `;
 
 const Info = styled.div`
-  font-size: 14px;
+  font-size: ${(props) => (props.type === "sm" ? "14px" : "13px")};
   color: ${({ theme }) => theme.textSoft};
 `;
 
@@ -61,9 +60,9 @@ const Card = ({ type }) => {
         <Details type={type}>
           <ChannelImage type={type} src={pfp_default} />
           <Texts>
-            <Title>Mystery of Golgotha</Title>
-            <ChannelName>Rudolf Steiner</ChannelName>
-            <Info> 444,888 views • 4 day ago</Info>
+            <Title>Mystery Video</Title>
+            <ChannelName>Steiner</ChannelName>
+            <Info> 444,888 views • 1 day ago</Info>
           </Texts>
         </Details>
       </Container>

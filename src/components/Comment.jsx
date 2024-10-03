@@ -43,7 +43,7 @@ function Comment() {
       <Avatar src={pfp_default} />
       <Details>
         <Name>
-          Batman<Date>2 Hours Ago</Date>{" "}
+          Plato<Date>2 Hours Ago</Date>{" "}
         </Name>
         <Text>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto

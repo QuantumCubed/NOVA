@@ -5,7 +5,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import HistoryIcon from "@mui/icons-material/HourglassBottom";
 import LibraryIcon from "@mui/icons-material/LibraryBooksOutlined";
 import ThemeIcon from "@mui/icons-material/LightMode";
-import LoginIcon from "@mui/icons-material/LoginOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SubscriptionIcon from "@mui/icons-material/Star";
 
@@ -43,9 +42,14 @@ const Img = styled.img`
 const Item = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   cursor: pointer;
   padding: 7.5px 0px;
+  padding-right: 5px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.soft};
+  }
 `;
 
 const Hr = styled.hr`
@@ -98,13 +102,6 @@ const Menu = ({ darkMode, setDarkMode }) => {
             Subscriptions
           </Item>
           <Hr />
-          <Login>
-            Sign in to like, comment, and subscribe.
-            <Button>
-              <LoginIcon></LoginIcon>SIGN IN
-            </Button>
-          </Login>
-          <Hr />
           <Item>
             <LibraryIcon />
             Library
@@ -131,7 +128,6 @@ const Menu = ({ darkMode, setDarkMode }) => {
           <ThemeIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
-        <Item></Item>
       </Wrapper>
     </Container>
   );
