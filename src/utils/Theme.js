@@ -2,7 +2,7 @@ export const darkTheme = {
   bg: "#2B2A3C",
   bgLighter: "#2D2B44",
   text: "white",
-  textSoft: "#black",
+  textSoft: "#aaaaaa",
   soft: "#373737",
 };
 
