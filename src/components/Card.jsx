@@ -8,7 +8,7 @@ const Container = styled.div`
   width: ${(props) => props.type !== "sm" && "360px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
-  max-width: 284px;
+  max-width: ${(props) => (props.type === "sm" ? "500px" : "250px")};
   padding-left: 0px;
   display: ${(props) => props.type === "sm" && "flex"};
   gap: 10px;
