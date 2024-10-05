@@ -1,0 +1,77 @@
+services:
+
+  varnish:
+    image: varnish:latest
+    container_name: varnish-proxy-c
+    ports:
+      - 8080:80
+    volumes:
+      - E:\Coding-Stuff\NOVA\middleware\varnish-proxy\default.vcl:/etc/varnish/default.vcl:ro
+    #tmpfs:
+    #  - /var/lib/varnish:exec
+    environment:
+      - VARNISH_SIZE=2G
+    networks:
+      - nova-net
+    depends_on:
+      - kong
+    restart:
+      on-failure
+
+  kong-database:
+    image: postgres:latest
+    container_name: kong-routes-db-c
+    env_file:
+      - middleware\kong-api-gateway\routes\.env
+    ports:
+      - 5432:5432
+    volumes:
+      - kong_postgres_data:/var/lib/postgresql/data
+    networks:
+      - nova-net
+  
+  kong-migrations:
+    image: kong/kong-gateway:latest
+    container_name: kong-migrations-c
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=kong
+    volumes:
+      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
+    networks:
+      - nova-net
+    command: kong migrations bootstrap
+    depends_on:
+     - kong-database
+    restart: on-failure
+
+  kong:
+    image: kong/kong-gateway:latest
+    container_name: kong-api-gateway-c
+    env_file:
+      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\.env
+    ports:
+    #  - 8000:8000
+      - 8001:8001
+      - 8002:8002
+      - 8443:8443
+      - 8444:8444
+    volumes:
+      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
+    networks:
+      - nova-net
+    depends_on:
+      - kong-database
+    #  - kong-migrations
+    #entrypoint: /bin/bash -c "kong migrations bootstrap" #["/entrypoint.sh"] #/bin/bash -c "kong migrations bootstrap && ./entrypoint.sh" # reload --v && kong start --v
+    #command: "kong migrations bootstrap && kong docker-start"
+    restart: on-failure
+
+volumes:
+  kong_postgres_data:
+
+networks:
+  nova-net:
+    driver: bridge

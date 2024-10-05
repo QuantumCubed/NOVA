@@ -1,1 +1,1 @@
-# Back-End Configuration Steps
+# Configuration Steps
