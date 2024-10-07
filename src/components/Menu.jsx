@@ -38,9 +38,10 @@ const Logo = styled.div`
 `;
 
 const Img = styled.img`
-  height: 35px;
-  width: auto;
+  height: 40px;
+  width: 40px;
   border-radius: 20px;
+  border: 1px solid #e1a5c8;
 `;
 
 const Item = styled.div`
