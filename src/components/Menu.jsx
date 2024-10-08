@@ -34,7 +34,7 @@ const Logo = styled.div`
   font-weight: bold;
   margin-bottom: 25px;
   color: #e1a5c8;
-  font-size: 24px;
+  font-size: 28px;
 `;
 
 const Img = styled.img`
