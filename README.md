@@ -1,13 +1,10 @@
 # NOVA
 
 ## Problem & Solution
-
-Local and niche content is often overshadowed by mainstream media & pre-existing dominant services, limiting the exposure of unique cultural and community perspectives.
-The application allows users to upload and share content that reflects local cultures, issues, and communities. This promotes greater diversity and inclusion, giving a platform to voices and stories that might otherwise go unnoticed.
+Local and niche content often gets overshadowed by mainstream media and large platforms, making it difficult for unique cultural and community perspectives to be heard. Nova addresses this by offering a space where users can upload and share content that highlights local cultures, issues, and communities. This fosters diversity and inclusion, giving a platform to voices and stories that might otherwise remain unheard.
 
 ## User Experience
-
-Nova is a web streaming service that allows users to upload videos and share them with the community. They can build a following with features like comment, like, dislike, and subscribe. Details of the design elements are shown in the prototype video.
+Nova is a web streaming service that empowers users to share their videos and engage with the community. Users can build a following through interactive features like comments, likes, dislikes, and subscriptions. The design and user flow are demonstrated in the prototype video.
 
 ## Prototype Video
 https://github.com/user-attachments/assets/a919d85a-da30-403e-b2eb-d992b889d525
