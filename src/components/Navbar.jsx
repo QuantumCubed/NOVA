@@ -30,9 +30,10 @@ const Search = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 5px;
-  border: 1px solid #e1a5c8;
+  border: 1px solid
+    ${({ theme }) => (theme.mode === "light" ? "black" : "#e1a5c8")};
   border-radius: 5px;
-  color: #e1a5c8;
+  color: ${({ theme }) => (theme.mode === "light" ? "black" : "#e1a5c8")};
 `;
 
 const Input = styled.input`
@@ -40,14 +41,16 @@ const Input = styled.input`
   outline: none;
   background-color: transparent;
   font-weight: 500;
-  color: #e1a5c8;
+  color: ${({ theme }) => (theme.mode === "light" ? "black" : "#e1a5c8")};
 `;
 
 const Button = styled.button`
   padding: 3px 15px;
   background-color: transparent;
-  border: 1px solid #e1a5c8;
-  color: #e1a5c8;
+  border: 1px solid
+    ${({ theme }) => (theme.mode === "light" ? "#1cacdb" : "#e1a5c8")};
+
+  color: ${({ theme }) => (theme.mode === "light" ? "#1cacdb" : "#e1a5c8")};
   border-radius: 5px;
   font-weight: bold;
   margin: 15px;

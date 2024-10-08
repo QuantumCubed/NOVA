@@ -4,6 +4,7 @@ export const darkTheme = {
   text: "white",
   textSoft: "#aaaaaa",
   soft: "#373737",
+  mode: "dark",
 };
 
 export const lightTheme = {
@@ -12,4 +13,5 @@ export const lightTheme = {
   text: "black",
   textSoft: "#606060",
   soft: "#f5f5f5",
+  mode: "light",
 };

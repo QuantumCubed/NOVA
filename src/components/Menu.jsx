@@ -33,7 +33,7 @@ const Logo = styled.div`
   gap: 8px;
   font-weight: bold;
   margin-bottom: 25px;
-  color: #e1a5c8;
+  color: ${({ theme }) => (theme.mode === "light" ? "black" : "#e1a5c8")};
   font-size: 28px;
 `;
 
