@@ -17,7 +17,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl
 
-RUN mkdir /usr/src/boringssl/build && cd /usr/src/boringssl/build && cmake .. && make
+# RUN mkdir /usr/src/boringssl/build && cd /usr/src/boringssl/build && cmake .. && make
+
+RUN mkdir /usr/src/boringssl/build && cd /usr/src/boringssl/build && cmake -DCMAKE_INSTALL_PREFIX=../.openssl -DBUILD_SHARED_LIBS=OFF .. && make && make install
 
 # Exporting BoringSSL Libraries -> ENV
 
@@ -34,6 +36,8 @@ RUN tar xvf nginx-1.27.2.tar.gz && rm nginx-1.27.2.tar.gz
 # Build NGINX with HTTP/3 (QUIC) & Default Modules
 
 RUN cd nginx-1.27.2 && ./configure \
+    --with-openssl=/usr/src/boringssl \
+    --with-openssl-opt=enable-optimizations \
     --with-debug \
     --with-http_v3_module \
     --with-http_ssl_module \
@@ -52,12 +56,13 @@ RUN cd nginx-1.27.2 && ./configure \
     --with-stream \
 #   --with-stream_quic_module \
     --with-stream_ssl_preread_module \
-    --with-cc-opt="-I $BSSL_INCLUDE_PATH" \
-    --with-ld-opt="-L $BSSL_LIB_PATH/ssl -L $BSSL_LIB_PATH/crypto" \
+    --with-cc-opt="-I$BSSL_INCLUDE_PATH" \
+#    --with-cc-opt="-I /usr/src/boringssl/include" \
+#    --with-ld-opt="-L /usr/src/boringssl/build/ssl -L /usr/src/boringssl/build/crypto" \
+    --with-ld-opt="-L$BSSL_LIB_PATH -lpthread -lssl -lcrypto" \    
     --with-pcre \
-    --with-zlib=/usr/src/zlib
-
-RUN make && make install
+    --with-zlib=/usr/src/zlib \
+    && make && make install
 
 # Exposing ports for QUIC & HTTPS
 
