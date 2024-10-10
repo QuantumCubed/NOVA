@@ -11,4 +11,4 @@
 
 ## NodeJS Webserver - Database
 
-1. Run `docker run -d --name mongoDB -v mongo_nova_data:/data/db -p 27017:27017 mongo`
+1. Run `docker run -d --name mongoDB -v nova_mongo_data:/data/db -p 27017:27017 mongo`
