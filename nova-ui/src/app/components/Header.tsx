@@ -1,12 +1,12 @@
 // src/app/components/Header.tsx
 "use client"; // Marks this as a Client Component
 
-import React, { useState } from 'react';
-import HamburgerButton from './HamburgerButton';
-import LogoButton from './LogoButton';
-import SearchBar from './SearchBar';
-import UserProfileButton from './UserProfileButton';
-import Sidebar from './Sidebar';
+import React, { useState } from "react";
+import HamburgerButton from "./HamburgerButton";
+import LogoButton from "./LogoButton";
+import SearchBar from "./SearchBar";
+import UserProfileButton from "./UserProfileButton";
+import Sidebar from "./Sidebar";
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

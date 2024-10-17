@@ -1,6 +1,6 @@
 // src/app/components/SearchBar.tsx
-import React from 'react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import React from "react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 const SearchBar: React.FC = () => {
   return (

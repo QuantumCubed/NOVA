@@ -1,8 +1,8 @@
 // src/app/components/HamburgerButton.tsx
 "use client"; // Marks this as a Client Component
 
-import React from 'react';
-import { Bars3Icon } from '@heroicons/react/24/solid';
+import React from "react";
+import { Bars3Icon } from "@heroicons/react/24/solid";
 
 interface HamburgerButtonProps {
   onClick: () => void;
