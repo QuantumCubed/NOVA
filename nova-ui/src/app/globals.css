@@ -13,10 +13,11 @@ body {
   /* Header Component */
   .header-container {
     @apply sticky top-0 z-50 flex items-center justify-between px-4 py-2 bg-white text-black;
+    height: 4rem; /* 4rem = 64px */
   }
 
   .header-left-section {
-    @apply flex items-center space-x-4;
+    @apply flex items-center space-x-4; /* space-x-4 = 1rem */
   }
 
   .header-center-section {
@@ -24,58 +25,62 @@ body {
   }
 
   .header-right-section {
-    @apply flex items-center space-x-4;
+    @apply flex items-center space-x-4; /* space-x-4 = 1rem */
   }
 
   /* Button Components */
   .hamburger-button {
-    @apply p-2 focus:outline-none;
+    @apply flex items-center justify-center p-2 focus:outline-none; /* p-2 = 0.5rem */
   }
 
   .hamburger-icon {
-    @apply w-6 h-6 text-black;
+    @apply w-6 h-6 text-black; /* w-6 = 1.5rem, h-6 = 1.5rem */
   }
 
   /* LogoButton Component */
   .logo-link {
-    @apply flex items-center space-x-2;
+    @apply flex items-center space-x-2; /* space-x-2 = 0.5rem */
   }
 
   .logo-image {
-    @apply w-10 h-auto;
+    @apply w-10 h-auto; /* w-10 = 2.5rem */
   }
 
   .logo-text {
-    @apply text-xl font-bold text-black;
+    @apply text-xl font-bold text-black; /* text-xl = 1.25rem */
   }
 
   /* UserProfileButton Component */
   .user-profile-button {
-    @apply p-2 focus:outline-none;
+    @apply p-2 focus:outline-none; /* p-2 = 0.5rem */
   }
 
   .user-profile-icon {
-    @apply w-8 h-8 text-gray-700;
+    @apply w-8 h-8 text-gray-700; /* w-8 = 2rem, h-8 = 2rem */
   }
 
   /* SearchBar Component */
   .search-bar-container {
-    @apply flex items-center w-full max-w-md;
+    @apply flex items-center w-full max-w-md; /* max-w-md = 28rem */
   }
 
   .search-bar-wrapper {
-    @apply flex flex-grow;
+    @apply relative flex-grow;
   }
 
   .search-input {
-    @apply w-full py-2 pl-4 pr-2 text-sm bg-white text-black placeholder-gray-500 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full py-2 pl-4 pr-12 text-sm bg-white text-black placeholder-gray-500 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500;
+    /* py-2 = 0.5rem, pl-4 = 1rem, pr-12 = 3rem, text-sm = 0.875rem, focus:ring-2 = 0.5rem */
   }
 
   .search-button {
-    @apply px-4 py-2 bg-gray-100 text-black border border-gray-300 border-l-0 rounded-r-full focus:outline-none hover:bg-gray-200;
+    @apply absolute inset-y-0 right-0 flex items-center pr-4 bg-transparent border-none focus:outline-none;
   }
 
   .search-icon {
-    @apply w-5 h-5;
+    @apply w-5 h-5 text-gray-500; /* w-5 = 1.25rem, h-5 = 1.25rem */
   }
+
+  /* Sidebar Component */
+  /* Sidebar styles are handled within the Sidebar component using Tailwind classes */
 }
