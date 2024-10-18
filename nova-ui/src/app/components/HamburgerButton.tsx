@@ -12,8 +12,8 @@ const HamburgerButton: React.FC<HamburgerButtonProps> = ({ onClick }) => {
   return (
     <button
       className="hamburger-button flex items-center justify-center p-2 focus:outline-none"
-      aria-label="Open Menu"
-      onClick={onClick}
+      aria-label="Toggle Menu"
+      onClick={onClick}  // Keeps the original functionality
     >
       <Bars3Icon className="hamburger-icon w-6 h-6 text-black" />
     </button>
@@ -21,3 +21,4 @@ const HamburgerButton: React.FC<HamburgerButtonProps> = ({ onClick }) => {
 };
 
 export default HamburgerButton;
+

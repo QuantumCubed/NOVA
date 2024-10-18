@@ -13,11 +13,11 @@ const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+    setIsSidebarOpen((prev) => !prev); // This will toggle the sidebar open and closed
   };
 
   const closeSidebar = () => {
-    setIsSidebarOpen(false);
+    setIsSidebarOpen(false); // This explicitly closes the sidebar
   };
 
   return (
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
       <header className="header-container">
         {/* Left Section: Hamburger Menu and Logo */}
         <div className="header-left-section">
-          <HamburgerButton onClick={toggleSidebar} />
+          <HamburgerButton onClick={toggleSidebar} /> {/* Use toggleSidebar */}
           <LogoButton />
         </div>
 
@@ -45,7 +45,7 @@ const Header: React.FC = () => {
       </header>
 
       {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} /> {/* Sidebar open state */}
     </>
   );
 };
