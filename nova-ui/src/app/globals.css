@@ -1,4 +1,4 @@
-/* src/app/globals.css */
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +7,12 @@ body {
   color: #171717;
   background: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Dark mode styles */
+.dark body {
+  background: #333;
+  color: #f4f4f4;
 }
 
 @layer components {
@@ -25,7 +31,7 @@ body {
   }
 
   .header-right-section {
-    @apply flex items-center space-x-4; /* space-x-4 = 1rem */
+    @apply flex items-center; /* Adjusted to control spacing individually */
   }
 
   /* Button Components */
@@ -52,7 +58,7 @@ body {
 
   /* UserProfileButton Component */
   .user-profile-button {
-    @apply p-2 focus:outline-none; /* p-2 = 0.5rem */
+    @apply ml-2 p-2 focus:outline-none; /* Reduced left margin for less spacing */
   }
 
   .user-profile-icon {
@@ -81,6 +87,69 @@ body {
     @apply w-5 h-5 text-gray-500; /* w-5 = 1.25rem, h-5 = 1.25rem */
   }
 
-  /* Sidebar Component */
-  /* Sidebar styles are handled within the Sidebar component using Tailwind classes */
+  /* Color Mode Toggle Container */
+  .color-mode-toggle-container {
+    @apply flex items-center justify-center mr-2; /* Reduced right margin for less spacing */
+  }
+
+  .color-mode-label {
+    font-size: 16px;
+    color: #333;
+    margin-right: 10px; /* space between the label and the switch */
+    user-select: none; /* prevent text selection */
+    cursor: default; /* ensure the cursor doesn't suggest interactivity */
+  }
+
+  /* Styling for the switch (checkbox) to make it look like a toggle */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;  /* width of the switch */
+    height: 26px; /* height of the switch */
+  }
+
+  .switch input {
+    position: absolute;
+    opacity: 0; /* hide the input */
+    width: 100%;
+    height: 100%;
+    cursor: pointer; /* ensure it's clickable */
+    z-index: 2; /* make sure the input is clickable over the slider */
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* off background color */
+    transition: .4s;
+    border-radius: 26px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;  /* Diameter of the slider */
+    width: 22px;   /* Diameter of the slider */
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3; /* on state background color */
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(24px); /* slide the toggle */
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3; /* focus state */
+  }
 }

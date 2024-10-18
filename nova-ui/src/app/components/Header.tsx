@@ -7,6 +7,7 @@ import LogoButton from "./LogoButton";
 import SearchBar from "./SearchBar";
 import UserProfileButton from "./UserProfileButton";
 import Sidebar from "./Sidebar";
+import ColorModeToggle from "./ColorModeToggle"; // Import the toggle component
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,7 +34,11 @@ const Header: React.FC = () => {
           <SearchBar />
         </div>
 
-        {/* Right Section: User/Profile Button */}
+        {/* Right Section: Dark Mode Toggle and User/Profile Button */}
+        <div className="color-mode-toggle-container">
+          <ColorModeToggle /> {/* Placed inside a dedicated div */}
+        </div>
+
         <div className="header-right-section">
           <UserProfileButton />
         </div>
