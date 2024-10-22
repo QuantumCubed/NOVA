@@ -1,22 +1,40 @@
-/* src/app/globals.css */
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Light mode body styles */
 body {
   color: #171717;
   background: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Dark mode styles for the entire page */
+.dark body {
+  background: #000000; /* Fully black background for the entire page */
+  color: #f4f4f4;      /* Light text for readability */
+}
+
+/* Dark mode for header, sidebar, and other elements */
+.dark .header-container, .dark .sidebar {
+  background-color: #000000; /* Fully black background for header and sidebar */
+  color: #f4f4f4;            /* Light text color */
+}
+
+.dark .logo-text, .dark .user-profile-icon {
+  color: #f4f4f4; /* Light text color for header elements */
+}
+
 @layer components {
   /* Header Component */
   .header-container {
     @apply sticky top-0 z-50 flex items-center justify-between px-4 py-2 bg-white text-black;
+    height: 4rem; /* 4rem = 64px */
   }
 
   .header-left-section {
-    @apply flex items-center space-x-4;
+    @apply flex items-center space-x-4; /* space-x-4 = 1rem */
   }
 
   .header-center-section {
@@ -24,16 +42,32 @@ body {
   }
 
   .header-right-section {
-    @apply flex items-center space-x-4;
+    @apply flex items-center;
   }
 
   /* Button Components */
   .hamburger-button {
-    @apply p-2 focus:outline-none;
+    @apply flex items-center justify-center p-2 focus:outline-none;
   }
 
   .hamburger-icon {
-    @apply w-6 h-6 text-black;
+    @apply w-6 h-6 text-black; /* Light mode icon color */
+  }
+
+  /* Dark mode for hamburger icon */
+  .dark .hamburger-icon {
+    color: #f4f4f4; /* Light color for hamburger button in dark mode */
+  }
+
+  /* Sidebar Component */
+  .sidebar {
+    @apply w-64 h-full bg-gray-200; /* Light mode background */
+  }
+
+  /* Dark mode for sidebar */
+  .dark .sidebar {
+    background-color: #000000; /* Fully black background for sidebar in dark mode */
+    color: #f4f4f4; /* Light text in sidebar for dark mode */
   }
 
   /* LogoButton Component */
@@ -49,13 +83,23 @@ body {
     @apply text-xl font-bold text-black;
   }
 
+  /* Dark mode for logo text */
+  .dark .logo-text {
+    color: #f4f4f4; /* Light text color in dark mode */
+  }
+
   /* UserProfileButton Component */
   .user-profile-button {
-    @apply p-2 focus:outline-none;
+    @apply ml-2 p-2 focus:outline-none;
   }
 
   .user-profile-icon {
     @apply w-8 h-8 text-gray-700;
+  }
+
+  /* Dark mode for user profile icon */
+  .dark .user-profile-icon {
+    color: #f4f4f4; /* Light color for the user profile icon */
   }
 
   /* SearchBar Component */
@@ -64,19 +108,102 @@ body {
   }
 
   .search-bar-wrapper {
-    @apply flex flex-grow;
+    @apply relative flex-grow;
   }
 
   .search-input {
-    @apply w-full py-2 pl-4 pr-2 text-sm bg-white text-black placeholder-gray-500 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full py-2 pl-4 pr-12 text-sm bg-white text-black placeholder-gray-500 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  /* Dark mode for search bar input and button */
+  .dark .search-input {
+    background-color: #000000; /* Fully black input background */
+    color: #f4f4f4; /* White text for input */
+    border-color: #444; /* Darker border for input */
   }
 
   .search-button {
-    @apply px-4 py-2 bg-gray-100 text-black border border-gray-300 border-l-0 rounded-r-full focus:outline-none hover:bg-gray-200;
+    @apply absolute inset-y-0 right-0 flex items-center pr-4 bg-transparent border-none focus:outline-none;
   }
 
   .search-icon {
-    @apply w-5 h-5;
+    @apply w-5 h-5 text-gray-500;
+  }
+
+  /* Dark mode for search bar input and button */
+  .dark .search-icon {
+    color: #f4f4f4; /* White icon for search button */
+  }
+
+  /* Color Mode Toggle Container */
+  .color-mode-toggle-container {
+    @apply flex items-center justify-center mr-2;
+  }
+
+  .color-mode-label {
+    font-size: 16px;
+    color: #333;
+    margin-right: 10px;
+    user-select: none;
+    cursor: default;
+  }
+
+  /* Dark mode for color mode label */
+  .dark .color-mode-label {
+    color: #f4f4f4; /* White text for dark mode */
+  }
+
+  /* Styling for the switch (checkbox) to make it look like a toggle */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 26px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
   }
 }
 /* Global Styles for VideoCard and Grid Layout */
