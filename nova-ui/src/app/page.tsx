@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <Header />
-      <main className="p-4">
+      <main className="p-4 mt-16 ml-48">
         <div className="video-grid">
           {videoData.map((video) => (
             <VideoCard
