@@ -206,3 +206,77 @@ body {
     box-shadow: 0 0 1px #2196F3;
   }
 }
+/* Global Styles for VideoCard and Grid Layout */
+
+/* Container for the grid layout */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Responsive adjustments for smaller screen sizes */
+@media (max-width: 1200px) {
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual video card styling */
+.video-card {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  cursor: pointer;
+}
+
+.thumbnail-container {
+  position: relative;
+}
+
+.thumbnail {
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.duration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: 3px;
+}
+
+.video-details {
+  margin-top: 10px;
+}
+
+.video-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #000;
+  margin: 5px 0;
+}
+
+.video-author,
+.video-meta {
+  color: #606060;
+  font-size: 14px;
+}
