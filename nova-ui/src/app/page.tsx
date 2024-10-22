@@ -84,6 +84,9 @@ const HomePage: React.FC = () => {
     <div>
       <Header />
       <main className="p-4 mt-16 ml-48">
+        {/* Use ml-48 (12rem) if sidebar pushes content aside */}
+        {/* Your main content goes here */}
+        {/* Add more content as needed */}
         <div className="video-grid">
           {videoData.map((video) => (
             <VideoCard
