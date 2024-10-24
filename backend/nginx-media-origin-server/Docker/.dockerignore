@@ -1,5 +1,5 @@
 # Ignore all files
-*
+#*
 
 # Except the Dockerfile
-!Dockerfile
+#!Dockerfile
