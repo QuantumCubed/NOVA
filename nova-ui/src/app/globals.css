@@ -244,15 +244,22 @@ body {
 }
 
 /* Individual video card styling */
+/* Base styles for the video card */
 .video-card {
   display: flex;
   flex-direction: column;
-  width: 20rem; /* Adjusted from 320px */
+  width: 20rem;
   cursor: pointer;
-  color: #000000; /* Light mode text */
-  padding: 1.25rem; /* Adjusted from 20px */
-  border-radius: 0.625rem; /* Adjusted from 10px */
-  transition: background-color 0.3s, color 0.3s;
+  background-color: rgba(209, 217, 224, 0.6);
+  color: #000000;
+  padding: 1.25rem;
+  border-radius: 0.625rem;
+  transition: transform 0.4s ease-in-out; /* Only animate scaling */
+}
+
+/* Hover effect */
+.video-card:hover {
+  transform: scale(1.05); /* Scale up slightly without shadow */
 }
 
 .thumbnail-container {
@@ -296,6 +303,12 @@ body {
 .dark .video-card {
   background-color: rgba(40, 40, 43, 0.7); /* Dark mode: slightly transparent */
   color: #ffffff; /* White text for dark mode */
+}
+
+/* Hover effect */
+.video-card:hover {
+  transform: scale(1.05); /* Scale up slightly */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 5); /* Add shadow */
 }
 
 .dark .video-title {
