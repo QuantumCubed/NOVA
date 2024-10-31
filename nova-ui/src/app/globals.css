@@ -295,7 +295,7 @@ body {
 
 /* Dark mode for video card */
 .dark .video-card {
-  background-color: #333333; /* Dark background for video card */
+  background-color: #28282b; /* Dark background for video card */
   color: #ffffff; /* White text for dark mode */
 }
 
@@ -306,4 +306,68 @@ body {
 .dark .video-author,
 .dark .video-meta {
   color: #cccccc; /* Lighter text color for author and meta in dark mode */
+}
+
+/* Parallax Container */
+.parallax-container {
+  position: relative;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  perspective: 1px;
+}
+
+/* Parallax Background (Dark Mode Only) */
+.dark .parallax-background {
+  background: url("/path/to/space-themed-background.jpg") no-repeat center
+    center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transform: translateZ(-1px) scale(2); /* Parallax effect */
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out; /* Smooth fade in/out transition */
+}
+
+/* Hide the background in light mode */
+.parallax-background {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out; /* Smooth fade in when switching to dark mode */
+}
+
+/* Content (Video Cards Container) */
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Parallax Background (Dark Mode Only) */
+.dark .parallax-background {
+  background: url("/Space.jpg") no-repeat center center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transform: translateZ(-1px) scale(2); /* Parallax effect */
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out; /* Smooth fade in/out transition */
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    radial-gradient(circle, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.8) 100%),
+    url("/Space.jpg") no-repeat center center;
+  background-size: cover;
+}
+
+/* Hide the background in light mode */
+.parallax-background {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out; /* Smooth fade out when switching to light mode */
 }
