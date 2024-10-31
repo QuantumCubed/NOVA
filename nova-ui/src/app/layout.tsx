@@ -30,7 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers> {/* Wrap children with Providers */}
+        <div className="parallax-container">
+          <div className="parallax-background"></div> {/* Parallax background for all pages */}
+          <div className="content">
+            <Providers>{children}</Providers> {/* Wrap children with Providers */}
+          </div>
+        </div>
       </body>
     </html>
   );

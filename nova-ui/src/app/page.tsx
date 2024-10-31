@@ -153,9 +153,7 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="parallax-container">
-      <div className="parallax-background"></div>{" "}
-      {/* Space-themed background */}
+    <div>
       <Header />
       <main className="p-4 mt-16 ml-48">
         <div className="video-grid">
