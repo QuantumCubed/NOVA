@@ -249,7 +249,6 @@ body {
   flex-direction: column;
   width: 20rem; /* Adjusted from 320px */
   cursor: pointer;
-  background-color: rgba(209, 217, 224, 0.6); /* 80% opacity */
   color: #000000; /* Light mode text */
   padding: 1.25rem; /* Adjusted from 20px */
   border-radius: 0.625rem; /* Adjusted from 10px */
@@ -295,7 +294,7 @@ body {
 
 /* Dark mode for video card */
 .dark .video-card {
-  background-color: #28282b; /* Dark background for video card */
+  background-color: rgba(40, 40, 43, 0.7); /* Dark mode: slightly transparent */
   color: #ffffff; /* White text for dark mode */
 }
 

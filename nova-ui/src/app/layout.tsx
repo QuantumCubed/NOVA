@@ -28,7 +28,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="parallax-container">
+          <div className="parallax-background"></div>{" "}
+          {/* Parallax background for all pages */}
+          <div className="content">
+            {children} {/* Render page content */}
+          </div>
+        </div>
       </body>
     </html>
   );
