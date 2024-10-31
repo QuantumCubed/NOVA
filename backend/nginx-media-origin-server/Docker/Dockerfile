@@ -17,33 +17,39 @@ RUN apt-get update && apt-get install -y \
 
 # Clone BoringSSL
 
-RUN git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl
+# RUN git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl
 
 # Build BoringSSL
 
-RUN mkdir /usr/src/boringssl/build && \
-    cd /usr/src/boringssl/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
-          -DBUILD_SHARED_LIBS=0 .. && \
-    make -j$(nproc)
+# RUN mkdir /usr/src/boringssl/build && \
+#     cd /usr/src/boringssl/build && \
+#     cmake -DCMAKE_BUILD_TYPE=Release \
+#           -DBUILD_SHARED_LIBS=0 .. && \
+#     make -j$(nproc)
 
 # Create symlinks for OpenSSL compatibility
 
-RUN cd /usr/src/boringssl/build/ssl && \
-    ln -s libssl.a libssl_static.a && \
-    ln -s libcrypto.a libcrypto_static.a
+# RUN cd /usr/src/boringssl/build/ssl && \
+#     ln -s libssl.a libssl_static.a && \
+#     ln -s libcrypto.a libcrypto_static.a
 
 # Export BoringSSL Paths -> ENV
 
-ENV BSSL_INCLUDE_PATH=/usr/src/boringssl/include
+# ENV BSSL_INCLUDE_PATH=/usr/src/boringssl/include
 
-ENV BSSL_LIB_PATH=/usr/src/boringssl/build/ssl
+# ENV BSSL_LIB_PATH=/usr/src/boringssl/build/ssl
+
+# Download & Install LibreSSL
+
+RUN wget https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz && tar -xzvf libressl-4.0.0.tar.gz && rm libressl-4.0.0.tar.gz
+
+ENV LBSSL=/libressl/build/include
+
+ENV LBSSL_LIB_PATH=/libressl/build/lib
 
 # Downloading NGINX
 
-RUN wget https://nginx.org/download/nginx-1.27.2.tar.gz
-
-RUN tar xvf nginx-1.27.2.tar.gz && rm nginx-1.27.2.tar.gz
+RUN wget https://nginx.org/download/nginx-1.27.2.tar.gz && tar xvf nginx-1.27.2.tar.gz && rm nginx-1.27.2.tar.gz
 
 # Create NGINX Directories
 RUN mkdir -p /etc/nginx /usr/share/nginx/html /var/log/nginx
@@ -55,16 +61,17 @@ RUN mkdir -p /etc/nginx /usr/share/nginx/html /var/log/nginx
 RUN cd nginx-1.27.2 && ./configure \
    --prefix=/usr/share/nginx \
    --conf-path=/etc/nginx/nginx.conf \
-#   --with-openssl=/usr/src/boringssl \
-#   --with-openssl-opt=enable-optimizations \
+   --with-openssl=/libressl-4.0.0 \
+   --with-openssl-opt=enable-optimizations \
    --with-debug \
    --with-http_v3_module \
-   --with-cc-opt="-I$BSSL_INCLUDE_PATH" \
-   --with-ld-opt="-L$BSSL_LIB_PATH -lssl -lcrypto -lpthread" \
+   --with-http_ssl_module \
+   --with-stream \
+   --with-stream_ssl_preread_module \
+#   --with-ld-opt="-L$BSSL_LIB_PATH -lssl -lcrypto -lpthread" \
 #   --with-cc-opt="-I $BSSL_INCLUDE_PATH" \
 #   --with-ld-opt="-L $BSSL_LIB_PATH/ssl \ 
 #                  -L $BSSL_LIB_PATH/crypto" \
-#   --with-http_ssl_module \
    --with-http_v2_module \
    --with-http_gzip_static_module \
    --with-http_stub_status_module \
@@ -77,8 +84,6 @@ RUN cd nginx-1.27.2 && ./configure \
    --with-http_auth_request_module \
    --with-http_slice_module \
    --with-threads \
-#   --with-stream \
-#   --with-stream_ssl_preread_module \
 #   --with-stream_quic_module \
 #   --with-stream_ssl_preread_module \
    --with-pcre \
@@ -119,6 +124,12 @@ RUN chmod +x docker-entrypoint.sh && chmod +x docker-entrypoint.d/*
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Generate SSL Certificate & Key (for development only)
+
+RUN mkdir /etc/nginx/ssl \
+&& openssl genpkey -algorithm RSA -out /etc/nginx/ssl/nginx.key -pkeyopt rsa_keygen_bits:2048 \
+&& openssl req -new -x509 -key /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt -days 365 -subj "/CN=localhost"
 
 # Entrypoint
 

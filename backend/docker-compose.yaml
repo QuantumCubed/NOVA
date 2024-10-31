@@ -1,0 +1,27 @@
+services:
+
+  # nova-web:
+  #   image: quantumcubed/novajs
+  #   container_name: nova-web-server-c
+  # #  volumes:
+  # #    - E:\Coding-Stuff\NOVA\backend\nodejs-web-server:/nodejs-web-server
+  #   networks:
+  #     - nova-net
+  # #  command: bash -c "rm -rf node_modules package-lock.json && npm install && npm run dev"
+
+  nginx-mos:
+    image: quantumcubed/nginx-http3-quic:latest
+    container_name: nginx-mos-c
+    ports:
+      - 8443:8443/TCP
+      - 8443:8443/UDP
+    volumes:
+      - E:\Coding-Stuff\NOVA\backend\go-transcoding-server\content:/dash
+      - E:\Coding-Stuff\NOVA\backend\nginx-media-origin-server\nginx.conf:/etc/nginx/nginx.conf
+      - E:\Coding-Stuff\NOVA\backend\nginx-media-origin-server\http.conf:/etc/nginx/conf.d/http.conf
+    networks:
+      - nova-net
+
+networks:
+  nova-net:
+    external: true

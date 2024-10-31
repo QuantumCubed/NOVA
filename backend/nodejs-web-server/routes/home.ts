@@ -6,7 +6,10 @@ router.get('/', (req, res) => {
     
     console.log('Client Connected!');
 
-    res.json({Test : "Response"});
+    // res.json({Test : "Response"});
+    
+    res.sendFile(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`);
+
 
 })
 

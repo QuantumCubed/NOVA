@@ -67,54 +67,47 @@ func main() {
 
 }
 
-/*
+// import (
+// 	"context"
+// 	"fmt"
+// 	"log"
+// 	"net"
 
-import (
-	"context"
-	"fmt"
-	"log"
-	"net"
+// 	transcode "nova/transcoder/proto"
 
-	transcode "nova/transcoder/proto"
+// 	"google.golang.org/grpc"
+// )
 
-	"google.golang.org/grpc"
-)
+// type server struct {
+// 	transcode.UnimplementedMyServiceServer
+// }
 
-type server struct {
-	transcode.UnimplementedMyServiceServer
-}
+// func (s *server) MyMethod(ctx context.Context, req *transcode.MyRequest) (*transcode.MyResponse, error) {
 
-func (s *server) MyMethod(ctx context.Context, req *transcode.MyRequest) (*transcode.MyResponse, error) {
+// 	message := "Hello, " + req.Name
 
-	message := "Hello, " + req.Name
+// 	fmt.Println("Response Sent!")
 
-	fmt.Println("Response Sent!")
+// 	return &transcode.MyResponse{Message: message}, nil
 
-	return &transcode.MyResponse{Message: message}, nil
+// }
 
-}
+// func main() {
 
+// 	lis, err := net.Listen("tcp", ":50051")
 
+// 	if err != nil {
+// 		log.Fatalf("failed to listen: %v", err)
+// 	}
 
+// 	grpcServer := grpc.NewServer()
 
-func main() {
+// 	transcode.RegisterMyServiceServer(grpcServer, &server{})
 
-	lis, err := net.Listen("tcp", ":50051")
+// 	log.Println("gRPC server is running on port 50051")
 
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
+// 	if err := grpcServer.Serve(lis); err != nil {
+// 		log.Fatalf("failed to serve: %v", err)
+// 	}
 
-	grpcServer := grpc.NewServer()
-
-	transcode.RegisterMyServiceServer(grpcServer, &server{})
-
-	log.Println("gRPC server is running on port 50051")
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
-
-}
-
-*/
+// }
