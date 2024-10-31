@@ -1,6 +1,8 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Providers } from "./Providers"; // Import the Providers component
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="parallax-container">
+          <div className="parallax-background"></div> {/* Parallax background for all pages */}
+          <div className="content">
+            <Providers>{children}</Providers> {/* Wrap children with Providers */}
+          </div>
+        </div>
       </body>
     </html>
   );
