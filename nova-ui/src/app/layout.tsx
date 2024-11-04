@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Providers } from "./Providers"; // Import the Providers component
+import { Providers } from "./Providers"; // Wrap with Providers for session context
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,12 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="parallax-container">
-          <div className="parallax-background"></div> {/* Parallax background for all pages */}
-          <div className="content">
-            <Providers>{children}</Providers> {/* Wrap children with Providers */}
-          </div>
-        </div>
+        <Providers>
+          {children} {/* Render children without the Header */}
+        </Providers>
       </body>
     </html>
   );
