@@ -27,6 +27,38 @@ body {
   color: #f4f4f4; /* Light text color for header elements */
 }
 
+/* Animation Keyframes */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Utility classes for animations */
+.animate-fadeSlideIn {
+  animation: fadeSlideIn 0.3s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
 @layer components {
   /* Header Component */
   .header-container {
@@ -244,20 +276,18 @@ body {
 }
 
 /* Individual video card styling */
-/* Base styles for the video card */
 .video-card {
   display: flex;
   flex-direction: column;
-  width: 20rem;
+  width: 20rem; /* Adjusted from 320px */
   cursor: pointer;
-  background-color: rgba(209, 217, 224, 0.6);
+  background-color: rgba(209, 217, 224, 0.6); /* 80% opacity */
   color: #000000;
-  padding: 1.25rem;
-  border-radius: 0.625rem;
+  padding: 1.25rem; /* Adjusted from 20px */
+  border-radius: 0.625rem; /* Adjusted from 10px */
   transition: transform 0.4s ease-in-out; /* Only animate scaling */
 }
 
-/* Hover effect */
 .video-card:hover {
   transform: scale(1.05); /* Scale up slightly without shadow */
 }
@@ -283,9 +313,10 @@ body {
 }
 
 .video-details {
-  margin-top: 0.625rem; /*
+  margin-top: 0.625rem; /* Adjusted */
+}
 
-  .video-title {
+.video-title {
   font-size: 1rem; /* Adjusted from 16px */
   font-weight: 500;
   line-height: 1.4;
@@ -305,10 +336,9 @@ body {
   color: #ffffff; /* White text for dark mode */
 }
 
-/* Hover effect */
 .video-card:hover {
   transform: scale(1.05); /* Scale up slightly */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 5); /* Add shadow */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Add shadow */
 }
 
 .dark .video-title {
@@ -331,8 +361,7 @@ body {
 
 /* Parallax Background (Dark Mode Only) */
 .dark .parallax-background {
-  background: url("/path/to/space-themed-background.jpg") no-repeat center
-    center;
+  background: url("/path/to/space-themed-background.jpg") no-repeat center center;
   background-size: cover;
   position: absolute;
   top: 0;
@@ -382,4 +411,35 @@ body {
 .parallax-background {
   opacity: 0;
   transition: opacity 0.6s ease-in-out; /* Smooth fade out when switching to light mode */
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+/* Utility classes for sidebar animations */
+.animate-slideInLeft {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+.animate-slideOutLeft {
+  animation: slideOutLeft 0.3s ease-out forwards;
 }
