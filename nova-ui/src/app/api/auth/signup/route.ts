@@ -5,7 +5,7 @@ import { MongoClient } from "mongodb";
 
 export async function POST(request: Request) {
   try {
-    const { email, password, username, profilePictureUrl } = await request.json();
+    const { email, password, username } = await request.json();
 
     if (!email || !password || !username) {
       return NextResponse.json(
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       email,
       password: hashedPassword,
       username,
-      profilePictureUrl: profilePictureUrl || null,
+      profilePictureUrl: null, // Initialize as null or leave it out
     });
 
     client.close();

@@ -5,7 +5,7 @@ import { MongoClient } from "mongodb";
 import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",

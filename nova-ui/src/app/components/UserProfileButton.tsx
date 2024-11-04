@@ -40,7 +40,7 @@ const UserProfileButton: React.FC = () => {
               <p className="px-4 py-2 text-sm text-gray-700">{session.user.name}</p>
               <hr />
               <Link
-                href="/profile"
+                href="/profile" // Link to the profile page
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Profile

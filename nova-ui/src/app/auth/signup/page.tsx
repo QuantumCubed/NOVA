@@ -13,7 +13,6 @@ const SignUpPage: React.FC = () => {
 
   // Additional fields
   const [username, setUsername] = useState("");
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
 
   const [error, setError] = useState("");
 
@@ -25,7 +24,7 @@ const SignUpPage: React.FC = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, username, profilePictureUrl }),
+      body: JSON.stringify({ email, password, username }),
     });
 
     if (res.ok) {
@@ -82,7 +81,7 @@ const SignUpPage: React.FC = () => {
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <label htmlFor="password" className="block mb-2 font-medium">
             Password
           </label>
@@ -93,19 +92,6 @@ const SignUpPage: React.FC = () => {
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="profilePictureUrl" className="block mb-2 font-medium">
-            Profile Picture URL (optional)
-          </label>
-          <input
-            id="profilePictureUrl"
-            type="url"
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-            value={profilePictureUrl}
-            onChange={(e) => setProfilePictureUrl(e.target.value)}
           />
         </div>
 
