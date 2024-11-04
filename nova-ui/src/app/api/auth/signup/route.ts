@@ -14,7 +14,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = await MongoClient.connect(process.env.MONGODB_URI as string);
+    // Verify MongoDB URI in code
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      console.error("MONGODB_URI is not defined in environment variables.");
+      return NextResponse.json({ message: "Internal Server Error: Database connection URI missing" }, { status: 500 });
+    }
+
+    const client = await MongoClient.connect(uri);
     const usersCollection = client.db().collection("users");
 
     const existingUser = await usersCollection.findOne({ email });
@@ -23,8 +30,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User with this email already exists" }, { status: 400 });
     }
 
-    const hashedPassword = await hash(password, 12);
+    // Hash the password
+    let hashedPassword;
+    try {
+      hashedPassword = await hash(password, 12);
+    } catch (error) {
+      console.error("Error hashing password:", error);
+      client.close();
+      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    }
 
+    // Insert the new user
     await usersCollection.insertOne({
       email,
       password: hashedPassword,

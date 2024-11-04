@@ -3,9 +3,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import Header from "../../components/Header"; // Import the Header component
+import Header from "../../components/Header"; // Adjust the path if needed
 
 const SignUpPage: React.FC = () => {
   const router = useRouter();
@@ -26,17 +24,7 @@ const SignUpPage: React.FC = () => {
     });
 
     if (res.ok) {
-      const signInRes = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (signInRes?.error) {
-        setError(signInRes.error);
-      } else {
-        router.push("/");
-      }
+      router.push("/auth/signin"); // Redirect to sign-in page after successful sign-up
     } else {
       const data = await res.json();
       setError(data.message || "An error occurred during sign-up");
@@ -45,7 +33,7 @@ const SignUpPage: React.FC = () => {
 
   return (
     <>
-      <Header /> {/* Header added here */}
+      <Header /> {/* Add the header here */}
       <div className="flex items-center justify-center min-h-screen p-4">
         <form onSubmit={handleSubmit} className="w-full max-w-sm p-6 bg-white rounded shadow-md">
           <h2 className="mb-6 text-2xl font-bold text-center">Sign Up</h2>
@@ -100,13 +88,6 @@ const SignUpPage: React.FC = () => {
           >
             Sign Up
           </button>
-
-          <p className="mt-4 text-center">
-            Already have an account?{" "}
-            <Link href="/auth/signin" className="text-blue-500 hover:underline">
-              Sign In
-            </Link>
-          </p>
         </form>
       </div>
     </>
