@@ -1,5 +1,5 @@
 // src/app/components/Header.tsx
-"use client"; // Marks this as a Client Component
+"use client";
 
 import React, { useState } from "react";
 import HamburgerButton from "./HamburgerButton";
@@ -10,14 +10,14 @@ import Sidebar from "./Sidebar";
 import ColorModeToggle from "./ColorModeToggle"; // Import the toggle component
 
 const Header: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar initially closed
 
   const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev); // This will toggle the sidebar open and closed
+    setIsSidebarOpen((prev) => !prev); // Toggle the sidebar open/closed
   };
 
   const closeSidebar = () => {
-    setIsSidebarOpen(false); // This explicitly closes the sidebar
+    setIsSidebarOpen(false); // Explicitly close the sidebar
   };
 
   return (
@@ -44,8 +44,8 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} /> {/* Sidebar open state */}
+      {/* Sidebar with isOpen based on state */}
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
     </>
   );
 };

@@ -1,25 +1,27 @@
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Light mode body styles */
+/* Default light mode background */
 body {
+  background-color: #ffffff;
   color: #171717;
-  background: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Dark mode styles for the entire page */
+/* Dark mode background with Space.jpg */
 .dark body {
-  background: #000000; /* Fully black background for the entire page */
-  color: #f4f4f4; /* Light text for readability */
+  background: url("/Space.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #f4f4f4; /* Light text for readability in dark mode */
 }
 
-/* Dark mode for header, sidebar, and other elements */
+/* Dark mode styling for parallax and navbar/header */
 .dark .header-container,
-.dark .sidebar {
-  background-color: #000000; /* Fully black background for header and sidebar */
-  color: #f4f4f4; /* Light text color */
+.dark .navbar {
+  background-color: rgba(0, 0, 0, 0.7); /* Transparent dark background */
+  color: #f4f4f4; /* Light text for the header */
 }
 
 .dark .logo-text,
