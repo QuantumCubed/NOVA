@@ -1,7 +1,9 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import DataBaseService from '../database/mongo.service';
 
+const MongoService = new DataBaseService();
 const router = express.Router();
 
 const storeConfig = multer.diskStorage({
@@ -20,7 +22,7 @@ const storeConfig = multer.diskStorage({
 
 const upload = multer({ storage : storeConfig });
 
-router.post('/upload', upload.single('file'), (req : any, res : any) => {
+router.post('/upload', upload.single('file'), async (req : any, res : any) => {
 
     const file = req.file;
     const { title, description, tags } = req.body;
@@ -29,9 +31,34 @@ router.post('/upload', upload.single('file'), (req : any, res : any) => {
         return res.status(400).send('No file uploaded.');
     }
 
-    console.log(title);
+    // console.log(title);
+
+    MongoService.insertVideo({
+        title : title,
+        description : description,
+        tags : tags,
+        date : Date.now(),
+        user : 'noobslayer69'
+    });
 
     res.send(`File uploaded: ${ req.file.filename }`);
+
+});
+
+router.get('/search', async (req, res) => {
+
+    const query = String(req.query.search);
+
+    console.log(query);
+
+    if(query.trim().length != 0) {
+
+        const videoArray = await MongoService.videoQuery(query);
+
+        console.log(videoArray);
+
+        res.json(videoArray);
+    }
 
 });
 
