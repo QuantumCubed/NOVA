@@ -14,7 +14,7 @@ const userSchemaDefinition = new Schema(
     // PUBLIC FIELDS
     username: String,
     subscribed_to: [String],
-    profilePictureUrl: String, // Added field
+    profilePictureUrl: String, // Stores the path to the profile picture
   },
   { collection: "users" }
 );

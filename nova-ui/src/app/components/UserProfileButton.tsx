@@ -1,7 +1,7 @@
 // src/app/components/UserProfileButton.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
@@ -10,8 +10,27 @@ import Link from "next/link";
 const UserProfileButton: React.FC = () => {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
     <div className="relative">
@@ -34,7 +53,10 @@ const UserProfileButton: React.FC = () => {
       </button>
 
       {menuOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+        <div
+          ref={menuRef}
+          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 animate-fadeSlideIn animate-scaleIn transition duration-200 ease-out"
+        >
           {session ? (
             <div className="py-1">
               <p className="px-4 py-2 text-sm text-gray-700">{session.user.name}</p>

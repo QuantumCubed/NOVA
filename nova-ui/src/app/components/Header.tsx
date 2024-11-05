@@ -7,7 +7,7 @@ import LogoButton from "./LogoButton";
 import SearchBar from "./SearchBar";
 import UserProfileButton from "./UserProfileButton";
 import Sidebar from "./Sidebar";
-import ColorModeToggle from "./ColorModeToggle"; // Import the toggle component
+import ColorModeToggle from "./ColorModeToggle";
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar initially closed
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
       <header className="header-container">
         {/* Left Section: Hamburger Menu and Logo */}
         <div className="header-left-section">
-          <HamburgerButton onClick={toggleSidebar} /> {/* Use toggleSidebar */}
+          <HamburgerButton onClick={toggleSidebar} />
           <LogoButton />
         </div>
 
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
 
         {/* Right Section: Dark Mode Toggle and User/Profile Button */}
         <div className="color-mode-toggle-container">
-          <ColorModeToggle /> {/* Placed inside a dedicated div */}
+          <ColorModeToggle />
         </div>
 
         <div className="header-right-section">

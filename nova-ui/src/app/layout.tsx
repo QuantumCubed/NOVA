@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Providers } from "./Providers"; // Import the Providers component
+import { Providers } from "./Providers";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,14 +27,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo.png" sizes="32x32" type="image/png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="parallax-container">
-          <div className="parallax-background"></div>{" "}
+          <div className="parallax-background"></div>
           {/* Parallax background for all pages */}
           <div className="content">
-            <Providers>{children}</Providers>{" "}
+            <Providers>{children}</Providers>
             {/* Wrap children with Providers */}
           </div>
         </div>
