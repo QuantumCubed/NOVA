@@ -3,18 +3,17 @@ import User from './User';
 const { Schema, model } = mongoose;
 
 const videoSchemaDefinition = new Schema({
-
-    title : String, 
-    user : String,
+    title : String,
+    description: String,
     tags : [String],
     date_published : Date,
+    user : String,
     thumbnail_src : String,
     video_src : String,
     likeCount: Number,
     dislikeCount: Number,
     viewCount: Number,
     comments: [String],
-    description: String,
 },
 
 { collection : 'videos' }

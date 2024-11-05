@@ -22,6 +22,20 @@ services:
     networks:
       - nova-net
 
+  mongod:
+    image: mongo:latest
+    container_name: mongoDB-c
+    ports:
+      - 27017:27017
+    volumes:
+      - nova_mongo_data:/data/db
+    networks:
+      - nova-net
+
+volumes:
+  nova_mongo_data:
+    external: true
+
 networks:
   nova-net:
     external: true

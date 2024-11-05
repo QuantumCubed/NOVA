@@ -10,8 +10,8 @@ const IP = LAN ? '0.0.0.0' : '127.0.0.1';
 
 // app.use(express.static('public'));
 app.use(cors());
-app.use('/', home);
-app.use('/upload', userFx);
+app.use('/', home, userFx); // URL = /
+// app.use('/upload', userFx); URL = /upload
 
 app.listen(port, IP, () => {
     console.log(`Example app listening on http://${IP}:${port}`);
