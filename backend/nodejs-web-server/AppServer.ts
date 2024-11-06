@@ -11,6 +11,7 @@ const IP = LAN ? '0.0.0.0' : '127.0.0.1';
 
 // app.use(express.static('public'));
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 app.use('/', home, userFn); // URL = /
 // app.use('/upload', userFx); URL = /upload
 

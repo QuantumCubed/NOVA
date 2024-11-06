@@ -9,11 +9,14 @@ router.get('/', (req, res) => {
     
     console.log('Client Connected!');
 
-    const tempPath = process.env.TEMP || process.env["TEMP"] || '/Users/anishkurani/Documents/Coding-Stuff/NOVA/backend/nodejs-web-server/public/temp.html'
+    //const tempPath = process.env.TEMP || process.env["TEMP"] || `E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`
+    
+    // '/Users/anishkurani/Documents/Coding-Stuff/NOVA/backend/nodejs-web-server/public/temp.html'
 
     // res.json({Test : "Response"});
 
-    res.sendFile(tempPath);
+    //res.sendFile(tempPath);
+    res.sendFile(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`);
 
 });
 

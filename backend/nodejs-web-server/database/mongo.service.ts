@@ -1,13 +1,24 @@
 import mongoose, { mongo, MongooseError } from 'mongoose';
 import Video from './models/Video';
+import User from './models/User';
 
 interface VideoMetaData {
 
     title : String,
     description : String,
     tags : [String],
-    date : number,
     user : String
+    
+}
+
+interface UserMetaData {
+
+    first_name: String,
+    last_name: String,
+    email: String,
+    password: String,
+    username: String,
+    pfp_src : String
 
 }
 
@@ -50,7 +61,7 @@ class DataBaseService {
             title : vidMeta.title,
             description: vidMeta.description,
             tags : vidMeta.tags,
-            date_published : vidMeta.date,
+            date_published : Date.now(),
             user : vidMeta.user,
             thumbnail_src : 'temp',
             video_src : 'temp',
@@ -97,6 +108,24 @@ class DataBaseService {
         const video : any = await Video.findOne({});
         console.log(video);
         return video;
+    }
+
+    createUser = async (userMeta : UserMetaData) => {
+
+        await User.create({
+
+            first_name: userMeta.first_name,
+            last_name: userMeta.last_name,
+            email: userMeta.email,
+            password: userMeta.password,
+            username: userMeta.username,
+            subscribed_to: [],
+            pfp_src: userMeta.pfp_src,
+            acc_creation_date: Date.now()
+
+        });
+
+        console.log('User added to DB!');
     }
 
     disconnectDB = async () => {

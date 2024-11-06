@@ -4,6 +4,7 @@ import path from 'path';
 import DataBaseService from '../database/mongo.service';
 
 const MongoService = new DataBaseService();
+
 const router = express.Router();
 
 const storeConfig = multer.diskStorage({
@@ -37,7 +38,6 @@ router.post('/upload', upload.single('file'), async (req : any, res : any) => {
         title : title,
         description : description,
         tags : tags,
-        date : Date.now(),
         user : 'noobslayer69'
     });
 
@@ -59,6 +59,34 @@ router.get('/search', async (req, res) => {
 
         res.json(videoArray);
     }
+
+
+});
+
+router.post('/user/add', async (req, res) => {
+
+    const {
+        first_name,
+        last_name,
+        email,
+        password,
+        username
+        //pfp_src,
+    } = req.body;
+
+    MongoService.createUser({
+
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        password: password,
+        username: username,
+        pfp_src : 'temp' //pfp_src
+
+    });
+
+
+    res.sendStatus(200);
 
 });
 

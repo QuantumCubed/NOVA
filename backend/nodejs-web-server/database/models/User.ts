@@ -12,7 +12,9 @@ const userSchemaDefinition = new Schema({
 
     // PUBLIC FIELDS
     username: String,
-    subscribed_to: [String]
+    subscribed_to: [String],
+    pfp_src: String,
+    acc_creation_date: Date
 },
 
 { collection : 'users' }
