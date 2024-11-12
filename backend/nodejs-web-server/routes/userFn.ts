@@ -6,7 +6,8 @@ import gRPC_Client from '../api/gRPC/gRPC';
 import jwt from 'jsonwebtoken';
 
 interface UserPayload {
-    id : string;
+    UID : string;
+    username : string;
 }
 declare global {
     namespace Express {
@@ -36,30 +37,6 @@ const videoStoreConfig = multer.diskStorage({
 
 const videoUpload = multer({ storage : videoStoreConfig });
 
-router.post('/upload', videoUpload.single('file'), async (req : any, res : any) => {
-
-    const file = req.file;
-    const { title, description, tags } = req.body;
-
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-
-    // console.log(title);
-
-    MongoService.insertVideo({
-        title : title,
-        description : description,
-        tags : tags,
-        user : 'noobslayer69'
-    });
-
-    gRPC_Client();
-
-    res.send(`File uploaded: ${ req.file.filename }`);
-
-});
-
 const pfpStoreConfig = multer.diskStorage({
 
     destination : (req, file, cb) => {
@@ -76,27 +53,27 @@ const pfpStoreConfig = multer.diskStorage({
 
 const pfpUpload = multer({ storage : pfpStoreConfig });
 
-router.post('/accout/upload', videoUpload.single('file'), async (req : any, res : any) => {
+// router.post('/accout/upload', videoUpload.single('file'), async (req : any, res : any) => {
 
-    const file = req.file;
-    const { title, description, tags } = req.body;
+//     const file = req.file;
+//     const { title, description, tags } = req.body;
 
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded.');
+//     }
 
-    // console.log(title);
+//     // console.log(title);
 
-    MongoService.insertVideo({ // need to overall the user file sys
-        title : title,
-        description : description,
-        tags : tags,
-        user : 'noobslayer69'
-    });
+//     // MongoService.insertVideo({ // need to overall the user file sys
+//     //     title : title,
+//     //     description : description,
+//     //     tags : tags,
+//     //     user : 'noobslayer69'
+//     // });
 
-    res.send(`File uploaded: ${ req.file.filename }`);
+//     res.send(`File uploaded: ${ req.file.filename }`);
 
-});
+// });
 
 router.get('/search', async (req, res) => {
 
@@ -175,7 +152,7 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
 
         if(!token) { res.status(401).json({ message : 'Access Denied!' }); return; }
 
-        const decoded = await jwt.verify(token, secretKey) as UserPayload;
+        const decoded = jwt.verify(token, secretKey) as UserPayload;
         req.user = decoded;
         next();
 
@@ -190,6 +167,48 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
 
     }
 }
+
+router.post('/channel/create', authToken, (req, res) => {
+
+    const UID = String(req.user?.UID);
+
+    // console.log(UID, req.body);
+
+    MongoService.createChannel({
+        channel_owner: UID,
+        channel_name: String(req.body.channel_name),
+        description: String(req.body.channel_description)
+    });
+
+    res.sendStatus(200);
+
+});
+
+router.post('/upload', authToken, videoUpload.single('file'),  async (req : any, res : any) => {
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const { title, description, tags, channel } = req.body;
+
+    const filename = req.file.filename;
+
+    console.log(title, description, tags, channel, filename);
+
+    MongoService.uploadVideo({
+        title : title,
+        description : description,
+        tags : tags,
+        user : String(req.user.UID),
+        channel : channel
+    }, filename);
+
+    // gRPC_Client();
+
+    res.send(`File uploaded: ${ req.file.filename }`);
+
+});
 
 router.get('/protected', authToken, (req, res) => {
 

@@ -1,16 +1,16 @@
 import mongoose from 'mongoose'
-import Video from './Video';
 
 const { Schema, model } = mongoose;
 
 const channelSchemaDefinition = new Schema({
 
     owner: String,
+    channel_name: String,
+    description: String,
     subscriber_count: Number,
     channel_icon_src: String,
     channel_banner_src: String,
-    description: String,
-    videos: [Video],
+    videos: [String],
 },
 
 { collection : 'channels' }

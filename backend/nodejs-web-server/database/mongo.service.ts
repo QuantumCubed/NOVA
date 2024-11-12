@@ -3,15 +3,16 @@ import fs from 'fs';
 import path from 'path';
 import Video from './models/Video';
 import User from './models/User';
+import Channel from './models/Channel';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 interface VideoMetaData {
 
     title : string,
     description : string,
     tags : [string],
-    user : string
+    user : string,
+    channel : string
     
 }
 
@@ -24,6 +25,12 @@ interface UserMetaData {
     username: string,
     pfp_src : string
 
+}
+
+interface ChannelMetaData {
+    channel_owner: string,
+    channel_name: string,
+    description: string,
 }
 
 class DataBaseService {
@@ -48,19 +55,9 @@ class DataBaseService {
         }
     }
 
-    insertVideo = async (vidMeta : VideoMetaData) => {
-        /*
-        await Song.create({
-            song : 'ourheartscollide',
-            author : 'Unknown',
-            tags : ['Muselk', 'TF2', 'Team Fortress 2'],
-            date_published : new Date('January 15, 1995 03:24:00'),
-            thumbnail_Source : 'Not Set',
-            audio_Source : 'Not Set'
-        });
-        */
+    uploadVideo = async (vidMeta : VideoMetaData, filename : string) => {
 
-        await Video.create({
+        const newVideo = await Video.create({
 
             title : vidMeta.title,
             description: vidMeta.description,
@@ -76,7 +73,28 @@ class DataBaseService {
 
         });
 
+        const channelID = await this.queryUserChannelID(vidMeta.user, vidMeta.channel);
+
+        // console.log(channelID);
+
+        await this.createVideoDirectory(vidMeta.user, channelID || '', newVideo._id.toString(), filename);
+
         console.log('Video added to DB!');
+    }
+
+    queryUserChannelID = async (uid : string, query : string) => {
+
+        try {
+            const channel = await Channel.findOne({
+                owner : uid,
+                channel_name : query
+            });
+            return channel?._id.toString();
+        } catch (error) {
+            console.error('Error fetching channels:', error);
+            throw error;
+        }
+
     }
 
     videoQuery = async (query : string) => {
@@ -114,7 +132,7 @@ class DataBaseService {
         return video;
     }
 
-    createDirectory = async (UID : string) => {
+    createUserDirectory = async (UID : string) => {
 
         const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID, 'channels');
 
@@ -123,6 +141,63 @@ class DataBaseService {
             console.log('Account Directories Created!\n', dirPath);
         } catch (err : any) {
             console.error('Error Creating User Directories!', err.message);
+        }
+
+    }
+
+    createChannelDirectory = async (ownerID : string, channelID : string) => {
+
+        const dirPath = path.join(__dirname, '../../../', 'data', 'users', ownerID, 'channels', channelID, 'videos');
+
+        try {
+            await fs.promises.mkdir(dirPath, { recursive : true });
+            console.log('Channel Directories Created!\n', dirPath);
+        } catch (err : any) {
+            console.error('Error Creating User Directories!', err.message);
+        }
+
+    }
+
+    createVideoDirectory = async (ownerID : string, channelID : string, videoID : string, videoFile : string) => {
+
+        const dirPathUpload = path.join(__dirname, '..', 'uploads', videoFile);
+
+        const dirPathRaw = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'users',
+            ownerID,
+            'channels',
+            channelID,
+            'videos',
+            videoID,
+            'raw'
+        );
+
+        const dirPathOut = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'users',
+            ownerID,
+            'channels',
+            channelID,
+            'videos',
+            videoID,
+            'out'
+        );
+
+        // console.log(path.join(dirPathRaw, videoFile));
+
+        try {
+            await fs.promises.mkdir(dirPathRaw, { recursive : true });
+            await fs.promises.mkdir(dirPathOut, { recursive : true });
+            await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
+            console.log('Videos Directories Created!');
+            
+        } catch (err : any) {
+            console.error('Error Creating Video Directories!', err.message);
         }
 
     }
@@ -144,9 +219,29 @@ class DataBaseService {
 
         });
 
-        this.createDirectory(newUser._id.toString());
+        this.createUserDirectory(newUser._id.toString());
 
         console.log('User added to DB!');
+    }
+
+    createChannel = async (channelMeta : ChannelMetaData) => {
+
+        const newChannel = await Channel.create({
+
+            owner: channelMeta.channel_owner,
+            channel_name: channelMeta.channel_name,
+            description: channelMeta.description,
+            subscriber_count: 0,
+            channel_icon_src: '',
+            channel_banner_src: '',
+            videos: []
+
+        });
+
+        this.createChannelDirectory(channelMeta.channel_owner, newChannel._id.toString());
+
+        console.log('Channel added to DB!');
+
     }
 
     loginAuth = async (email : string, password : string | Buffer) => {
@@ -164,7 +259,6 @@ class DataBaseService {
         return user;
 
     }
-
 
     disconnectDB = async () => {
         mongoose.connection.close();

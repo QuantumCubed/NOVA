@@ -100,11 +100,28 @@
         <input type="email" name="email_log" id="email_log" required>
         <br>
 
-        <label for="password_log">Last Name:</label>
+        <label for="password_log">Password:</label>
         <input type="password" name="password_log" id="password_log" required>
         <br>
         
         <button type="submit">Login!</button>
+
+      </form>
+
+      <br>
+
+      <form action="http://127.0.0.1:3000/channel/create" method="POST">
+
+        <!-- Metadata inputs -->
+        <label for="channel_name">Channel Name:</label>
+        <input type="text" name="channel_name" id="channel_name" required>
+        <br>
+
+        <label for="channel_description">Channel Description:</label>
+        <input type="text" name="channel_description" id="channel_description" placeholder="e.g. gaming channel" required>
+        <br>
+        
+        <button type="submit">Create Channel!</button>
 
       </form>
 
