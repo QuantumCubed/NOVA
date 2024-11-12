@@ -6,7 +6,7 @@ import DataBaseService from './database/mongo.service';
 
 const LAN = false; // false = local
 const app = express();
-const port = 3001;
+const port = 3000;
 const IP = LAN ? '0.0.0.0' : '127.0.0.1';
 
 // app.use(express.static('public'));
