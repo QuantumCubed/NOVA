@@ -1,24 +1,28 @@
 import mongoose, { mongo, MongooseError } from 'mongoose';
+import fs from 'fs';
+import path from 'path';
 import Video from './models/Video';
 import User from './models/User';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 interface VideoMetaData {
 
-    title : String,
-    description : String,
-    tags : [String],
-    user : String
+    title : string,
+    description : string,
+    tags : [string],
+    user : string
     
 }
 
 interface UserMetaData {
 
-    first_name: String,
-    last_name: String,
-    email: String,
-    password: String,
-    username: String,
-    pfp_src : String
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    username: string,
+    pfp_src : string
 
 }
 
@@ -36,7 +40,7 @@ class DataBaseService {
             await mongoose.connect(this.URI,
                 { dbName : 'TempDB' }
             );
-            console.log('Database Connection Sucessful! ✅')
+            console.log('Database Connection Sucessful! ✅');
         }
 
         catch (err : any) {
@@ -110,14 +114,29 @@ class DataBaseService {
         return video;
     }
 
+    createDirectory = async (UID : string) => {
+
+        const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID, 'channels');
+
+        try {
+            await fs.promises.mkdir(dirPath, { recursive : true });
+            console.log('Account Directories Created!\n', dirPath);
+        } catch (err : any) {
+            console.error('Error Creating User Directories!', err.message);
+        }
+
+    }
+
     createUser = async (userMeta : UserMetaData) => {
 
-        await User.create({
+        const salt = await bcrypt.genSalt(10);
+
+        const newUser = await User.create({
 
             first_name: userMeta.first_name,
             last_name: userMeta.last_name,
             email: userMeta.email,
-            password: userMeta.password,
+            password: await bcrypt.hash(userMeta.password, salt),
             username: userMeta.username,
             subscribed_to: [],
             pfp_src: userMeta.pfp_src,
@@ -125,8 +144,27 @@ class DataBaseService {
 
         });
 
+        this.createDirectory(newUser._id.toString());
+
         console.log('User added to DB!');
     }
+
+    loginAuth = async (email : string, password : string | Buffer) => {
+
+        const user = await User.findOne({ email : email });
+
+        if (!user) { throw new Error('User not found!'); }
+
+        const validated = await bcrypt.compare(password, user.password?.toString() || '');
+
+        if (!validated) return false;
+
+        console.log('Login Sucessful! JWT Token Generated!');
+
+        return user;
+
+    }
+
 
     disconnectDB = async () => {
         mongoose.connection.close();

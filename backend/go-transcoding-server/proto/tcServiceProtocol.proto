@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package transcode;
+
+option go_package = "nova/transcoder/proto/transcode";
+
+service tcReq {
+  rpc transcodeVideo (vidMetaData) returns (tcStatus);
+}
+
+message vidMetaData {
+  string vidInput = 1;
+}
+
+message tcStatus {
+  string status = 1;
+}

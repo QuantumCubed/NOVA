@@ -16,6 +16,7 @@ router.get('/', (req, res) => {
     // res.json({Test : "Response"});
 
     //res.sendFile(tempPath);
+
     res.sendFile(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`);
 
 });
