@@ -1,0 +1,43 @@
+/* components/Navbar.module.css */
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #202020;
+  }
+  
+  .navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .navItem span {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .navItem:hover {
+    color: #ff0000; /* You can change this to your desired hover color */
+  }
+  
+  .navItem button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  
+  .navItem button:focus {
+    outline: none;
+  }
+  
+  .navItem button span {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
