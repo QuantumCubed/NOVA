@@ -1,0 +1,72 @@
+/* components/Sidebar.module.css */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Sidebar width */
+    width: 250px;
+    height: 100%;
+    background-color: var(--sidebar-background); /* Use CSS variable */
+    color: var(--sidebar-text-color); /* Use CSS variable */
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebarHeader {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    color: inherit; /* Inherit color from sidebar */
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .closeButton:hover {
+    color: var(--hover-color); /* Hover color for close button */
+  }
+  
+  .sidebarContent {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+  }
+  
+  .sidebarItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    color: var(--sidebar-text-color); /* Use CSS variable */
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .sidebarItem span {
+    margin-left: 16px;
+    font-size: 16px;
+  }
+  
+  .sidebarItem:hover {
+    background-color: #f0f0f0; /* Light gray hover background for light theme */
+    color: var(--hover-color); /* Change text and icon color on hover */
+  }
+  
+  .sidebarItem:hover svg {
+    color: var(--hover-color); /* Change icon color on hover */
+  }
+  
+  /* Ensure icons within sidebarItem inherit color */
+  .sidebarItem svg {
+    color: inherit; /* Inherit color from .sidebarItem */
+  }
+  

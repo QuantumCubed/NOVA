@@ -1,29 +1,32 @@
 /* styles/globals.css */
 
+:root {
+  /* Light Theme Variables */
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --navbar-background: #ffffff; /* White navbar */
+  --navbar-text-color: #000000; /* Black text/icons in navbar */
+  --sidebar-background: #ffffff; /* White sidebar */
+  --sidebar-text-color: #000000; /* Black text/icons in sidebar */
+  --hover-color: #ff0000; /* Red hover color */
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Variables */
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --navbar-background: #202020; /* Dark navbar */
+  --navbar-text-color: #ffffff; /* White text/icons in navbar */
+  --sidebar-background: #202020; /* Dark sidebar */
+  --sidebar-text-color: #ffffff; /* White text/icons in sidebar */
+  --hover-color: #ff0000; /* Red hover color */
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
-}
-
-nav a {
-  text-decoration: none;
-  color: #000;
-  margin-right: 10px;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-form label {
-  display: block;
-  margin: 10px 0;
-}
-
-form input,
-form textarea {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

@@ -1,13 +1,22 @@
 // pages/_app.tsx
 
-import '../styles/globals.css';
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import { AuthProvider } from '../context/AuthContext';
+import '../styles/globals.css';
+import { useEffect } from 'react';
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    // Initialize with light theme
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
+
   return (
     <AuthProvider>
       <Component {...pageProps} />
     </AuthProvider>
   );
 }
+
+export default MyApp;
+
