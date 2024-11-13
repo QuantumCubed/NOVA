@@ -78,14 +78,30 @@ class DataBaseService {
 
         if (!channelID) { console.error('ChannelID is Undefined'); return; }
 
-        Object.assign(newVideo, { channel : channelID });
-        await newVideo.save();
-
         // console.log(channelID);
 
-        await this.createVideoDirectory(vidMeta.user, channelID, newVideo._id.toString(), filename);
+        const result = await this.createVideoDirectory(newVideo._id.toString(), filename);
+
+        // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
+
+        Object.assign(newVideo, { channel : channelID, video_src : result.watchPath });
+        await newVideo.save();
 
         console.log('Video added to DB!');
+    }
+
+    queryVideoByID = async (uid : string) => {
+
+        try {
+            const video = await Video.findOne({
+                _id : uid,
+            });
+            return video?.video_src?.toString();
+        } catch (error) {
+            console.error('Error fetching video:', error);
+            throw error;
+        }
+
     }
 
     queryUserChannelID = async (uid : string, query : string) => {
@@ -140,7 +156,7 @@ class DataBaseService {
 
     createUserDirectory = async (UID : string) => {
 
-        const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID, 'channels');
+        const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID);
 
         try {
             await fs.promises.mkdir(dirPath, { recursive : true });
@@ -153,7 +169,7 @@ class DataBaseService {
 
     createChannelDirectory = async (ownerID : string, channelID : string) => {
 
-        const dirPath = path.join(__dirname, '../../../', 'data', 'users', ownerID, 'channels', channelID, 'videos');
+        const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
 
         try {
             await fs.promises.mkdir(dirPath, { recursive : true });
@@ -164,7 +180,7 @@ class DataBaseService {
 
     }
 
-    createVideoDirectory = async (ownerID : string, channelID : string, videoID : string, videoFile : string) => {
+    createVideoDirectory = async (videoID : string, videoFile : string) => {
 
         const dirPathUpload = path.join(__dirname, '..', 'uploads', videoFile);
 
@@ -172,10 +188,6 @@ class DataBaseService {
             __dirname,
             '../../../',
             'data',
-            'users',
-            ownerID,
-            'channels',
-            channelID,
             'videos',
             videoID,
             'raw'
@@ -185,10 +197,6 @@ class DataBaseService {
             __dirname,
             '../../../',
             'data',
-            'users',
-            ownerID,
-            'channels',
-            channelID,
             'videos',
             videoID,
             'out'
@@ -206,11 +214,15 @@ class DataBaseService {
             console.error('Error Creating Video Directories!', err.message);
         }
 
-        console.log(path.join(dirPathRaw, videoFile), dirPathOut);
+        // console.log(path.join(dirPathRaw, videoFile), dirPathOut);
 
-        const videoBasePath = `/data/users/${ownerID}/channels/${channelID}/videos/${videoID}/`;
+        const videoBasePath = `/data/videos/${videoID}` // `/data/users/${ownerID}/channels/${channelID}/videos/${videoID}/`;
 
-        const status = await gRPC_Client((videoBasePath + `raw/${videoFile}`), (videoBasePath + `out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
+        console.log((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`));
+
+        await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
+
+        return { status : 'OK', watchPath : (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
 
     }
 

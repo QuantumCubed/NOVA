@@ -44,8 +44,8 @@ func (s *server) TranscodeVideo(ctx context.Context, req *transcode.VidMetaData)
 
 	// message := "Hello, " + req.VidInput
 
-	// fmt.Println(req.VidInput)
-	// fmt.Println(req.VidOutput)
+	fmt.Println(req.VidInput)
+	fmt.Println(req.VidOutput)
 
 	ffmpeg(req.VidInput, req.VidOutput)
 

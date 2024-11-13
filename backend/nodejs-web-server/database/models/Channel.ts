@@ -10,7 +10,7 @@ const channelSchemaDefinition = new Schema({
     subscriber_count: Number,
     channel_icon_src: String,
     channel_banner_src: String,
-    videos: [String],
+    videos: [String], // vIDs
 },
 
 { collection : 'channels' }

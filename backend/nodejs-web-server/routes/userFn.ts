@@ -168,13 +168,13 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
     }
 }
 
-router.post('/channel/create', authToken, (req, res) => {
+router.post('/channel/create', authToken, async (req, res) => {
 
     const UID = String(req.user?.UID);
 
     // console.log(UID, req.body);
 
-    MongoService.createChannel({
+    await MongoService.createChannel({
         channel_owner: UID,
         channel_name: String(req.body.channel_name),
         description: String(req.body.channel_description)
@@ -196,7 +196,7 @@ router.post('/upload', authToken, videoUpload.single('file'),  async (req : any,
 
     console.log(title, description, tags, channel, filename);
 
-    MongoService.uploadVideo({
+    await MongoService.uploadVideo({
         title : title,
         description : description,
         tags : tags,
@@ -208,11 +208,19 @@ router.post('/upload', authToken, videoUpload.single('file'),  async (req : any,
 
 });
 
-// router.get('/watch/:vID', (req, res) => {
+router.get('/watch/:vID', async (req, res) => {
 
+    const videoID = String(req.params.vID);
 
+    // console.log(videoID);
 
-// });
+    const video_src = await MongoService.queryVideoByID(videoID);
+
+    console.log(video_src);
+
+    res.status(200).send(video_src);
+
+});
 
 router.get('/protected', authToken, (req, res) => {
 

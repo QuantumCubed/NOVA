@@ -17,11 +17,11 @@ const gRPC_Client = async (vidPath : string, outPath : string) => {
     
     const client = new tcService('localhost:50051', grpc.credentials.createInsecure());
     
-    const request = { vidInput : vidPath, vidOut : outPath };
+    const request = { vidInput : vidPath, vidOutput : outPath };
     
     client.transcodeVideo(request, {}, (err : grpc.ServiceError, response: any | null) => {
         if (err) { console.error('Error:', err.message); }
-        else if (response) { console.log('Transcode Status:', response.status); return response.status; }
+        else if (response) { console.log('Transcode Status:', response.status); } // return response.status; }
     });
 }
 
