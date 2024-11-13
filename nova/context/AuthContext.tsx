@@ -6,6 +6,9 @@ import { useRouter } from 'next/router';
 interface User {
   UID: string;
   username: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -23,10 +26,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      const userPayload = parseJwt(token) as User & { exp: number };
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      const userPayload = JSON.parse(userData) as User;
       const currentTime = Math.floor(Date.now() / 1000);
-      if (userPayload.exp < currentTime) {
+      const tokenPayload = parseJwt(token) as { exp: number };
+      if (tokenPayload.exp < currentTime) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
@@ -50,7 +55,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const token = await res.json();
-      const userPayload = parseJwt(token) as User;
+      const tokenPayload = parseJwt(token) as User;
+      const storedUserData = localStorage.getItem('user');
+      const userPayload: User = {
+        UID: tokenPayload.UID,
+        username: tokenPayload.username,
+      };
+
+      if (storedUserData) {
+        const storedData = JSON.parse(storedUserData);
+        userPayload.first_name = storedData.first_name;
+        userPayload.last_name = storedData.last_name;
+        userPayload.email = storedData.email;
+      }
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userPayload));
       setUser(userPayload);
@@ -72,6 +90,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const errorData = await res.json();
         throw new Error(errorData.message);
       }
+
+      // Store user data in localStorage
+      const newUser = {
+        UID: '', // We don't have the UID yet
+        username: userData.username,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        email: userData.email,
+      };
+      localStorage.setItem('user', JSON.stringify(newUser));
 
       // Automatically log in the user after successful signup
       await login(userData.email, userData.password);

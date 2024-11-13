@@ -3,7 +3,14 @@
 import Link from 'next/link';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { FaHome, FaUpload, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import {
+  FaHome,
+  FaUpload,
+  FaSignInAlt,
+  FaUserPlus,
+  FaSignOutAlt,
+  FaUser,
+} from 'react-icons/fa';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
@@ -11,7 +18,7 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
-      <Link href="/" passHref>
+      <Link href="/" passHref legacyBehavior>
         <div className={styles.navItem}>
           <FaHome size={24} />
           <span>Home</span>
@@ -19,7 +26,13 @@ const Navbar = () => {
       </Link>
       {authContext?.user ? (
         <>
-          <Link href="/upload" passHref>
+          <Link href="/dashboard" passHref legacyBehavior>
+            <div className={styles.navItem}>
+              <FaUser size={24} />
+              <span>Dashboard</span>
+            </div>
+          </Link>
+          <Link href="/upload" passHref legacyBehavior>
             <div className={styles.navItem}>
               <FaUpload size={24} />
               <span>Upload</span>
@@ -32,13 +45,13 @@ const Navbar = () => {
         </>
       ) : (
         <>
-          <Link href="/login" passHref>
+          <Link href="/login" passHref legacyBehavior>
             <div className={styles.navItem}>
               <FaSignInAlt size={24} />
               <span>Login</span>
             </div>
           </Link>
-          <Link href="/signup" passHref>
+          <Link href="/signup" passHref legacyBehavior>
             <div className={styles.navItem}>
               <FaUserPlus size={24} />
               <span>Signup</span>
