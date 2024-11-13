@@ -6,6 +6,9 @@ export class vidMetaData extends jspb.Message {
   getVidinput(): string;
   setVidinput(value: string): vidMetaData;
 
+  getVidoutput(): string;
+  setVidoutput(value: string): vidMetaData;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): vidMetaData.AsObject;
   static toObject(includeInstance: boolean, msg: vidMetaData): vidMetaData.AsObject;
@@ -17,6 +20,7 @@ export class vidMetaData extends jspb.Message {
 export namespace vidMetaData {
   export type AsObject = {
     vidinput: string,
+    vidoutput: string,
   }
 }
 

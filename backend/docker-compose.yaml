@@ -19,6 +19,7 @@ services:
       - E:\Coding-Stuff\NOVA\backend\go-transcoding-server\content:/dash
       - E:\Coding-Stuff\NOVA\backend\nginx-media-origin-server\nginx.conf:/etc/nginx/nginx.conf
       - E:\Coding-Stuff\NOVA\backend\nginx-media-origin-server\http.conf:/etc/nginx/conf.d/http.conf
+      - E:\Coding-Stuff\NOVA\data:/data
     networks:
       - nova-net
 

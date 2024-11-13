@@ -204,11 +204,15 @@ router.post('/upload', authToken, videoUpload.single('file'),  async (req : any,
         channel : channel
     }, filename);
 
-    // gRPC_Client();
-
     res.send(`File uploaded: ${ req.file.filename }`);
 
 });
+
+// router.get('/watch/:vID', (req, res) => {
+
+
+
+// });
 
 router.get('/protected', authToken, (req, res) => {
 

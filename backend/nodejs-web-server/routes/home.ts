@@ -17,9 +17,9 @@ router.get('/', (req, res) => {
 
     //res.sendFile(tempPath);
 
-    res.sendFile('/Users/anishkurani/Documents/Coding-Stuff/NOVA/backend/nodejs-web-server/public/temp.html');
+    //res.sendFile('/Users/anishkurani/Documents/Coding-Stuff/NOVA/backend/nodejs-web-server/public/temp.html');
 
-    // res.sendFile(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`);
+    res.sendFile(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\public\\temp.html`);
 
 });
 

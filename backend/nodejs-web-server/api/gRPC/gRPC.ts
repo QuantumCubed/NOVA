@@ -2,7 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { PackageDefinition } from '@grpc/proto-loader';
 
-const gRPC_Client = () => {
+const gRPC_Client = async (vidPath : string, outPath : string) => {
     const packageDefinition = protoLoader.loadSync(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\api\\gRPC\\proto\\tcServiceProtocol.proto`, { // ./proto/tcServiceProtocol.proto
         keepCase: true,
         longs: String,
@@ -17,11 +17,11 @@ const gRPC_Client = () => {
     
     const client = new tcService('localhost:50051', grpc.credentials.createInsecure());
     
-    const request = { vidInput : 'example_video.mp4' };
+    const request = { vidInput : vidPath, vidOut : outPath };
     
     client.transcodeVideo(request, {}, (err : grpc.ServiceError, response: any | null) => {
         if (err) { console.error('Error:', err.message); }
-        else if (response) { console.log('Transcode Status:', response.status); return 1; }
+        else if (response) { console.log('Transcode Status:', response.status); return response.status; }
     });
 }
 

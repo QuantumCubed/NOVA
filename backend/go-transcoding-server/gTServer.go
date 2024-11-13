@@ -15,13 +15,43 @@ type server struct {
 	transcode.UnimplementedTcReqServer
 }
 
+func ffmpeg(vidInPath string, vidOutPath string) {
+
+	cmd := "ffmpeg"
+
+	args := []string{
+		"-re",
+		"-i", vidInPath, // "content/gaming.mp4"
+		//"-map 0", "-map 0",
+		"-c:a", "aac", // libfdk_aac
+		"-c:v", "libx264",
+		//"-b:v:0", "800k",
+		//"-b:"
+		//"-window_size", "5",
+		//"-media_seg_name", "chunk$Number$.m4s",
+		"-f", "dash",
+		"-adaptation_sets", "id=0,streams=v id=1,streams=a",
+		vidOutPath, // "content/out/output.mpd"
+	}
+
+	//fmt.Printf("Arguments: %v\n", args)
+
+	AsyncConcurrentSubProcess(cmd, args...)
+
+}
+
 func (s *server) TranscodeVideo(ctx context.Context, req *transcode.VidMetaData) (*transcode.TcStatus, error) {
 
-	message := "Hello, " + req.VidInput
+	// message := "Hello, " + req.VidInput
 
-	fmt.Println("Response Sent!")
+	// fmt.Println(req.VidInput)
+	// fmt.Println(req.VidOutput)
 
-	return &transcode.TcStatus{Status: message}, nil
+	ffmpeg(req.VidInput, req.VidOutput)
+
+	fmt.Println("Trascoding Complete!")
+
+	return &transcode.TcStatus{Status: "Complete!"}, nil
 
 }
 

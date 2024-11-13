@@ -5,6 +5,7 @@ import Video from './models/Video';
 import User from './models/User';
 import Channel from './models/Channel';
 import bcrypt from 'bcrypt';
+import gRPC_Client from '../api/gRPC/gRPC';
 
 interface VideoMetaData {
 
@@ -75,9 +76,14 @@ class DataBaseService {
 
         const channelID = await this.queryUserChannelID(vidMeta.user, vidMeta.channel);
 
+        if (!channelID) { console.error('ChannelID is Undefined'); return; }
+
+        Object.assign(newVideo, { channel : channelID });
+        await newVideo.save();
+
         // console.log(channelID);
 
-        await this.createVideoDirectory(vidMeta.user, channelID || '', newVideo._id.toString(), filename);
+        await this.createVideoDirectory(vidMeta.user, channelID, newVideo._id.toString(), filename);
 
         console.log('Video added to DB!');
     }
@@ -199,6 +205,12 @@ class DataBaseService {
         } catch (err : any) {
             console.error('Error Creating Video Directories!', err.message);
         }
+
+        console.log(path.join(dirPathRaw, videoFile), dirPathOut);
+
+        const videoBasePath = `/data/users/${ownerID}/channels/${channelID}/videos/${videoID}/`;
+
+        const status = await gRPC_Client((videoBasePath + `raw/${videoFile}`), (videoBasePath + `out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
 
     }
 

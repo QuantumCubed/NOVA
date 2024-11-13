@@ -10,6 +10,7 @@ service tcReq {
 
 message vidMetaData {
   string vidInput = 1;
+  string vidOutput = 2;
 }
 
 message tcStatus {

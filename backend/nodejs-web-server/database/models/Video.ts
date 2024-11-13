@@ -8,6 +8,7 @@ const videoSchemaDefinition = new Schema({
     tags : [String],
     date_published : Date,
     user : String,
+    channel : String,
     thumbnail_src : String,
     video_src : String,
     likeCount: Number,

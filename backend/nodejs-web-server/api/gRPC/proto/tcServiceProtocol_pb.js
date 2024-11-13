@@ -91,7 +91,8 @@ proto.transcode.vidMetaData.prototype.toObject = function(opt_includeInstance) {
  */
 proto.transcode.vidMetaData.toObject = function(includeInstance, msg) {
   var f, obj = {
-    vidinput: jspb.Message.getFieldWithDefault(msg, 1, "")
+    vidinput: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    vidoutput: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -132,6 +133,10 @@ proto.transcode.vidMetaData.deserializeBinaryFromReader = function(msg, reader) 
       var value = /** @type {string} */ (reader.readString());
       msg.setVidinput(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVidoutput(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -168,6 +173,13 @@ proto.transcode.vidMetaData.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
+  f = message.getVidoutput();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -186,6 +198,24 @@ proto.transcode.vidMetaData.prototype.getVidinput = function() {
  */
 proto.transcode.vidMetaData.prototype.setVidinput = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string vidOutput = 2;
+ * @return {string}
+ */
+proto.transcode.vidMetaData.prototype.getVidoutput = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.transcode.vidMetaData} returns this
+ */
+proto.transcode.vidMetaData.prototype.setVidoutput = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
