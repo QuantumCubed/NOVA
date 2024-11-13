@@ -8,7 +8,7 @@
   --navbar-text-color: #000000; /* Black text/icons in navbar */
   --sidebar-background: #ffffff; /* White sidebar */
   --sidebar-text-color: #000000; /* Black text/icons in sidebar */
-  --hover-color: #ff0000; /* Red hover color */
+  --hover-color: #ffbade; /* Red hover color */
 }
 
 [data-theme="dark"] {
@@ -19,7 +19,7 @@
   --navbar-text-color: #ffffff; /* White text/icons in navbar */
   --sidebar-background: #202020; /* Dark sidebar */
   --sidebar-text-color: #ffffff; /* White text/icons in sidebar */
-  --hover-color: #ff0000; /* Red hover color */
+  --hover-color: #ffbade; /* Red hover color */
 }
 
 body {
@@ -29,4 +29,332 @@ body {
   color: var(--text-color);
   font-family: Arial, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode (Default) */
+.about-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode with Space Background */
+[data-theme="dark"] .about-page {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+    /* Darkens entire image */
+      radial-gradient(circle, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%),
+    /* Vignette effect */ url("/Space.jpg") no-repeat center center;
+
+  background-color: #121212; /* Fallback color */
+  background-size: cover;
+  background-position: center;
+}
+
+/* About Content Styling */
+.about-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.8); /* Light overlay */
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .about-content {
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+}
+
+/* About Main Content */
+.about-main {
+  width: 100%;
+  max-width: 48rem; /* Approx. 768px */
+  text-align: center;
+  color: var(--text-color);
+}
+
+.about-main h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.about-main p {
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.about-main strong {
+  font-weight: 600;
+}
+
+/* Contact Page Styles */
+
+/* Default Light Mode for Contact Page */
+.contact-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode with Space Background */
+[data-theme="dark"] .contact-page {
+  background-image: url("/Space.jpg");
+  background-color: #121212; /* Fallback color */
+  background-size: cover;
+  background-position: center;
+}
+
+.contact-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.8); /* Light overlay */
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .contact-content {
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+}
+
+.contact-main {
+  width: 100%;
+  max-width: 48rem; /* Approx. 768px */
+  text-align: center;
+  color: var(--text-color);
+}
+
+.contact-main h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.contact-main p {
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.contact-details {
+  margin-top: 1.5rem;
+}
+
+.contact-details h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.contact-details p {
+  font-size: 1.125rem;
+  color: var(--text-color);
+}
+
+/* Login Page Styles */
+
+/* Default Light Mode for Login Page */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode with Space Background */
+[data-theme="dark"] .login-page {
+  background-image: url("/Space.jpg");
+  background-color: #121212; /* Fallback color */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Login Content Centering */
+.login-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9); /* Light overlay */
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .login-content {
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+}
+
+/* Login Main Container */
+.login-main {
+  width: 100%;
+  max-width: 24rem; /* Approx. 384px */
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: var(--sidebar-background);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.login-main h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+/* Login Form Styling */
+.login-form label {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-color);
+  text-align: left;
+  margin-bottom: 0.25rem; /* Space below label */
+  padding-left: 4px; /* Small padding for alignment */
+  padding-bottom: 5px;
+}
+
+.login-form .form-group {
+  margin-bottom: 1.5rem; /* Equal spacing between input fields */
+}
+
+.login-form input {
+  width: 93%;
+  padding: 0.75rem;
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: var(--hover-color);
+  outline: none;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--background-color);
+  background-color: var(--hover-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #ff90b3; /* Slightly lighter hover shade */
+}
+
+/* Signup Page Styles */
+
+/* Default Light Mode for Signup Page */
+.signup-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode with Space Background */
+[data-theme="dark"] .signup-page {
+  background-image: url("/Space.jpg");
+  background-color: #121212; /* Fallback color */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Signup Content Centering */
+.signup-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9); /* Light overlay */
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .signup-content {
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+}
+
+/* Signup Main Container */
+.signup-main {
+  width: 100%;
+  max-width: 24rem; /* Approx. 384px */
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: var(--sidebar-background);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.signup-main h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+/* Signup Form Styling */
+.signup-form label {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-color);
+  text-align: left;
+  margin-bottom: 0.25rem; /* Space below label */
+  padding-left: 4px; /* Small padding for alignment */
+}
+
+.signup-form .form-group {
+  margin-bottom: 1.5rem; /* Equal spacing between input fields */
+}
+
+.signup-form input {
+  width: 93%;
+  padding: 0.75rem;
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+.signup-form input:focus {
+  border-color: var(--hover-color);
+  outline: none;
+}
+
+.signup-form button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--background-color);
+  background-color: var(--hover-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.signup-form button:hover {
+  background-color: #ff90b3; /* Slightly lighter hover shade */
 }
