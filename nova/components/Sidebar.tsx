@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { useContext, useEffect, useRef } from "react";
+import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
 import { FaTimes, FaInfoCircle, FaEnvelope, FaUser } from "react-icons/fa";
 import styles from "./Sidebar.module.css";
@@ -13,25 +13,19 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const authContext = useContext(AuthContext);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // Close sidebar when clicking outside
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
+        !sidebarRef.current.contains(event.target as Node) &&
+        isOpen
       ) {
-        toggleSidebar(); // Close the sidebar if clicked outside
+        toggleSidebar(); // Close the sidebar when clicking outside
       }
     };
-
-    // Add event listener on mount
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    // Clean up event listener on unmount
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [toggleSidebar]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, toggleSidebar]);
 
   return (
     <div
