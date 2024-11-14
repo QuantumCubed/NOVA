@@ -4,74 +4,125 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: var(--navbar-background); /* Use CSS variable */
+  padding: 0.625rem 1.25rem; /* 10px 20px */
+  background-color: var(--navbar-background);
 }
 
 .navLeft,
-.navRight {
+.navRight,
+.navCenter {
   display: flex;
   align-items: center;
+}
+
+.navCenter {
+  flex: 1; /* Allow the center section to grow */
+  justify-content: center;
 }
 
 .navItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--navbar-text-color); /* Use CSS variable */
+  color: var(--navbar-text-color);
   text-decoration: none;
   cursor: pointer;
-  margin: 0 10px;
+  margin: 0 0.625rem; /* 10px */
   background: none;
   border: none;
-  padding: 5px;
+  padding: 0.3125rem; /* 5px */
   transition: color 0.3s ease;
 }
 
-.navItem span {
-  font-size: 12px;
-  margin-top: 4px;
-}
-
 .navItem:hover {
-  color: var(--hover-color); /* Use CSS variable */
+  color: var(--hover-color);
 }
 
 .navItem:focus {
   outline: none;
 }
 
-/* Specific styles for the button element within navItem */
 button.navItem {
   background: none;
   border: none;
-  color: inherit; /* Inherit color from parent */
+  color: inherit;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  padding: 5px;
+  padding: 0.3125rem; /* 5px */
   transition: color 0.3s ease;
 }
 
 button.navItem:hover {
-  color: var(--hover-color); /* Hover color for button */
+  color: var(--hover-color);
 }
 
 button.navItem:focus {
   outline: none;
 }
 
-button.navItem span {
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-/* Ensure icons within navItem inherit color */
 .navItem svg {
-  color: inherit; /* Inherit color from .navItem */
+  color: inherit;
 }
 
 .navItem:hover svg {
-  color: var(--hover-color); /* Hover color for icons */
+  color: var(--hover-color);
+}
+
+/* Search Bar Styles */
+.navbarSearch {
+  position: relative;
+  width: 100%;
+  max-width: 37.5rem; /* 600px */
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 0.0625rem solid var(--text-color);
+  border-radius: 1.5rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+.searchInput:focus {
+  border-color: var(--hover-color);
+  outline: none;
+  box-shadow: 0 0 0.5rem rgba(255, 186, 222, 0.5);
+}
+
+/* Search Results Dropdown */
+.searchResults {
+  position: absolute;
+  top: 2.5rem; /* Adjust based on the height of the input */
+  left: 0;
+  width: 100%;
+  background-color: var(--background-color);
+  border: 0.0625rem solid var(--text-color);
+  border-radius: 0.5rem;
+  max-height: 20rem;
+  overflow-y: auto;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.resultItem {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.resultItem:hover {
+  background-color: var(--hover-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .navCenter {
+    display: none; /* Hide search bar on small screens */
+  }
 }
