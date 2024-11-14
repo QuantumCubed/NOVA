@@ -1,72 +1,100 @@
-/* components/Sidebar.module.css */
+/* Sidebar.module.css */
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: -250px; /* Sidebar width */
-    width: 250px;
-    height: 100%;
-    background-color: var(--sidebar-background); /* Use CSS variable */
-    color: var(--sidebar-text-color); /* Use CSS variable */
-    overflow-x: hidden;
-    transition: left 0.3s ease;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: -220px; /* Initially off-screen */
+  width: 200px;
+  height: 100vh;
+  background-color: var(--sidebar-background);
+  color: var(--sidebar-text-color);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding-top: 20px;
+  transition: left 0.3s ease-out, width 0.3s ease-out; /* Animation for closing */
+  z-index: 9999;
+}
+
+.sidebar.open {
+  left: 0; /* Slide in */
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--sidebar-text-color);
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.closeButton:hover {
+  color: var(--hover-color);
+}
+
+.sidebarContent {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sidebarItem {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 16px;
+  color: var(--sidebar-text-color);
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebarItem:hover {
+  background-color: var(--sidebar-item-hover-bg);
+  transform: scale(1.05);
+}
+
+.sidebarItem span {
+  font-size: 16px;
+  font-weight: 500;
+  transition: font-size 0.3s ease;
+}
+
+.sidebarItem:hover span {
+  font-size: 17px;
+}
+
+.sidebarItem svg {
+  color: var(--icon-color);
+  transition: color 0.3s ease;
+}
+
+.sidebarItem:hover svg {
+  color: var(--hover-color);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 180px;
   }
-  
-  .sidebar.open {
-    left: 0;
-  }
-  
-  .sidebarHeader {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px 20px;
-  }
-  
-  .closeButton {
-    background: none;
-    border: none;
-    color: inherit; /* Inherit color from sidebar */
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .closeButton:hover {
-    color: var(--hover-color); /* Hover color for close button */
-  }
-  
-  .sidebarContent {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-  }
-  
+
   .sidebarItem {
-    display: flex;
-    align-items: center;
-    padding: 12px 24px;
-    color: var(--sidebar-text-color); /* Use CSS variable */
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 14px;
+    padding: 10px 15px;
   }
-  
+
   .sidebarItem span {
-    margin-left: 16px;
-    font-size: 16px;
+    display: none;
   }
-  
-  .sidebarItem:hover {
-    background-color: #f0f0f0; /* Light gray hover background for light theme */
-    color: var(--hover-color); /* Change text and icon color on hover */
+
+  .sidebarItem:hover span {
+    display: inline-block;
   }
-  
-  .sidebarItem:hover svg {
-    color: var(--hover-color); /* Change icon color on hover */
-  }
-  
-  /* Ensure icons within sidebarItem inherit color */
-  .sidebarItem svg {
-    color: inherit; /* Inherit color from .sidebarItem */
-  }
-  
+}

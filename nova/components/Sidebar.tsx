@@ -1,15 +1,8 @@
-// components/Sidebar.tsx
-
-import Link from 'next/link';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import {
-  FaTimes,
-  FaInfoCircle,
-  FaEnvelope,
-  FaUser,
-} from 'react-icons/fa';
-import styles from './Sidebar.module.css';
+import Link from "next/link";
+import { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { FaTimes, FaInfoCircle, FaEnvelope, FaUser } from "react-icons/fa";
+import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,9 +11,33 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const authContext = useContext(AuthContext);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        toggleSidebar(); // Close the sidebar if clicked outside
+      }
+    };
+
+    // Add event listener on mount
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    // Clean up event listener on unmount
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [toggleSidebar]);
 
   return (
-    <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+    <div
+      ref={sidebarRef}
+      className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}
+    >
       <div className={styles.sidebarHeader}>
         <button
           onClick={toggleSidebar}

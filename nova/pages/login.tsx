@@ -1,5 +1,3 @@
-// pages/login.tsx
-
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
@@ -23,24 +21,30 @@ export default function Login() {
         <main className="login-main">
           <h1>Login</h1>
           <form onSubmit={handleSubmit} className="login-form">
-            <label>
-              Email
+            <div className="input-group">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                placeholder="Email"
+                className="email-input"
               />
-            </label>
-            <label>
-              Password
+              <i className="email-icon fa fa-envelope"></i>
+            </div>
+
+            <div className="input-group">
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                placeholder="Password"
+                className="password-input"
               />
-            </label>
+              <i className="password-icon fa fa-lock"></i>
+            </div>
+
             <button type="submit">Login</button>
           </form>
         </main>

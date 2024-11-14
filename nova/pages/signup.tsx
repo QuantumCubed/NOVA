@@ -32,50 +32,60 @@ export default function Signup() {
         <main className="signup-main">
           <h1>Signup</h1>
           <form onSubmit={handleSubmit} className="signup-form">
-            <div className="form-group">
-              <label>First Name</label>
+            <div className="input-group">
               <input
                 type="text"
                 value={first_name}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
+                placeholder="First Name"
+                className="first-name-input"
               />
+              <i className="first-name-icon fa fa-user"></i>
             </div>
-            <div className="form-group">
-              <label>Last Name</label>
+            <div className="input-group">
               <input
                 type="text"
                 value={last_name}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+                placeholder="Last Name"
+                className="last-name-input"
               />
+              <i className="last-name-icon fa fa-user"></i>
             </div>
-            <div className="form-group">
-              <label>Username</label>
+            <div className="input-group">
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                placeholder="Username"
+                className="username-input"
               />
+              <i className="username-icon fa fa-user-circle"></i>
             </div>
-            <div className="form-group">
-              <label>Email</label>
+            <div className="input-group">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                placeholder="Email"
+                className="email-input"
               />
+              <i className="email-icon fa fa-envelope"></i>
             </div>
-            <div className="form-group">
-              <label>Password</label>
+            <div className="input-group">
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                placeholder="Password"
+                className="password-input"
               />
+              <i className="password-icon fa fa-lock"></i>
             </div>
             <button type="submit">Signup</button>
           </form>

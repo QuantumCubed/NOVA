@@ -1,9 +1,7 @@
-// pages/dashboard.tsx
-
-import { useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { AuthContext } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
+import { AuthContext } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
 
 export default function Dashboard() {
   const authContext = useContext(AuthContext);
@@ -11,7 +9,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!authContext?.user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [authContext, router]);
 
@@ -22,13 +20,32 @@ export default function Dashboard() {
   const { username, first_name, last_name, email } = authContext.user;
 
   return (
-    <div>
+    <div className="dashboard-container">
       <Navbar />
-      <h1>Dashboard</h1>
-      <p><strong>Username:</strong> {username}</p>
-      {first_name && <p><strong>First Name:</strong> {first_name}</p>}
-      {last_name && <p><strong>Last Name:</strong> {last_name}</p>}
-      {email && <p><strong>Email:</strong> {email}</p>}
+      <div className="dashboard-content">
+        <h1 className="dashboard-title">Welcome to Your Dashboard</h1>
+        <div className="user-info-card">
+          <h2 className="user-info-title">User Information</h2>
+          <p className="user-info">
+            <strong>Username:</strong> {username}
+          </p>
+          {first_name && (
+            <p className="user-info">
+              <strong>First Name:</strong> {first_name}
+            </p>
+          )}
+          {last_name && (
+            <p className="user-info">
+              <strong>Last Name:</strong> {last_name}
+            </p>
+          )}
+          {email && (
+            <p className="user-info">
+              <strong>Email:</strong> {email}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
