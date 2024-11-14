@@ -274,6 +274,39 @@ class DataBaseService {
 
     }
 
+    deleteVideo = async (uid : string, cid : string, vid : string) => {
+
+        
+
+    }
+
+    deleteChannel = async (uid : string, cid : string) => {
+
+        
+
+    }
+
+    deleteUser = async (uid : string, password : string | Buffer) => {
+
+        const user = await User.findById(uid);
+
+        if (user) {
+        
+        const validated = await bcrypt.compare(password, user.password?.toString() || '');
+            if (validated) {
+                try {
+                    await fs.promises.rm()
+                    await Video.deleteMany({ user : uid });
+                    await Channel.deleteMany({ owner : uid });
+                    await User.findByIdAndDelete(uid);
+                } catch (err : any) {
+                    console.error('Unable to delete user', err.message);
+                }
+            }
+        }
+        console.log('All User Data Deleted!');
+    }
+
     // updateUserByID = async (uid : string, newUserData : UserMetaData) => {
 
     //     await User.findByIdAndUpdate(
