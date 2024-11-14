@@ -403,40 +403,67 @@ body {
 /* DASHBOARD */
 
 /* Dashboard Styling */
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3rem 2rem;
-  background-color: var(--background-color);
-  min-height: 100vh;
-}
 
+/* Dashboard Content Styling */
 .dashboard-content {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
+  margin: 8rem 0 0 18rem;
   padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 0.75rem;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.7s forwards ease-in-out;
 }
 
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dashboard Title */
 .dashboard-title {
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
   color: var(--text-color);
   margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeSlideIn 0.7s 0.2s forwards ease-in-out;
 }
 
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* User Info Card */
 .user-info-card {
   background-color: var(--sidebar-background);
   padding: 1.5rem;
   border-radius: 0.75rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15);
+  transform: scale(0.95);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: popIn 0.7s 0.4s forwards ease-out;
+  opacity: 0;
 }
 
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* User Info Title */
 .user-info-title {
   font-size: 1.75rem;
   font-weight: 600;
@@ -444,6 +471,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
+/* User Info */
 .user-info {
   font-size: 1.125rem;
   margin-bottom: 1rem;
@@ -456,15 +484,11 @@ body {
 }
 
 /* Dark Mode Adjustments */
-[data-theme="dark"] .dashboard-container {
-  background-color: #121212;
-}
-
 [data-theme="dark"] .dashboard-content {
   background-color: rgba(0, 0, 0, 0.6);
 }
 
 [data-theme="dark"] .user-info-card {
   background-color: var(--sidebar-background);
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
 }
