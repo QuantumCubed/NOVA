@@ -56,54 +56,6 @@ class DataBaseService {
         }
     }
 
-    uploadVideo = async (vidMeta : VideoMetaData, filename : string) => {
-
-        const newVideo = await Video.create({
-
-            title : vidMeta.title,
-            description: vidMeta.description,
-            tags : vidMeta.tags,
-            date_published : Date.now(),
-            user : vidMeta.user,
-            thumbnail_src : 'temp',
-            video_src : 'temp',
-            likeCount: 0,
-            dislikeCount: 0,
-            viewCount: 0,
-            comments: [],
-
-        });
-
-        const channelID = await this.queryUserChannelID(vidMeta.user, vidMeta.channel);
-
-        if (!channelID) { console.error('ChannelID is Undefined'); return; }
-
-        // console.log(channelID);
-
-        const result = await this.createVideoDirectory(newVideo._id.toString(), filename);
-
-        // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
-
-        Object.assign(newVideo, { channel : channelID, video_src : result.watchPath });
-        await newVideo.save();
-
-        console.log('Video added to DB!');
-    }
-
-    queryVideoByID = async (uid : string) => {
-
-        try {
-            const video = await Video.findOne({
-                _id : uid,
-            });
-            return video?.video_src?.toString();
-        } catch (error) {
-            console.error('Error fetching video:', error);
-            throw error;
-        }
-
-    }
-
     queryUserChannelID = async (uid : string, query : string) => {
 
         try {
@@ -119,7 +71,22 @@ class DataBaseService {
 
     }
 
-    videoQuery = async (query : string) => {
+    queryVideoByID = async (uid : string) => {
+
+        try {
+            // const video = await Video.findOne({
+            //     _id : uid,
+            // });
+            const video = await Video.findById(uid);
+            return video?.video_src?.toString();
+        } catch (error) {
+            console.error('Error fetching video:', error);
+            throw error;
+        }
+
+    }
+
+    queryVideoByRegex = async (query : string) => {
         try {
             const videoArray = await Video.find({
                 $or: [
@@ -137,21 +104,10 @@ class DataBaseService {
         }
     }
 
-    queryByID = async (query : string) => {
-        const video = await Video.findById(query);
-        return video;
-    }
-
     nVidQuery = async (n : number) => {
         const videoArray = await Video.find().limit(n)
         return videoArray;
         //console.log(songsArray);
-    }
-
-    findVideo = async () => {
-        const video : any = await Video.findOne({});
-        console.log(video);
-        return video;
     }
 
     createUserDirectory = async (UID : string) => {
@@ -182,7 +138,7 @@ class DataBaseService {
 
     createVideoDirectory = async (videoID : string, videoFile : string) => {
 
-        const dirPathUpload = path.join(__dirname, '..', 'uploads', videoFile);
+        const dirPathUpload = path.join(__dirname, '..', 'uploads', 'videos', videoFile);
 
         const dirPathRaw = path.join(
             __dirname,
@@ -268,6 +224,40 @@ class DataBaseService {
 
     }
 
+    uploadVideo = async (vidMeta : VideoMetaData, filename : string) => {
+
+        const newVideo = await Video.create({
+
+            title : vidMeta.title,
+            description: vidMeta.description,
+            tags : vidMeta.tags,
+            date_published : Date.now(),
+            user : vidMeta.user,
+            thumbnail_src : 'temp',
+            video_src : 'temp',
+            likeCount: 0,
+            dislikeCount: 0,
+            viewCount: 0,
+            comments: [],
+
+        });
+
+        const channelID = await this.queryUserChannelID(vidMeta.user, vidMeta.channel);
+
+        if (!channelID) { console.error('ChannelID is Undefined'); return; }
+
+        // console.log(channelID);
+
+        const result = await this.createVideoDirectory(newVideo._id.toString(), filename);
+
+        // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
+
+        Object.assign(newVideo, { channel : channelID, video_src : result.watchPath });
+        await newVideo.save();
+
+        console.log('Video added to DB!');
+    }
+
     loginAuth = async (email : string, password : string | Buffer) => {
 
         const user = await User.findOne({ email : email });
@@ -281,6 +271,50 @@ class DataBaseService {
         console.log('Login Sucessful! JWT Token Generated!');
 
         return user;
+
+    }
+
+    // updateUserByID = async (uid : string, newUserData : UserMetaData) => {
+
+    //     await User.findByIdAndUpdate(
+    //         uid,
+    //         {  
+    //             first_name: newUserData.first_name,
+    //             last_name: newUserData.last_name,
+    //             email: newUserData.email,
+    //             password: newUserData.password,
+    //             username: newUserData.username,
+    //             pfp_src : newUserData.pfp_src
+    //         },
+    //         { new : true, runValidators : true }
+    //     );
+
+    // }
+
+    updateUserPFP = async (uid : string, filename : string) => {
+
+        const pfpUploadPath = path.join(__dirname, '..', 'uploads', 'images', filename);
+
+        const rawProfilePath = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'users',
+            uid,
+        );
+        
+        try {
+            await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
+            await User.findByIdAndUpdate(
+                uid,
+                { pfp_src : `/data/users/${uid}/${filename}`},
+                { new : true, runValidators : true }
+            );
+        } catch (err : any) {
+            console.error('Error Uploading PFP!', err.message);
+        }
+
+        console.log('PFP Uploaded!');
 
     }
 

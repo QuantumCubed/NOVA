@@ -24,7 +24,7 @@ const router = express.Router();
 const videoStoreConfig = multer.diskStorage({
 
     destination : (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/videos/');
     },
 
     filename : (req, file, cb) => {
@@ -40,12 +40,12 @@ const videoUpload = multer({ storage : videoStoreConfig });
 const pfpStoreConfig = multer.diskStorage({
 
     destination : (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/images/');
     },
 
     filename : (req, file, cb) => {
 
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, file.originalname);
 
     },
 
@@ -83,7 +83,7 @@ router.get('/search', async (req, res) => {
 
     if(query.trim().length != 0) {
 
-        const videoArray = await MongoService.videoQuery(query);
+        const videoArray = await MongoService.queryVideoByRegex(query);
 
         console.log(videoArray);
 
@@ -184,7 +184,7 @@ router.post('/channel/create', authToken, async (req, res) => {
 
 });
 
-router.post('/upload', authToken, videoUpload.single('file'),  async (req : any, res : any) => {
+router.post('/upload', authToken, videoUpload.single('file'), async (req : any, res : any) => {
 
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
@@ -219,6 +219,27 @@ router.get('/watch/:vID', async (req, res) => {
     console.log(video_src);
 
     res.status(200).send(video_src);
+
+});
+
+router.post('/profile/upload', authToken, pfpUpload.single('profile_pic'), async (req : any, res : any) => {
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    // console.log(req.file.filename);
+    // console.log(path.extname(req.file.originalname));
+
+    await MongoService.updateUserPFP(String(req.user.UID), req.file.originalname);
+
+    res.sendStatus(200);
+
+});
+
+router.get('/load/home', async (req, res) => {
+
+    const homeVideos = await MongoService.nVidQuery(12);
 
 });
 
