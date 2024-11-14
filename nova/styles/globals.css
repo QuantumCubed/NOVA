@@ -1,5 +1,25 @@
 /* styles/globals.css */
 
+/* Font Imports */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Montserrat", sans-serif; /* Apply Montserrat font globally */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Optionally, you can use Quicksand for specific sections */
+h1,
+h2,
+p {
+  font-family: "Quicksand", sans-serif; /* Apply Quicksand font to headers and paragraphs */
+}
+
 :root {
   /* Light Theme Variables */
   --background-color: #ffffff;
@@ -43,11 +63,7 @@ body {
 
 /* Dark Mode with Space Background */
 [data-theme="dark"] .about-page {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
-    /* Darkens entire image */
-      radial-gradient(circle, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%),
-    /* Vignette effect */ url("/Space.jpg") no-repeat center center;
-
+  background-image: url("/Space.jpg");
   background-color: #121212; /* Fallback color */
   background-size: cover;
   background-position: center;

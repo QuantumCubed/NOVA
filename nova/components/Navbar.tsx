@@ -1,8 +1,8 @@
 // components/Navbar.tsx
 
-import Link from 'next/link';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import {
   FaHome,
   FaUpload,
@@ -10,11 +10,11 @@ import {
   FaUserPlus,
   FaSignOutAlt,
   FaBars,
-  FaSun,     // Imported FaSun
-  FaMoon,    // Imported FaMoon
-} from 'react-icons/fa';
-import styles from './Navbar.module.css';
-import Sidebar from './Sidebar';
+  FaSun, // Imported FaSun
+  FaMoon, // Imported FaMoon
+} from "react-icons/fa";
+import styles from "./Navbar.module.css";
+import Sidebar from "./Sidebar";
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -27,10 +27,10 @@ const Navbar = () => {
 
   const toggleTheme = () => {
     if (isDarkMode) {
-      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.setAttribute("data-theme", "light");
       setIsDarkMode(false);
     } else {
-      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.setAttribute("data-theme", "dark");
       setIsDarkMode(true);
     }
   };
@@ -45,12 +45,10 @@ const Navbar = () => {
             aria-label="Open Menu"
           >
             <FaBars size={24} />
-            <span>Menu</span>
           </button>
           <Link href="/" passHref legacyBehavior>
             <div className={styles.navItem}>
               <FaHome size={24} />
-              <span>Home</span>
             </div>
           </Link>
         </div>
@@ -62,14 +60,12 @@ const Navbar = () => {
             aria-label="Toggle Dark Mode"
           >
             {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
-            <span>{isDarkMode ? 'Light' : 'Dark'}</span>
           </button>
           {authContext?.user ? (
             <>
               <Link href="/upload" passHref legacyBehavior>
                 <div className={styles.navItem}>
                   <FaUpload size={24} />
-                  <span>Upload</span>
                 </div>
               </Link>
               <button
@@ -78,7 +74,6 @@ const Navbar = () => {
                 aria-label="Logout"
               >
                 <FaSignOutAlt size={24} />
-                <span>Logout</span>
               </button>
             </>
           ) : (
@@ -86,13 +81,11 @@ const Navbar = () => {
               <Link href="/login" passHref legacyBehavior>
                 <div className={styles.navItem}>
                   <FaSignInAlt size={24} />
-                  <span>Login</span>
                 </div>
               </Link>
               <Link href="/signup" passHref legacyBehavior>
                 <div className={styles.navItem}>
                   <FaUserPlus size={24} />
-                  <span>Signup</span>
                 </div>
               </Link>
             </>
