@@ -17,15 +17,26 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
 
+  // Function to shuffle the videos array
+  function shuffleArray(array: Video[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   useEffect(() => {
     const fetchVideos = async () => {
       setLoading(true); // Start loading
       setError(null); // Clear previous error
       try {
-        const res = await fetch("http://127.0.0.1:3001/search?search=");
+        // Fetch all videos by using a search query that matches everything
+        const res = await fetch("http://127.0.0.1:3001/search?search=.*");
         if (!res.ok) throw new Error("Failed to fetch videos"); // Handle non-2xx responses
-        const data = await res.json();
-        setVideos(data);
+        const data: Video[] = await res.json();
+        const shuffledVideos = shuffleArray(data); // Shuffle the videos array
+        setVideos(shuffledVideos);
       } catch (error) {
         console.error("Error fetching videos:", error);
         setError("Failed to load videos. Please try again later.");
@@ -43,7 +54,7 @@ export default function Home() {
         <title>Nova - Video Platform</title>
       </Head>
       <Navbar />
-      <main className="video-container">
+      <main>
         {loading ? (
           <p>Loading videos...</p>
         ) : error ? (

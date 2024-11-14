@@ -11,11 +11,18 @@ interface Video {
 
 const VideoCard = ({ video }: { video: Video }) => {
   return (
-    <div style={{ border: '1px solid #333', padding: '10px', margin: '10px' }}>
+    <div className="video-card">
       <Link href={`/video/${video._id}`}>
-        <h3>{video.title}</h3>
+        <img
+          src={`http://127.0.0.1:3001/uploads/${video.video_src}/thumbnail.jpg`}
+          alt={video.title}
+          className="video-thumbnail"
+        />
       </Link>
-      <p>{video.description}</p>
+      <div className="video-info">
+        <h3 className="video-title">{video.title}</h3>
+        <p className="video-description">{video.description}</p>
+      </div>
     </div>
   );
 };
