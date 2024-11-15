@@ -453,7 +453,34 @@ p {
 
 /* DASHBOARD */
 
-/* Dashboard Styling */
+/* Dashboard Container Styling */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+  position: relative;
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Background and Overlay */
+[data-theme="dark"] .dashboard-container {
+  background-image: url("/Space.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+[data-theme="dark"] .dashboard-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+  z-index: 1; /* Ensure it layers above the background image */
+}
 
 /* Dashboard Content Styling */
 .dashboard-content {
@@ -462,14 +489,23 @@ p {
   max-width: 56.25rem; /* 900px */
   padding: 2rem;
   border-radius: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Light background with slight transparency */
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.5s ease;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeIn 0.7s forwards ease-in-out;
+  margin-left: 22rem;
+  position: relative;
+  z-index: 2; /* Ensure content appears above the overlay */
 }
 
+/* Keyframes for Fade In Animation */
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -486,6 +522,8 @@ p {
   margin-bottom: 2rem;
   opacity: 0;
   animation: fadeSlideIn 0.7s 0.2s forwards ease-in-out;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes fadeSlideIn {
@@ -495,7 +533,6 @@ p {
   }
 }
 
-/* User Info Card */
 /* User Info Card */
 .user-info-card {
   background-color: var(--sidebar-background);

@@ -390,7 +390,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Nova - Video Platform</title>
+        <title>NOVA</title>
       </Head>
       <Navbar />
       <main>
