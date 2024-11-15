@@ -52,12 +52,23 @@ p {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  opacity: 0; /* Start invisible */
+  transform: translateY(20px); /* Slightly offscreen */
+  animation: fadeInSlideUp 1s ease forwards; /* Fade in and slide up */
 }
 
 [data-theme="dark"] .about-page {
   background-image: url("/Space.jpg");
   background-size: cover;
   background-position: center;
+}
+
+/* Keyframes for fade-in and slide-up animation */
+@keyframes fadeInSlideUp {
+  to {
+    opacity: 1; /* Fade to visible */
+    transform: translateY(0); /* Slide to original position */
+  }
 }
 
 /* About Content Styling */
@@ -69,10 +80,19 @@ p {
   padding: 2rem;
   background-color: rgba(255, 255, 255, 0.8);
   transition: background-color 0.3s ease;
+  opacity: 0; /* Start hidden */
+  animation: contentFadeIn 1.2s ease 0.5s forwards; /* Delayed fade-in */
 }
 
 [data-theme="dark"] .about-content {
   background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Keyframes for content fade-in */
+@keyframes contentFadeIn {
+  to {
+    opacity: 1; /* Fade to visible */
+  }
 }
 
 /* About Main Content */
@@ -87,19 +107,28 @@ p {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
+  animation: textFadeIn 1s ease 1s forwards; /* Fading text effect */
+  opacity: 0; /* Start hidden */
 }
 
 .about-main p {
   font-size: 1.125rem;
   margin-bottom: 1rem;
   color: var(--text-color);
+  animation: textFadeIn 1s ease 1.2s forwards;
+  opacity: 0;
 }
 
 .about-main strong {
   font-weight: 600;
 }
 
-/* CONTACT PAGE */
+/* Keyframes for text fade-in */
+@keyframes textFadeIn {
+  to {
+    opacity: 1;
+  }
+}
 
 /* Contact Page Styles */
 .contact-page {
@@ -109,12 +138,23 @@ p {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  opacity: 0; /* Start hidden */
+  transform: translateY(20px); /* Start slightly below view */
+  animation: fadeInSlideUp 1s ease forwards; /* Slide and fade in */
 }
 
 [data-theme="dark"] .contact-page {
   background-image: url("/Space.jpg");
   background-size: cover;
   background-position: center;
+}
+
+/* Keyframes for fade-in and slide-up */
+@keyframes fadeInSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .contact-content {
@@ -125,6 +165,8 @@ p {
   padding: 2rem;
   background-color: rgba(255, 255, 255, 0.8);
   transition: background-color 0.3s ease;
+  opacity: 0;
+  animation: contentFadeIn 1.2s ease 0.5s forwards;
 }
 
 [data-theme="dark"] .contact-content {
@@ -143,12 +185,16 @@ p {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
+  animation: textFadeIn 1s ease 1s forwards;
+  opacity: 0;
 }
 
 .contact-main p {
   font-size: 1.125rem;
   margin-bottom: 1rem;
   color: var(--text-color);
+  animation: textFadeIn 1s ease 1.2s forwards;
+  opacity: 0;
 }
 
 .contact-details {
@@ -159,11 +205,29 @@ p {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  animation: textFadeIn 1s ease 1.3s forwards;
+  opacity: 0;
 }
 
 .contact-details p {
   font-size: 1.125rem;
   color: var(--text-color);
+  animation: textFadeIn 1s ease 1.4s forwards;
+  opacity: 0;
+}
+
+/* Keyframes for content fade-in */
+@keyframes contentFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Keyframes for text fade-in */
+@keyframes textFadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 /* LOGIN PAGE */
@@ -439,7 +503,8 @@ p {
   border-radius: 0.75rem;
 
   /* Combined box-shadow */
-  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15), 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15),
+    0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
 
   /* Animation and transform styles from ui-shubh */
   transform: scale(0.95);
@@ -503,7 +568,8 @@ main {
 }
 
 /* Media query to adjust to 5 columns on larger screens */
-@media (min-width: 88rem) { /* Adjusted breakpoint slightly */
+@media (min-width: 88rem) {
+  /* Adjusted breakpoint slightly */
   .video-grid {
     max-width: 96rem; /* Increased max-width for larger screens */
     grid-template-columns: repeat(5, 1fr);
