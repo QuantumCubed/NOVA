@@ -1,6 +1,7 @@
 // pages/signup.tsx
 
 import { useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
@@ -11,17 +12,40 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const authContext = useContext(AuthContext);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (authContext) {
-      await authContext.signup({
-        first_name,
-        last_name,
-        username,
-        email,
-        password,
-      });
+      try {
+        // 1. Sign up the user
+        await authContext.signup({
+          first_name,
+          last_name,
+          username,
+          email,
+          password,
+        });
+
+        // 2. Log in the user to obtain the token
+        await authContext.login({
+          email_log: email,
+          password_log: password,
+        });
+
+        // 3. Create a channel with the username as the channel name
+        await authContext.createChannel({
+          channel_name: username,
+          channel_description: `Welcome to ${username}'s channel!`,
+        });
+
+        // 4. Redirect to the homepage or dashboard
+        router.push("/");
+      } catch (error) {
+        console.error("Signup process error:", error);
+        // Handle error (e.g., display an error message to the user)
+        alert("An error occurred during signup. Please try again.");
+      }
     }
   };
 
