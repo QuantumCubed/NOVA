@@ -1,3 +1,5 @@
+// pages/Dashboard.js
+
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
@@ -8,13 +10,17 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authContext?.user) {
+    if (!authContext?.loading && !authContext?.user) {
       router.push("/login");
     }
   }, [authContext, router]);
 
+  if (authContext?.loading) {
+    return <div>Loading...</div>; // Show a loading spinner if preferred
+  }
+
   if (!authContext?.user) {
-    return null; // Render nothing or a loader while redirecting
+    return null; // Render nothing while redirecting
   }
 
   const { username, first_name, last_name, email } = authContext.user;
