@@ -1,6 +1,6 @@
-// pages/Dashboard.js
+// pages/dashboard.tsx
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
@@ -8,22 +8,25 @@ import Navbar from "../components/Navbar";
 export default function Dashboard() {
   const authContext = useContext(AuthContext);
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authContext?.loading && !authContext?.user) {
+    if (!authContext?.user) {
       router.push("/login");
+    } else {
+      setLoading(false);
     }
   }, [authContext, router]);
 
-  if (authContext?.loading) {
-    return <div>Loading...</div>; // Show a loading spinner if preferred
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   if (!authContext?.user) {
-    return null; // Render nothing while redirecting
+    return null;
   }
 
-  const { username, first_name, last_name, email } = authContext.user;
+  const { username, first_name, last_name, email, acc_creation_date } = authContext.user;
 
   return (
     <div className="dashboard-container">
@@ -48,6 +51,12 @@ export default function Dashboard() {
           {email && (
             <p className="user-info">
               <strong>Email:</strong> {email}
+            </p>
+          )}
+          {acc_creation_date && (
+            <p className="user-info">
+              <strong>Account Created:</strong>{" "}
+              {new Date(acc_creation_date).toLocaleDateString()}
             </p>
           )}
         </div>
