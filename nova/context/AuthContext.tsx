@@ -1,125 +1,138 @@
-// contexts/AuthContext.tsx
+// context/AuthContext.tsx
 
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-interface User {
+interface UserData {
   UID: string;
   username: string;
   first_name?: string;
   last_name?: string;
   email?: string;
+  acc_creation_date?: string;
+  exp: number;
+  iat: number;
 }
 
 interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  user: UserData | null;
   signup: (userData: any) => Promise<void>;
+  login: (credentials: any) => Promise<void>;
   logout: () => void;
-  loading: boolean;
+  createChannel: (channelData: any) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // Initialize loading to true
+export const AuthProvider = ({ children }: any) => {
+  const [user, setUser] = useState<UserData | null>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-    if (token && userData) {
-      const userPayload = JSON.parse(userData) as User;
-      const currentTime = Math.floor(Date.now() / 1000);
-      const tokenPayload = parseJwt(token) as { exp: number };
-
-      if (tokenPayload.exp < currentTime) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
-      } else {
-        setUser(userPayload);
-      }
-    }
-    setLoading(false); // Set loading to false after data is validated
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    try {
-      const res = await fetch("http://127.0.0.1:3001/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email_log: email, password_log: password }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message);
-      }
-
-      const token = await res.json();
-      const tokenPayload = parseJwt(token) as User;
-      const storedUserData = localStorage.getItem("user");
-      const userPayload: User = {
-        UID: tokenPayload.UID,
-        username: tokenPayload.username,
-      };
-
-      if (storedUserData) {
-        const storedData = JSON.parse(storedUserData);
-        userPayload.first_name = storedData.first_name;
-        userPayload.last_name = storedData.last_name;
-        userPayload.email = storedData.email;
-      }
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userPayload));
-      setUser(userPayload);
-      router.push("/"); // Redirect to home page after login
-    } catch (error: any) {
-      alert(error.message);
-    }
-  };
 
   const signup = async (userData: any) => {
     try {
-      const res = await fetch("http://127.0.0.1:3001/user/add", {
+      const response = await fetch("http://localhost:3001/user/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(userData),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message);
+      if (!response.ok) {
+        throw new Error("Signup failed");
       }
 
-      // Store user data in localStorage
-      const newUser = {
-        UID: "", // We don't have the UID yet
-        username: userData.username,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        email: userData.email,
-      };
-      localStorage.setItem("user", JSON.stringify(newUser));
+      console.log("Signup successful");
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
+  };
 
-      // Automatically log in the user after successful signup
-      await login(userData.email, userData.password);
-    } catch (error: any) {
-      alert(error.message);
+  const login = async (credentials: any) => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const token = await response.json();
+
+      localStorage.setItem("token", token);
+
+      const userData = parseJwt(token);
+
+      // Fetch full user profile
+      const profileResponse = await fetch("http://localhost:3001/user/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!profileResponse.ok) {
+        throw new Error("Failed to fetch user profile");
+      }
+
+      const profileData = await profileResponse.json();
+
+      // Combine basic userData and profileData
+      const fullUserData = {
+        ...userData,
+        ...profileData,
+      };
+
+      setUser(fullUserData);
+
+      console.log("Login successful");
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
     }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setUser(null);
     router.push("/");
   };
 
-  const parseJwt = (token: string) => {
+  const createChannel = async (channelData: any) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("User not authenticated");
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/channel/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(channelData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Channel creation failed");
+      }
+
+      console.log("Channel created successfully");
+    } catch (error) {
+      console.error("Channel creation error:", error);
+      throw error;
+    }
+  };
+
+  // Helper function to parse JWT token
+  const parseJwt = (token: string): UserData | null => {
     try {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -129,14 +142,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
           .join("")
       );
+
       return JSON.parse(jsonPayload);
-    } catch (e) {
+    } catch (error) {
+      console.error("Failed to parse JWT:", error);
       return null;
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userData = parseJwt(token);
+
+      // Fetch full user profile
+      const fetchUserProfile = async () => {
+        try {
+          const profileResponse = await fetch("http://localhost:3001/user/profile", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!profileResponse.ok) {
+            throw new Error("Failed to fetch user profile");
+          }
+
+          const profileData = await profileResponse.json();
+
+          // Combine basic userData and profileData
+          const fullUserData = {
+            ...userData,
+            ...profileData,
+          };
+
+          setUser(fullUserData);
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+          logout();
+        }
+      };
+
+      fetchUserProfile();
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, signup, login, logout, createChannel }}>
       {children}
     </AuthContext.Provider>
   );
