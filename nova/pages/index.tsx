@@ -388,7 +388,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className="home-container">
       <Head>
         <title>NOVA</title>
       </Head>
