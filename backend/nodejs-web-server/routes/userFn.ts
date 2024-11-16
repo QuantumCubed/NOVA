@@ -18,8 +18,8 @@ declare global {
   }
 
 const MongoService = new DataBaseService();
-
 const router = express.Router();
+const secretKey = 'my-secret-key';
 
 const videoStoreConfig = multer.diskStorage({
 
@@ -53,95 +53,29 @@ const pfpStoreConfig = multer.diskStorage({
 
 const pfpUpload = multer({ storage : pfpStoreConfig });
 
-// router.post('/accout/upload', videoUpload.single('file'), async (req : any, res : any) => {
+const vidThumbnailStoreConfig = multer.diskStorage({
 
-//     const file = req.file;
-//     const { title, description, tags } = req.body;
+    destination : (req, file, cb) => {
+        cb(null, 'uploads/thumbnails/');
+    },
 
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded.');
-//     }
+    filename : (req, file, cb) => {
 
-//     // console.log(title);
+        cb(null, file.originalname);
 
-//     // MongoService.insertVideo({ // need to overall the user file sys
-//     //     title : title,
-//     //     description : description,
-//     //     tags : tags,
-//     //     user : 'noobslayer69'
-//     // });
-
-//     res.send(`File uploaded: ${ req.file.filename }`);
-
-// });
-
-router.get('/search', async (req, res) => {
-
-    const query = String(req.query.search);
-
-    console.log(query);
-
-    if(query.trim().length != 0) {
-
-        const videoArray = await MongoService.queryVideoByRegex(query);
-
-        console.log(videoArray);
-
-        res.json(videoArray);
-    }
-
+    },
 
 });
 
-router.post('/user/add', async (req, res) => {
+const thumbnailUpload = multer({ storage : vidThumbnailStoreConfig });
 
-    const {
-        first_name,
-        last_name,
-        email,
-        password,
-        username
-        //pfp_src,
-    } = req.body;
-
-    await MongoService.createUser({
-
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        password: password,
-        username: username,
-        pfp_src : 'temp' //pfp_src
-
-    });
-
-
-    res.sendStatus(200);
-
-});
-
-const secretKey = 'my-secret-key';
-
-router.post('/auth/login', async (req, res) => { // AforAppleBforBall
-
-    const { email_log, password_log } = req.body;
-
-    // console.log(email_log, password_log);
-
-    const user = await MongoService.loginAuth(String(email_log), String(password_log));
-
-    if (!user) { res.status(400).json({ message : 'Invalid Password!' }); return; }
-
-    const token = jwt.sign({ UID : user?.id, username : user?.username }, secretKey, { expiresIn : '1h' });
-
-    res.json(token);
-
-    // res.cookie('token', token, {
-    //     httpOnly: true,
-    //     secure: true,
-    //     sameSite: 'strict'
-    // });
-});
+/**
+ * Middleware to authenticate and validate JWT token
+ * @param req Request
+ * @param res Response
+ * @param next Next Function
+ * @returns Void
+ */
 
 const authToken = async (req : Request, res : Response, next : NextFunction) => {
 
@@ -157,6 +91,7 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
         next();
 
     } catch (err) {
+
         if (err instanceof jwt.JsonWebTokenError) {
             res.status(403).json({ message : 'Invalid Token!' })
             return;
@@ -168,80 +103,262 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
     }
 }
 
-router.post('/channel/create', authToken, async (req, res) => {
+// Endpoint to create a new user
 
-    const UID = String(req.user?.UID);
+router.post('/user/add', async (req, res) => {
 
-    // console.log(UID, req.body);
+    const {
+        first_name,
+        last_name,
+        email,
+        password,
+        username
+        //pfp_src,
+    } = req.body;
 
-    await MongoService.createChannel({
-        channel_owner: UID,
-        channel_name: String(req.body.channel_name),
-        description: String(req.body.channel_description)
-    });
+    try {
 
-    res.sendStatus(200);
+        await MongoService.createUser({
 
-});
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            password: password,
+            username: username,
+            pfp_src : 'temp' //pfp_src
+    
+        });
 
-router.post('/upload', authToken, videoUpload.single('file'), async (req : any, res : any) => {
+        res.sendStatus(200);
 
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+    } catch (error) {
+        console.error('Error adding new user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-
-    const { title, description, tags, channel } = req.body;
-
-    const filename = req.file.filename;
-
-    console.log(title, description, tags, channel, filename);
-
-    await MongoService.uploadVideo({
-        title : title,
-        description : description,
-        tags : tags,
-        user : String(req.user.UID),
-        channel : channel
-    }, filename);
-
-    res.send(`File uploaded: ${ req.file.filename }`);
-
 });
 
-router.get('/watch/:vID', async (req, res) => {
+// Endpoint to authenticate user login
 
-    const videoID = String(req.params.vID);
+router.post('/auth/login', async (req, res) => { // AforAppleBforBall
 
-    // console.log(videoID);
+    const { email_log, password_log } = req.body;
 
-    const video_src = await MongoService.queryVideoByID(videoID);
+    // console.log(email_log, password_log);
 
-    console.log(video_src);
+    try {
+        const user = await MongoService.loginAuth(String(email_log), String(password_log));
 
-    res.status(200).send(video_src);
+        if (!user) { 
+                res.status(400).json({ message : 'Invalid Password!' }); 
+                return; 
+        }
+        
+        const token = jwt.sign({ UID : user?.id, username : user?.username }, secretKey, { expiresIn : '1h' });
 
+        console.log('Login Sucessful! JWT Token Generated!');
+
+        res.status(200).json(token);
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+    // res.cookie('token', token, {
+    //     httpOnly: true,
+    //     secure: true,
+    //     sameSite: 'strict'
+    // });
 });
+
+// Endpoint to upload a user's profile picture
 
 router.post('/profile/upload', authToken, pfpUpload.single('profile_pic'), async (req : any, res : any) => {
 
     if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+        return res.status(400).send('No file uploaded!');
     }
 
     // console.log(req.file.filename);
     // console.log(path.extname(req.file.originalname));
 
-    await MongoService.updateUserPFP(String(req.user.UID), req.file.originalname);
+    try {
 
-    res.sendStatus(200);
+        await MongoService.updateUserPFP(String(req.user.UID), req.file.originalname);
+
+        res.sendStatus(200);
+
+    } catch(error) {
+        console.error('Error uploading profile:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
 
 });
+
+// Endpoint to create a new channel
+
+router.post('/channel/create', authToken, async (req, res) => {
+
+    try {
+
+        const UID = String(req.user?.UID);
+
+        // console.log(UID, req.body);
+
+        await MongoService.createChannel({
+            channel_owner: UID,
+            channel_name: String(req.body.channel_name),
+            description: String(req.body.channel_description)
+        });
+
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.error('Error creating channel:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+// Endpoint to upload a video to the specified channel
+
+router.post('/:cid/upload', authToken, videoUpload.single('file'), thumbnailUpload.single('thumbnail'), async (req : any, res : any) => {
+
+    if (!req.file) {
+        res.status(400).send('No file uploaded.');
+    }
+
+    try {
+
+        const { title, description, tags, channel_name } = req.body;
+
+        const filename = req.file.filename;
+
+        // console.log(title, description, tags, channel_name, filename);
+
+        await MongoService.uploadVideo({
+            title : title,
+            description : description,
+            tags : tags,
+            user : String(req.user.UID),
+            channel_name : channel_name,
+            channel_id : req.params.cid
+        }, filename);
+    
+        res.status(200).send(`File uploaded: ${ req.file.filename }`);
+
+    } catch (error) {
+        console.error('Error uploading video:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+// Endpoint to upload a thumbnail to a video
+
+router.post('/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbnail'), async (req : any, res: any) => {
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded!');
+    }
+
+    //console.log(req.params.vid);
+
+    try {
+
+        await MongoService.updateVideoThumbnail(String(req.user.UID), req.params.vid, req.file.originalname);
+
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.error('Error uploading thumbnail:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+// Endpoint to return user profile
+
+router.get('/user/profile', authToken, async (req, res) => {
+
+    try {
+
+        const UID = String(req.user?.UID);
+
+        const user = await MongoService.queryUserData(UID);
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found!' });
+            return;
+        }
+
+        // Exclude sensitive information like password
+
+        const { first_name, last_name, username, email, acc_creation_date } = user;
+
+        res.status(200).json({
+            first_name,
+            last_name,
+            username,
+            email,
+            acc_creation_date,
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+});
+
+// Endpoint to search for videos
+
+router.get('/search', async (req, res) => {
+
+    const query = String(req.query.search);
+
+    console.log('Search query:', query);
+
+    if(query.trim().length != 0) {
+
+        const videoArray = await MongoService.queryVideoByRegex(query);
+
+        console.log(videoArray);
+
+        try {
+            const videoArray = await MongoService.queryVideoByRegex(query);
+            console.log('Search results:', videoArray);
+            res.status(200).json(videoArray);
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+            res.status(500).json({ message: 'Internal Server Error!' });
+        }
+    } else {
+        res.status(400).json({ message: 'Search query cannot be empty'! });
+    }
+
+});
+
+// router.get('/watch/:vID', async (req, res) => {
+
+//     const videoID = String(req.params.vID);
+
+//     // console.log(videoID);
+
+//     const video_src = await MongoService.queryVideoByID(videoID);
+
+//     console.log(video_src);
+
+//     res.status(200).send(video_src);
+
+// });
+
+// WIP
 
 router.get('/load/home', async (req, res) => {
 
     const homeVideos = await MongoService.nVidQuery(12);
 
 });
+
+// WIP
 
 router.get('/protected', authToken, (req, res) => {
 

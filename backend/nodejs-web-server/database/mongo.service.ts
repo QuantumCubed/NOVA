@@ -13,7 +13,8 @@ interface VideoMetaData {
     description : string,
     tags : [string],
     user : string,
-    channel : string
+    channel_name : string,
+    channel_id : string
     
 }
 
@@ -41,6 +42,10 @@ class DataBaseService {
     constructor () {
         this.URI  = process.env.URI || process.env["URI"] || 'mongodb://localhost:27017/';
     }
+
+    /**
+     * Establishes Database Connection
+     */
     
     establishDBConnection = async () => {
 
@@ -56,6 +61,32 @@ class DataBaseService {
         }
     }
 
+    /**
+     * Queries user data based on ID
+     * @param uid UserID
+     * @returns User || null
+     */
+
+    queryUserData = async (uid : string) => {
+
+        try {
+
+            return await User.findById(uid, 'first_name last_name email username acc_creation_date');
+
+        } catch (error) {
+            console.error('Unable to retrieve user data:', error);
+            return null;
+        }
+
+    }
+
+    /**
+     * Queries a user's channel based on the user's ID and channel's name
+     * @param uid UserID
+     * @param query Channel Name
+     * @returns channelID || null
+     */
+
     queryUserChannelID = async (uid : string, query : string) => {
 
         try {
@@ -66,25 +97,38 @@ class DataBaseService {
             return channel?._id.toString();
         } catch (error) {
             console.error('Error fetching channels:', error);
-            throw error;
+            return null;
         }
 
     }
 
-    queryVideoByID = async (uid : string) => {
+    /**
+     * Queries a video based on videoID
+     * @param vid userID
+     * @returns videoID || null
+     */
+
+    queryVideoByID = async (vid : string) => {
 
         try {
-            // const video = await Video.findOne({
-            //     _id : uid,
-            // });
-            const video = await Video.findById(uid);
-            return video?.video_src?.toString();
+            
+            // const video = await Video.findById(vid);
+            // return video?.video_src?.toString();
+
+            return await Video.findById(vid, 'video_src');
+
         } catch (error) {
             console.error('Error fetching video:', error);
-            throw error;
+            return null;
         }
 
     }
+
+    /**
+     * Queries an array of videos that have some relation to the string
+     * @param query String to query video
+     * @returns videoArray || null
+     */
 
     queryVideoByRegex = async (query : string) => {
         try {
@@ -100,15 +144,36 @@ class DataBaseService {
 
         } catch (error) {
             console.error('Error fetching videos:', error);
-            throw error;
+            return null;
         }
     }
 
+    /**
+     * Queries n videos
+     * @param n Number of videos
+     * @returns videoArray || null
+     */
+
     nVidQuery = async (n : number) => {
-        const videoArray = await Video.find().limit(n)
-        return videoArray;
-        //console.log(songsArray);
+
+        try {
+
+            // const videoArray = await Video.find().limit(n);
+            // return videoArray;
+
+            return await Video.find().limit(n);
+
+        } catch (error) {
+            console.error('Error fetching videos:', error);
+            return null;
+        }
+
     }
+
+    /**
+     * Generates a directory for the user in the filesystem
+     * @param UID UserID
+     */
 
     createUserDirectory = async (UID : string) => {
 
@@ -123,7 +188,12 @@ class DataBaseService {
 
     }
 
-    createChannelDirectory = async (ownerID : string, channelID : string) => {
+    /**
+     * Generates a directory for the channel in the filesystem
+     * @param channelID The channelID of the channel
+     */
+
+    createChannelDirectory = async (channelID : string) => {
 
         const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
 
@@ -135,6 +205,13 @@ class DataBaseService {
         }
 
     }
+
+    /**
+     * Generates a directory for the video in the filesystem and calls the gRPC server to transcode the video
+     * @param videoID VideoID
+     * @param videoFile VideoFile Name
+     * @returns gRPC status and the target src path for the transcoded output || null
+     */
 
     createVideoDirectory = async (videoID : string, videoFile : string) => {
 
@@ -161,6 +238,7 @@ class DataBaseService {
         // console.log(path.join(dirPathRaw, videoFile));
 
         try {
+
             await fs.promises.mkdir(dirPathRaw, { recursive : true });
             await fs.promises.mkdir(dirPathOut, { recursive : true });
             await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
@@ -168,6 +246,7 @@ class DataBaseService {
             
         } catch (err : any) {
             console.error('Error Creating Video Directories!', err.message);
+            return null;
         }
 
         // console.log(path.join(dirPathRaw, videoFile), dirPathOut);
@@ -176,103 +255,261 @@ class DataBaseService {
 
         console.log((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`));
 
-        await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
+        try {
 
-        return { status : 'OK', watchPath : (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
+            await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
+
+            return { status : 'OK', watchPath : (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
+
+        } catch(error) {
+            console.error('gRPC Error:', error);
+            return null;
+
+        }
 
     }
+
+    /**
+     * Generates a BSON document for the user in MongoDB
+     * @param userMeta User data to input in DB
+     */
 
     createUser = async (userMeta : UserMetaData) => {
 
-        const salt = await bcrypt.genSalt(10);
+        try {
 
-        const newUser = await User.create({
+            const salt = await bcrypt.genSalt(10);
 
-            first_name: userMeta.first_name,
-            last_name: userMeta.last_name,
-            email: userMeta.email,
-            password: await bcrypt.hash(userMeta.password, salt),
-            username: userMeta.username,
-            subscribed_to: [],
-            pfp_src: userMeta.pfp_src,
-            acc_creation_date: Date.now()
+            const newUser = await User.create({
 
-        });
+                first_name: userMeta.first_name,
+                last_name: userMeta.last_name,
+                email: userMeta.email,
+                password: await bcrypt.hash(userMeta.password, salt),
+                username: userMeta.username,
+                subscribed_to: [],
+                pfp_src: userMeta.pfp_src,
+                acc_creation_date: Date.now()
 
-        this.createUserDirectory(newUser._id.toString());
+            });
 
-        console.log('User added to DB!');
+            this.createUserDirectory(newUser._id.toString());
+
+            console.log('User added to DB!');
+        } catch (error) {
+            console.error('Error creating user document:', error);
+        }
     }
+
+    /**
+     * Generates a BSON document for the channel in MongoDB
+     * @param channelMeta Channel data to input in DB
+     */
 
     createChannel = async (channelMeta : ChannelMetaData) => {
 
-        const newChannel = await Channel.create({
+        try {
 
-            owner: channelMeta.channel_owner,
-            channel_name: channelMeta.channel_name,
-            description: channelMeta.description,
-            subscriber_count: 0,
-            channel_icon_src: '',
-            channel_banner_src: '',
-            videos: []
+            const newChannel = await Channel.create({
 
-        });
+                owner: channelMeta.channel_owner,
+                channel_name: channelMeta.channel_name,
+                description: channelMeta.description,
+                subscriber_count: 0,
+                channel_icon_src: '',
+                channel_banner_src: '',
+                videos: []
 
-        this.createChannelDirectory(channelMeta.channel_owner, newChannel._id.toString());
+            });
 
-        console.log('Channel added to DB!');
+            await this.createChannelDirectory(channelMeta.channel_owner);
+
+            await User.findByIdAndUpdate(
+                channelMeta.channel_owner,
+                { $push : { channels_owned : newChannel._id.toString() } },
+                { new : true, runValidators : true } 
+            );
+
+            console.log('Channel added to DB!');
+        
+        } catch (error) {
+            console.log('Error creating channel:', error);
+        }
 
     }
 
-    uploadVideo = async (vidMeta : VideoMetaData, filename : string) => {
+    /**
+     * Generates a BSON document for the video in MongoDB
+     * @param vidMeta Video data to input in DB
+     * @param vidFileName The name of the video file
+     * @param thumbnailFileName The thumbnail file name for the video
+     */
 
-        const newVideo = await Video.create({
+    uploadVideo = async (vidMeta : VideoMetaData, vidFileName : string, thumbnailFileName? : string) => {
 
-            title : vidMeta.title,
-            description: vidMeta.description,
-            tags : vidMeta.tags,
-            date_published : Date.now(),
-            user : vidMeta.user,
-            thumbnail_src : 'temp',
-            video_src : 'temp',
-            likeCount: 0,
-            dislikeCount: 0,
-            viewCount: 0,
-            comments: [],
+        try {
 
-        });
+            const newVideo = await Video.create({
 
-        const channelID = await this.queryUserChannelID(vidMeta.user, vidMeta.channel);
+                title : vidMeta.title,
+                description: vidMeta.description,
+                tags : vidMeta.tags,
+                date_published : Date.now(),
+                user : vidMeta.user,
+                channel : vidMeta.channel_id,
+                thumbnail_src : 'temp',
+                video_src : 'temp',
+                likeCount: 0,
+                dislikeCount: 0,
+                viewCount: 0,
+                comments: [],
 
-        if (!channelID) { console.error('ChannelID is Undefined'); return; }
+            });
 
-        // console.log(channelID);
+            if (thumbnailFileName) {
+                this.updateVideoThumbnail(vidMeta.user, newVideo._id.toString(), thumbnailFileName);
+            }
 
-        const result = await this.createVideoDirectory(newVideo._id.toString(), filename);
+            const result = await this.createVideoDirectory(newVideo._id.toString(), vidFileName);
 
-        // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
+            if (!result) { throw new Error('Video directory error!'); }
 
-        Object.assign(newVideo, { channel : channelID, video_src : result.watchPath });
-        await newVideo.save();
+            // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
 
-        console.log('Video added to DB!');
+            Object.assign(newVideo, { video_src : result.watchPath });
+            await newVideo.save();
+
+            console.log('Video added to DB!');
+
+        } catch (error) {
+            console.error('Error uploading video:', error);
+        }
     }
+
+    /**
+     * Validates a user's login information 
+     * @param email The user's email
+     * @param password The user's password
+     * @returns User's UID && Username || null
+     */
 
     loginAuth = async (email : string, password : string | Buffer) => {
 
-        const user = await User.findOne({ email : email });
+        try {
+            
+            const user = await User.findOne({ email : email });
 
-        if (!user) { throw new Error('User not found!'); }
+            if (!user) { throw new Error('User not found!'); }
 
-        const validated = await bcrypt.compare(password, user.password?.toString() || '');
+            const validated = await bcrypt.compare(password, user.password?.toString() || '');
 
-        if (!validated) return false;
+            if (!validated) return null;
 
-        console.log('Login Sucessful! JWT Token Generated!');
+            // console.log('Login Sucessful! JWT Token Generated!');
 
-        return user;
+            return { id : user._id.toString(), username : user.username };
+
+        } catch (error) {
+            console.error('Failed to authenticate user:', error);
+            return null;
+        }
 
     }
+
+    /**
+     * Updates the user's profile picture
+     * @param uid UserID
+     * @param filename Uploaded profile picture filename
+     */
+
+
+    updateUserPFP = async (uid : string, filename : string) => {
+
+        const pfpUploadPath = path.join(__dirname, '..', 'uploads', 'images', filename);
+
+        const rawProfilePath = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'users',
+            uid,
+        );
+        
+        try {
+
+            await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
+            await User.findByIdAndUpdate(
+                uid,
+                { pfp_src : `/data/users/${uid}/${filename}`},
+                { new : true, runValidators : true }
+            );
+
+        } catch (err : any) {
+            console.error('Error Uploading PFP!', err.message);
+        }        
+
+        console.log('PFP Uploaded!');
+
+    }
+
+    /**
+     * Updates the thumbnail of a video
+     * @param uid userID
+     * @param vid videoID
+     * @param filename Uploaded thumbnail filename
+     * @returns 
+     */
+
+    updateVideoThumbnail = async (uid : string, vid : string, filename : string) => {
+
+        try {
+
+            const user = await User.findById(uid, 'channels_owned');
+            const userChannels : string [] | null  = user ? user.channels_owned : null;
+
+            const video = await Video.findById(vid, 'channel');
+            const videoChannel : string | null | undefined  = video ? video.channel : null;
+
+            // console.log(user);
+            // console.log(userChannels);
+            // console.log(video);
+            // console.log(videoChannel);
+
+            if (!userChannels || !videoChannel || !(userChannels.includes(videoChannel))) {
+                throw new Error('User does not control that channel!');
+            }
+
+        } catch (error) {
+            console.error('Error validating channel permissions:', error);
+        }
+
+        const thumbnailUploadPath = path.join(__dirname, '..', 'uploads', 'thumbnails', filename);
+
+        const rawVideoPath = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'videos',
+            vid,
+        );
+
+        try {
+            await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            await Video.findByIdAndUpdate(
+                vid,
+                { thumbnail_src : `/data/videos/${vid}/${filename}`},
+                { new : true, runValidators : true }
+            );
+        } catch (err : any) {
+            console.error('Error Uploading Thumbnail!', err.message);
+            return;
+        }
+
+        console.log('Thumbnail Uploaded!');
+
+    }
+
+    // WIP
 
     deleteVideo = async (uid : string, cid : string, vid : string) => {
 
@@ -280,11 +517,15 @@ class DataBaseService {
 
     }
 
+    // WIP
+
     deleteChannel = async (uid : string, cid : string) => {
 
         
 
     }
+
+    // WIP
 
     deleteUser = async (uid : string, password : string | Buffer) => {
 
@@ -295,7 +536,13 @@ class DataBaseService {
         const validated = await bcrypt.compare(password, user.password?.toString() || '');
             if (validated) {
                 try {
-                    await fs.promises.rm()
+                    await fs.promises.rm(path.join(
+                        __dirname,
+                        '../../../',
+                        'data',
+                        'users',
+                        uid
+                    ));
                     await Video.deleteMany({ user : uid });
                     await Channel.deleteMany({ owner : uid });
                     await User.findByIdAndDelete(uid);
@@ -306,6 +553,8 @@ class DataBaseService {
         }
         console.log('All User Data Deleted!');
     }
+
+    // WIP
 
     // updateUserByID = async (uid : string, newUserData : UserMetaData) => {
 
@@ -324,32 +573,9 @@ class DataBaseService {
 
     // }
 
-    updateUserPFP = async (uid : string, filename : string) => {
-
-        const pfpUploadPath = path.join(__dirname, '..', 'uploads', 'images', filename);
-
-        const rawProfilePath = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'users',
-            uid,
-        );
-        
-        try {
-            await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
-            await User.findByIdAndUpdate(
-                uid,
-                { pfp_src : `/data/users/${uid}/${filename}`},
-                { new : true, runValidators : true }
-            );
-        } catch (err : any) {
-            console.error('Error Uploading PFP!', err.message);
-        }
-
-        console.log('PFP Uploaded!');
-
-    }
+    /**
+     * Disconnects connection to the Database
+     */
 
     disconnectDB = async () => {
         mongoose.connection.close();

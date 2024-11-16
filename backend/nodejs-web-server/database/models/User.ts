@@ -9,6 +9,7 @@ const userSchemaDefinition = new Schema({
     last_name: String,
     email: String,
     password: String,
+    channels_owned: [String],
 
     // PUBLIC FIELDS
     username: String,

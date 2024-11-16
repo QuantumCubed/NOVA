@@ -6,11 +6,15 @@ import DataBaseService from './database/mongo.service';
 
 const LAN = false; // false = local
 const app = express();
-const port = 3000;
+const port = 3000; // change to 3001
 const IP = LAN ? '0.0.0.0' : '127.0.0.1';
 
 // app.use(express.static('public'));
-app.use(cors());
+app.use(cors({
+        origin: 'http://localhost:3000', // Your frontend origin
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use('/', home, userFn); // URL = /
 // app.use('/upload', userFx); URL = /upload
