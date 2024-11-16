@@ -37,10 +37,10 @@ interface ChannelMetaData {
 
 class DataBaseService {
     
-    private readonly URI;
+    private readonly URI : string;
 
     constructor () {
-        this.URI  = process.env.URI || process.env["URI"] || 'mongodb://localhost:27017/';
+        this.URI = process.env.URI || 'undefined'; // || "mongodb://localhost:27017/";
     }
 
     /**
@@ -51,7 +51,7 @@ class DataBaseService {
 
         try {
             await mongoose.connect(this.URI,
-                { dbName : 'TempDB' }
+                { dbName : process.env.DB || process.env["DB"] || "TempDB" }
             );
             console.log('Database Connection Sucessful! ✅');
         }

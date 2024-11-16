@@ -2,7 +2,6 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import DataBaseService from '../database/mongo.service';
-import gRPC_Client from '../api/gRPC/gRPC';
 import jwt from 'jsonwebtoken';
 
 interface UserPayload {
@@ -17,9 +16,14 @@ declare global {
     }
   }
 
+
+
 const MongoService = new DataBaseService();
 const router = express.Router();
+// const secretKey = process.env.CRYPT_SK;
 const secretKey = 'my-secret-key';
+
+if (!secretKey) { console.error('Secret Key:', secretKey); throw new Error ('Secret Key is Undefined!'); }
 
 const videoStoreConfig = multer.diskStorage({
 
@@ -152,7 +156,7 @@ router.post('/auth/login', async (req, res) => { // AforAppleBforBall
                 res.status(400).json({ message : 'Invalid Password!' }); 
                 return; 
         }
-        
+
         const token = jwt.sign({ UID : user?.id, username : user?.username }, secretKey, { expiresIn : '1h' });
 
         console.log('Login Sucessful! JWT Token Generated!');
