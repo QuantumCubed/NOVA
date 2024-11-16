@@ -1,12 +1,13 @@
 // context/AuthContext.tsx
 
-import { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
 
+// Define the structure of user data
 interface UserData {
   UID: string;
   username: string;
-  channels_owned: string[]; // Added to store channel IDs
+  channels_owned: string[]; // Stores channel IDs
   first_name?: string;
   last_name?: string;
   email?: string;
@@ -15,6 +16,7 @@ interface UserData {
   iat: number;
 }
 
+// Define the structure of the authentication context
 interface AuthContextType {
   user: UserData | null;
   loading: boolean;
@@ -24,13 +26,23 @@ interface AuthContextType {
   createChannel: (channelData: any) => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+// Initialize the AuthContext with default values
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  signup: async () => {},
+  login: async () => {},
+  logout: () => {},
+  createChannel: async () => {},
+});
 
-export const AuthProvider = ({ children }: any) => {
+// AuthProvider component that wraps the application
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
+  // Signup function
   const signup = async (userData: any) => {
     try {
       const response = await fetch("http://127.0.0.1:3001/user/add", {
@@ -53,6 +65,7 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  // Login function
   const login = async (credentials: any) => {
     try {
       const response = await fetch("http://127.0.0.1:3001/auth/login", {
@@ -68,13 +81,13 @@ export const AuthProvider = ({ children }: any) => {
         throw new Error(errorData.message || "Login failed");
       }
 
-      // **Use response.text() to get the token as a string**
+      // Use response.text() to get the token as a string
       let token = await response.text();
 
-      // **Remove any surrounding quotes**
+      // Remove any surrounding quotes
       token = token.replace(/^"|"$/g, "");
 
-      // **Store the token without quotes**
+      // Store the token without quotes
       localStorage.setItem("token", token);
 
       const userData = parseJwt(token);
@@ -117,12 +130,14 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  // Logout function
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
     router.push("/login");
   };
 
+  // Create Channel function
   const createChannel = async (channelData: any) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -170,6 +185,7 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  // Effect to check authentication status on initial load
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
