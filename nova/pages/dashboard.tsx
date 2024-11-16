@@ -1,6 +1,6 @@
 // pages/dashboard.tsx
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
@@ -8,22 +8,24 @@ import Navbar from "../components/Navbar";
 export default function Dashboard() {
   const authContext = useContext(AuthContext);
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authContext?.user) {
+    if (!authContext?.loading && !authContext?.user) {
       router.push("/login");
-    } else {
-      setLoading(false);
     }
   }, [authContext, router]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (authContext?.loading) {
+    return (
+      <div>
+        <Navbar />
+        <p>Loading...</p>
+      </div>
+    ); // You can replace this with a spinner or skeleton
   }
 
   if (!authContext?.user) {
-    return null;
+    return null; // Prevent rendering the dashboard content until authenticated
   }
 
   const { username, first_name, last_name, email, acc_creation_date } = authContext.user;

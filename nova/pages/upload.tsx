@@ -9,7 +9,6 @@ export default function Upload() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
-  const [channel, setChannel] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
   const authContext = useContext(AuthContext);
@@ -22,7 +21,16 @@ export default function Upload() {
   }, [authContext, router]);
 
   if (authContext?.loading) {
-    return <div>Loading...</div>; // Show a loading spinner if desired
+    return (
+      <div>
+        <Navbar />
+        <p>Loading...</p>
+      </div>
+    ); // Replace with a spinner or skeleton if desired
+  }
+
+  if (!authContext?.user) {
+    return null; // Prevent rendering the upload form until authenticated
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,17 +40,25 @@ export default function Upload() {
       return;
     }
 
+    // Ensure the user has at least one channel
+    if (!authContext.user.channels_owned || authContext.user.channels_owned.length === 0) {
+      alert("No channels found. Please create a channel first.");
+      return;
+    }
+
+    // For simplicity, use the first channel
+    const channelID = authContext.user.channels_owned[0];
+
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("tags", tags);
-      formData.append("channel", channel);
       formData.append("file", file);
 
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://127.0.0.1:3001/upload", {
+      const res = await fetch(`http://127.0.0.1:3001/${channelID}/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token || ""}`,
@@ -52,7 +68,7 @@ export default function Upload() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message);
+        throw new Error(errorData.message || "Upload failed");
       }
 
       alert("Video uploaded successfully!");
@@ -63,56 +79,59 @@ export default function Upload() {
   };
 
   return (
-    <div>
+    <div className="upload-page">
       <Navbar />
-      <h1>Upload Video</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label>
-          Title:
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Description:
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Tags (comma separated):
-          <input
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Channel:
-          <input
-            type="text"
-            value={channel}
-            onChange={(e) => setChannel(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Video File:
-          <input
-            type="file"
-            accept="video/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-          />
-        </label>
-        <br />
-        <button type="submit">Upload</button>
-      </form>
+      <div className="upload-content">
+        <main className="upload-main">
+          <h1>Upload Video</h1>
+          <form onSubmit={handleSubmit} encType="multipart/form-data" className="upload-form">
+            <div className="input-group">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                placeholder="Title"
+                className="title-input"
+              />
+              <i className="title-icon fa fa-video"></i>
+            </div>
+            <div className="input-group">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                placeholder="Description"
+                className="description-textarea"
+              />
+              <i className="description-icon fa fa-file-alt"></i>
+            </div>
+            <div className="input-group">
+              <input
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="Tags (comma separated)"
+                className="tags-input"
+              />
+              <i className="tags-icon fa fa-tags"></i>
+            </div>
+            <div className="input-group">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                required
+                className="video-file-input"
+              />
+              <i className="file-icon fa fa-upload"></i>
+            </div>
+            <button type="submit" className="upload-button">
+              Upload
+            </button>
+          </form>
+        </main>
+      </div>
     </div>
   );
 }
