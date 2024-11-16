@@ -41,7 +41,7 @@ export default function Signup() {
           channel_description: `Welcome to ${username}'s channel!`,
         });
 
-        // 4. Redirect to the homepage or dashboard
+        // 4. Redirect to the dashboard
         router.push("/dashboard");
       } catch (error: any) {
         console.error("Signup process error:", error);

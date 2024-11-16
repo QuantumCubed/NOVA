@@ -10,12 +10,12 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authContext?.loading && !authContext?.user) {
+    if (!authContext.loading && !authContext.user) {
       router.push("/login");
     }
   }, [authContext, router]);
 
-  if (authContext?.loading) {
+  if (authContext.loading) {
     return (
       <div>
         <Navbar />
@@ -24,7 +24,7 @@ export default function Dashboard() {
     ); // You can replace this with a spinner or skeleton
   }
 
-  if (!authContext?.user) {
+  if (!authContext.user) {
     return null; // Prevent rendering the dashboard content until authenticated
   }
 
@@ -57,8 +57,7 @@ export default function Dashboard() {
           )}
           {acc_creation_date && (
             <p className="user-info">
-              <strong>Account Created:</strong>{" "}
-              {new Date(acc_creation_date).toLocaleDateString()}
+              <strong>Account Created:</strong> {new Date(acc_creation_date).toLocaleDateString()}
             </p>
           )}
         </div>
