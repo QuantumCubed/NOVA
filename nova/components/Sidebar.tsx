@@ -1,3 +1,5 @@
+// components/Sidebar.tsx
+
 import { useContext, useEffect, useRef } from "react";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
