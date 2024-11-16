@@ -71,43 +71,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // pages/index.tsx
 
 import Head from "next/head";
@@ -149,222 +112,262 @@ export default function Home() {
         // Mock data with additional metadata
         const data: Video[] = [
           {
-            _id: '1',
-            title: 'Exploring the Universe',
-            description: 'Join us on a journey through space.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Exploring+the+Universe',
-            channel_name: 'SpaceTraveler',
-            date_published: '2023-01-15',
+            _id: "1",
+            title: "Exploring the Universe",
+            description: "Join us on a journey through space.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Exploring+the+Universe",
+            channel_name: "SpaceTraveler",
+            date_published: "2023-01-15",
             view_count: 120345,
             duration: 3600, // 1 hour
           },
           {
-            _id: '2',
-            title: 'The Beauty of Nature',
-            description: 'A montage of breathtaking natural landscapes.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=The+Beauty+of+Nature',
-            channel_name: 'NatureLover',
-            date_published: '2023-02-10',
+            _id: "2",
+            title: "The Beauty of Nature",
+            description: "A montage of breathtaking natural landscapes.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=The+Beauty+of+Nature",
+            channel_name: "NatureLover",
+            date_published: "2023-02-10",
             view_count: 95423,
             duration: 540, // 9 minutes
           },
           {
-            _id: '3',
-            title: 'Cooking 101',
-            description: 'Learn the basics of cooking delicious meals.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Cooking+101',
-            channel_name: 'ChefMaster',
-            date_published: '2023-03-05',
+            _id: "3",
+            title: "Cooking 101",
+            description: "Learn the basics of cooking delicious meals.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Cooking+101",
+            channel_name: "ChefMaster",
+            date_published: "2023-03-05",
             view_count: 65789,
             duration: 780, // 13 minutes
           },
           {
-            _id: '4',
-            title: 'Tech Innovations',
-            description: 'Latest trends in technology and innovation.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Tech+Innovations',
-            channel_name: 'TechGuru',
-            date_published: '2023-04-20',
+            _id: "4",
+            title: "Tech Innovations",
+            description: "Latest trends in technology and innovation.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Tech+Innovations",
+            channel_name: "TechGuru",
+            date_published: "2023-04-20",
             view_count: 84567,
             duration: 420, // 7 minutes
           },
           {
-            _id: '5',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "5",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '6',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "6",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '7',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "7",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '8',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "8",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '9',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "9",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '10',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "10",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '11',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "11",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '12',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "12",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '13',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "13",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '14',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "14",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '15',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "15",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '16',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "16",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '17',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "17",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '18',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "18",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '19',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "19",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
           {
-            _id: '20',
-            title: 'Fitness at Home',
-            description: 'Stay fit with these easy home workouts.',
-            video_src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            thumbnail_src: 'https://via.placeholder.com/320x180?text=Fitness+at+Home',
-            channel_name: 'FitLife',
-            date_published: '2023-05-30',
+            _id: "20",
+            title: "Fitness at Home",
+            description: "Stay fit with these easy home workouts.",
+            video_src:
+              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            thumbnail_src:
+              "https://via.placeholder.com/320x180?text=Fitness+at+Home",
+            channel_name: "FitLife",
+            date_published: "2023-05-30",
             view_count: 73210,
             duration: 1800, // 30 minutes
           },
@@ -374,8 +377,8 @@ export default function Home() {
         const shuffledVideos = shuffleArray(data); // Shuffle the videos array
         setVideos(shuffledVideos);
       } catch (error) {
-        console.error('Error fetching videos:', error);
-        setError('Failed to load videos. Please try again later.');
+        console.error("Error fetching videos:", error);
+        setError("Failed to load videos. Please try again later.");
       } finally {
         setLoading(false); // Stop loading
       }
@@ -385,14 +388,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className="home-container">
       <Head>
-        <title>Nova - Video Platform</title>
+        <title>NOVA</title>
       </Head>
       <Navbar />
       <main>
         {loading ? (
-          <p>Loading videos...</p>
+          <p></p>
         ) : error ? (
           <p className="error-message">{error}</p>
         ) : (

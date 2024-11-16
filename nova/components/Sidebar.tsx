@@ -1,3 +1,5 @@
+// components/Sidebar.tsx
+
 import { useContext, useEffect, useRef } from "react";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
@@ -54,7 +56,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
             <span>Contact</span>
           </div>
         </Link>
-        {authContext?.user && (
+        {authContext.user && (
           <Link href="/dashboard" passHref legacyBehavior>
             <div className={styles.sidebarItem} onClick={toggleSidebar}>
               <FaUser size={24} />

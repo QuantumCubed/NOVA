@@ -11,11 +11,13 @@ export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (authContext) {
       try {
         // 1. Sign up the user
@@ -39,12 +41,11 @@ export default function Signup() {
           channel_description: `Welcome to ${username}'s channel!`,
         });
 
-        // 4. Redirect to the homepage or dashboard
-        router.push("/");
-      } catch (error) {
+        // 4. Redirect to the dashboard
+        router.push("/dashboard");
+      } catch (error: any) {
         console.error("Signup process error:", error);
-        // Handle error (e.g., display an error message to the user)
-        alert("An error occurred during signup. Please try again.");
+        setError(error.message || "An error occurred during signup.");
       }
     }
   };
@@ -111,6 +112,9 @@ export default function Signup() {
               />
               <i className="password-icon fa fa-lock"></i>
             </div>
+
+            {error && <p className="error-message">{error}</p>}
+
             <button type="submit">Signup</button>
           </form>
         </main>
