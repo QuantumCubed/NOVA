@@ -35,13 +35,7 @@ export default function Signup() {
           password_log: password,
         });
 
-        // 3. Create a channel with the username as the channel name
-        await authContext.createChannel({
-          channel_name: username,
-          channel_description: `Welcome to ${username}'s channel!`,
-        });
-
-        // 4. Redirect to the dashboard
+        // 3. Redirect to the dashboard (no channel creation)
         router.push("/dashboard");
       } catch (error: any) {
         console.error("Signup process error:", error);
