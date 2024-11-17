@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Signup function
   const signup = async (userData: any) => {
     try {
-      const response = await fetch("http://127.0.0.1:3001/user/add", {
+      const response = await fetch("http://localhost:3001/user/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Login function
   const login = async (credentials: any) => {
     try {
-      const response = await fetch("http://127.0.0.1:3001/auth/login", {
+      const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Fetch full user profile
-      const profileResponse = await fetch("http://127.0.0.1:3001/user/profile", {
+      const profileResponse = await fetch("http://localhost:3001/user/profile", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:3001/channel/create", {
+      const response = await fetch("http://localhost:3001/channel/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,7 +200,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const fetchUserProfile = async () => {
         try {
-          const profileResponse = await fetch("http://127.0.0.1:3001/user/profile", {
+          const profileResponse = await fetch("http://localhost:3001/user/profile", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

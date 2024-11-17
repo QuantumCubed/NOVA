@@ -28,7 +28,7 @@ export default function VideoPage() {
 
     const fetchVideo = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:3001/watch/${id}`);
+        const response = await fetch(`http://localhost:3001/watch/${id}`);
         if (!response.ok) {
           throw new Error("Video not found.");
         }
@@ -74,7 +74,7 @@ export default function VideoPage() {
         <h1 className="video-title">{video.title}</h1>
         <p className="channel-name">{video.channel_name}</p>
         <p className="metadata">
-          {video.view_count.toLocaleString()} views • {video.date_published}
+          {video.view_count.toLocaleString()} views • {new Date(video.date_published).toLocaleDateString()}
         </p>
         <p className="video-description">{video.description}</p>
       </div>

@@ -1,0 +1,112 @@
+/* frontend/styles/Channels.module.css */
+
+.channelsPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .channelsContent {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .channelsMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .channelsMain h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+  }
+  
+  .channelsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 3rem;
+  }
+  
+  .createChannelSection {
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .createChannelSection h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .createChannelForm {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+  
+  .formGroup label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.75rem;
+    border: 0.0625rem solid var(--text-color);
+    border-radius: 0.5rem;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    border-color: var(--hover-color);
+    outline: none;
+    box-shadow: 0 0 0.5rem var(--hover-color);
+  }
+  
+  .createButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--background-color);
+    background-color: var(--hover-color);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  }
+  
+  .createButton:hover {
+    background-color: #ff90b3;
+    transform: translateY(-0.25rem);
+  }
+  
+  .createButton:active {
+    transform: translateY(0.125rem);
+  }
+  
+  .errorMessage {
+    color: red;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
