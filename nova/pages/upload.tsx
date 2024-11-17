@@ -68,7 +68,7 @@ export default function Upload() {
 
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`http://127.0.0.1:3001/${channelID}/upload`, {
+      const res = await fetch(`http://localhost:3001/${channelID}/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token || ""}`,

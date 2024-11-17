@@ -54,7 +54,7 @@ const Navbar = () => {
     try {
       // Fetch search results from the backend
       const response = await fetch(
-        `http://127.0.0.1:3001/search?search=${encodeURIComponent(query)}`
+        `http://localhost:3001/search?search=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
