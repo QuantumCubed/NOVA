@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const LAN = false; // false = local
+const LAN = true; // false = local
 const app = express();
 const port = 3000; // change to 3001
 const IP = LAN ? '0.0.0.0' : '127.0.0.1';

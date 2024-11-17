@@ -51,7 +51,7 @@ class DataBaseService {
 
         try {
             await mongoose.connect(this.URI,
-                { dbName : process.env.DB || process.env["DB"] || "TempDB" }
+                { dbName : process.env.DB }
             );
             console.log('Database Connection Sucessful! ✅');
         }
@@ -171,13 +171,36 @@ class DataBaseService {
     }
 
     /**
+     * Fetches channels owned by the user
+     * @param uid User ID
+     * @returns String array of channelIDs || null
+     */
+
+    queryUserChannels = async (uid : string) => {
+
+        try {
+
+            const user = await User.findById(uid, 'channels_owned');
+
+            return user?.channels_owned;
+        
+        } catch (error) {
+            console.error("Error fetching channels by IDs:", error);
+            return null;
+        }
+
+    }
+
+    /**
      * Generates a directory for the user in the filesystem
      * @param UID UserID
      */
 
     createUserDirectory = async (UID : string) => {
 
-        const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID);
+        // const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID);
+
+        const dirPath = path.join('/', 'data', 'users', UID);
 
         try {
             await fs.promises.mkdir(dirPath, { recursive : true });
@@ -195,7 +218,9 @@ class DataBaseService {
 
     createChannelDirectory = async (channelID : string) => {
 
-        const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
+        // const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
+
+        const dirPath = path.join('/', 'data', 'channels', channelID);
 
         try {
             await fs.promises.mkdir(dirPath, { recursive : true });
@@ -217,23 +242,27 @@ class DataBaseService {
 
         const dirPathUpload = path.join(__dirname, '..', 'uploads', 'videos', videoFile);
 
-        const dirPathRaw = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'videos',
-            videoID,
-            'raw'
-        );
+        // const dirPathRaw = path.join(
+        //     __dirname,
+        //     '../../../',
+        //     'data',
+        //     'videos',
+        //     videoID,
+        //     'raw'
+        // );
 
-        const dirPathOut = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'videos',
-            videoID,
-            'out'
-        );
+        const dirPathRaw = path.join('/', 'data', 'videos', videoID, 'raw');
+
+        // const dirPathOut = path.join(
+        //     __dirname,
+        //     '../../../',
+        //     'data',
+        //     'videos',
+        //     videoID,
+        //     'out'
+        // );
+
+        const dirPathOut = path.join('/', 'data', 'videos', videoID, 'out');
 
         // console.log(path.join(dirPathRaw, videoFile));
 
@@ -241,7 +270,9 @@ class DataBaseService {
 
             await fs.promises.mkdir(dirPathRaw, { recursive : true });
             await fs.promises.mkdir(dirPathOut, { recursive : true });
-            await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
+            // await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
+            await fs.promises.copyFile(dirPathUpload, path.join(dirPathRaw, videoFile));
+            await fs.promises.unlink(dirPathUpload);
             console.log('Videos Directories Created!');
             
         } catch (err : any) {

@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import { PackageDefinition } from '@grpc/proto-loader';
 
 const gRPC_Client = async (vidPath : string, outPath : string) => {
-    const packageDefinition = protoLoader.loadSync(`E:\\Coding-Stuff\\NOVA\\backend\\nodejs-web-server\\api\\gRPC\\proto\\tcServiceProtocol.proto`, { // ./proto/tcServiceProtocol.proto
+    const packageDefinition = protoLoader.loadSync('/nodejs-web-server/api/gRPC/proto/tcServiceProtocol.proto', { // ./proto/tcServiceProtocol.proto
         keepCase: true,
         longs: String,
         enums: String,
@@ -15,7 +15,7 @@ const gRPC_Client = async (vidPath : string, outPath : string) => {
 
     const tcService = protoDescripter.transcode.tcReq
     
-    const client = new tcService('localhost:50051', grpc.credentials.createInsecure());
+    const client = new tcService('go-mts:50051', grpc.credentials.createInsecure());
     
     const request = { vidInput : vidPath, vidOutput : outPath };
     

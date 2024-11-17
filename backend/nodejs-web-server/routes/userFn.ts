@@ -20,8 +20,10 @@ declare global {
 
 const MongoService = new DataBaseService();
 const router = express.Router();
-// const secretKey = process.env.CRYPT_SK;
+const sk = process.env.CRYPT_SK;
+
 const secretKey = 'my-secret-key';
+console.log('Secret Key:', sk)
 
 if (!secretKey) { console.error('Secret Key:', secretKey); throw new Error ('Secret Key is Undefined!'); }
 
@@ -211,7 +213,7 @@ router.post('/channel/create', authToken, async (req, res) => {
         await MongoService.createChannel({
             channel_owner: UID,
             channel_name: String(req.body.channel_name),
-            description: String(req.body.channel_description)
+            description: String(req.body.description)
         });
 
         res.sendStatus(200);
@@ -225,7 +227,7 @@ router.post('/channel/create', authToken, async (req, res) => {
 
 // Endpoint to upload a video to the specified channel
 
-router.post('/:cid/upload', authToken, videoUpload.single('file'), thumbnailUpload.single('thumbnail'), async (req : any, res : any) => {
+router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (req : any, res : any) => {
 
     if (!req.file) {
         res.status(400).send('No file uploaded.');
@@ -336,6 +338,26 @@ router.get('/search', async (req, res) => {
         }
     } else {
         res.status(400).json({ message: 'Search query cannot be empty'! });
+    }
+
+});
+
+router.get('/channels', authToken, async (req: Request, res: Response) => {
+
+    try {
+
+        const channelsOwned = await MongoService.queryUserChannels(String(req.user?.UID));
+        
+        if (channelsOwned?.length === 0) {
+            res.status(200).json([]); // User owns 0 channels
+            return;
+        }
+
+        res.status(200).json(channelsOwned);
+
+    } catch (error) {
+        console.error('Error fetching channels:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
     }
 
 });
