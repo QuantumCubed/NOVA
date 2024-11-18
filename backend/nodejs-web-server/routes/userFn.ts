@@ -299,16 +299,18 @@ router.get('/user/profile', authToken, async (req, res) => {
 
         // Exclude sensitive information like password
 
-        const { first_name, last_name, email, channels_owned, username, acc_creation_date } = user;
+        // const { first_name, last_name, email, channels_owned, username, acc_creation_date } = user;
 
-        res.status(200).json({
-            first_name,
-            last_name,
-            email,
-            channels_owned,
-            username,
-            acc_creation_date,
-        });
+        // res.status(200).json({
+        //     first_name,
+        //     last_name,
+        //     email,
+        //     channels_owned,
+        //     username,
+        //     acc_creation_date,
+        // });
+
+        res.status(200).json(user);
 
     } catch (error) {
         console.error('Error fetching user profile:', error);
