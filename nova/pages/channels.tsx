@@ -116,7 +116,9 @@ export default function Channels() {
       setChannelDescription("");
     } catch (error: any) {
       console.error("Error creating channel:", error);
-      setCreateError(error.message || "An error occurred while creating the channel.");
+      setCreateError(
+        error.message || "An error occurred while creating the channel."
+      );
     } finally {
       setCreating(false);
     }
@@ -144,7 +146,10 @@ export default function Channels() {
 
           <div className={styles.createChannelSection}>
             <h2>Create a New Channel</h2>
-            <form onSubmit={handleCreateChannel} className={styles.createChannelForm}>
+            <form
+              onSubmit={handleCreateChannel}
+              className={styles.createChannelForm}
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="channelName">Channel Name:</label>
                 <input
@@ -158,15 +163,21 @@ export default function Channels() {
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="channelDescription">Description:</label>
-                <textarea
+                <input
                   id="channelDescription"
                   value={channelDescription}
                   onChange={(e) => setChannelDescription(e.target.value)}
                   placeholder="Enter channel description"
                 />
               </div>
-              {createError && <p className={styles.errorMessage}>{createError}</p>}
-              <button type="submit" disabled={creating} className={styles.createButton}>
+              {createError && (
+                <p className={styles.errorMessage}>{createError}</p>
+              )}
+              <button
+                type="submit"
+                disabled={creating}
+                className={styles.createButton}
+              >
                 {creating ? "Creating..." : "Create Channel"}
               </button>
             </form>

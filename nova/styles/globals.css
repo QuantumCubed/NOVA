@@ -485,7 +485,7 @@ p {
 /* Dashboard Content Styling */
 .dashboard-content {
   width: 100%;
-  margin: 8rem 0 0 18rem;
+  margin: 5rem 0 0 18rem;
   max-width: 56.25rem; /* 900px */
   padding: 2rem;
   border-radius: 0.75rem;
@@ -500,7 +500,7 @@ p {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeIn 0.7s forwards ease-in-out;
-  margin-left: 22rem;
+  margin-left: 16rem;
   position: relative;
   z-index: 2; /* Ensure content appears above the overlay */
 }
@@ -533,21 +533,49 @@ p {
   }
 }
 
+.cards-container {
+  display: flex;
+  gap: 1.5rem; /* Space between the cards */
+  margin-top: 1rem; /* Spacing below the title */
+  justify-content: flex-start; /* Align cards to the left */
+  flex-wrap: wrap; /* Ensure responsiveness on smaller screens */
+}
+
 /* User Info Card */
 .user-info-card {
-  background-color: var(--sidebar-background);
   padding: 1.5rem;
   border-radius: 0.75rem;
-
-  /* Combined box-shadow */
+  background-color: var(--sidebar-background);
   box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15),
     0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
-
-  /* Animation and transform styles from ui-shubh */
   transform: scale(0.95);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: popIn 0.7s 0.4s forwards ease-out;
   opacity: 0;
+}
+
+.cards-container .user-info-card:first-child {
+  flex: 2; /* Make this card take up more space */
+  max-width: 60%; /* Adjust as necessary */
+  min-width: 24rem; /* Ensure it doesn’t shrink too much */
+}
+
+/* Specific styling for the second user-info-card */
+.cards-container .user-info-card:last-child {
+  flex: 1; /* Keep it narrower */
+  max-width: 38%; /* Keep this one smaller */
+  min-width: 18rem; /* Prevent it from shrinking too much */
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .cards-container {
+    flex-direction: column; /* Stack cards vertically */
+  }
+
+  .cards-container .user-info-card {
+    max-width: 100%; /* Full width on smaller screens */
+  }
 }
 
 @keyframes popIn {
@@ -563,6 +591,14 @@ p {
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 1.5rem;
+}
+
+.user-info-title-channels {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+  margin-left: 3rem;
 }
 
 /* User Info */
@@ -585,6 +621,156 @@ p {
 [data-theme="dark"] .user-info-card {
   background-color: var(--sidebar-background);
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
+}
+
+.channel-link {
+  color: #ffbade; /* New link color */
+  text-decoration: none; /* Remove underline */
+  font-weight: 600; /* Slightly bold text */
+  transition: color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.channel-link:hover {
+  color: #e678a1; /* Hover color */
+  text-decoration: none;
+}
+
+/* Manage Channels Button */
+.create-channel-button {
+  background-color: #ff90b3; /* Pink background */
+  color: #ffffff; /* White text */
+  padding: 0.75rem 1.5rem; /* Comfortable padding */
+  border: none; /* Remove borders */
+  border-radius: 0.5rem; /* Rounded corners */
+  font-size: 1rem; /* Modern font size */
+  font-weight: 600; /* Bold font weight */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  margin-left: 3rem;
+}
+
+.create-channel-button:hover {
+  background-color: #e678a1; /* Slightly darker pink on hover */
+  transform: translateY(-0.1rem) scale(1.02); /* Lift and zoom effect */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+}
+
+.create-channel-button:active {
+  background-color: #d66a8f; /* Even darker pink on active */
+  transform: translateY(0); /* Reset hover effect */
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2); /* Subtle shadow on active */
+}
+
+/* Adjust cards-container responsiveness */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.cards-container .user-info-card:first-child {
+  flex: 2;
+  max-width: 60%; /* Make the user-info card wider */
+}
+
+.cards-container .user-info-card:last-child {
+  flex: 1;
+  max-width: 38%; /* Keep the channels card as is */
+}
+
+@media screen and (max-width: 768px) {
+  .cards-container {
+    flex-direction: column; /* Stack cards vertically on smaller screens */
+  }
+}
+
+/* PROFILE PICTURE ON DASHBOARD */
+
+/* Profile Picture Section */
+.profile-picture-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the image and button */
+  justify-content: center;
+  padding: 1rem;
+  margin-left: auto; /* Push it to the right */
+}
+
+/* Profile Picture */
+.profile-picture {
+  border-radius: 50%; /* Circular image */
+  object-fit: cover; /* Ensure the image scales properly */
+  width: 200px;
+  height: 200px;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-picture:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+}
+
+/* Edit Profile Picture Button */
+.edit-profile-picture-button {
+  background-color: #ff90b3; /* Pink background */
+  color: #ffffff; /* White text */
+  padding: 0.5rem 1rem; /* Button padding */
+  margin-top: 1.7rem; /* Space below the image */
+  border: none; /* Remove default border */
+  border-radius: 0.5rem; /* Rounded corners */
+  font-size: 0.9rem; /* Slightly smaller font */
+  font-weight: 600; /* Bold text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.edit-profile-picture-button:hover {
+  background-color: #e678a1; /* Slightly darker pink on hover */
+  transform: translateY(-0.1rem) scale(1.02); /* Lift and zoom effect */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+}
+
+.edit-profile-picture-button:active {
+  background-color: #d66a8f; /* Even darker pink on active */
+  transform: translateY(0); /* Reset hover effect */
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2); /* Subtle shadow on active */
+}
+
+/* Updated User Info Card Layout */
+.user-info-card {
+  display: flex;
+  justify-content: space-between; /* Space between user info and profile picture */
+  align-items: center;
+  flex-wrap: wrap; /* Ensure responsiveness */
+}
+
+/* User Info Section */
+.user-info-section {
+  flex: 1; /* Take up remaining space */
+  max-width: 60%; /* Prevent it from stretching too much */
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .user-info-card {
+    flex-direction: column; /* Stack sections vertically on smaller screens */
+    align-items: flex-start;
+  }
+
+  .profile-picture-section {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .user-info-section {
+    max-width: 100%;
+  }
 }
 
 /* LANDING PAGE */
@@ -735,24 +921,6 @@ video {
   flex-direction: column;
   overflow: hidden; /* Prevent content overflow */
   animation: backgroundFadeIn 1.5s ease-in-out; /* Apply fade-in animation */
-}
-
-/* Add a much darker overlay */
-[data-theme="dark"] .home-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.3
-  ); /* Increase opacity for darker overlay */
-  z-index: 1; /* Place below content */
-  opacity: 1; /* Make overlay visible */
 }
 
 /* Ensure child elements appear above the overlay */
