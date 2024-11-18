@@ -71,7 +71,7 @@ class DataBaseService {
 
         try {
 
-            return await User.findById(uid, 'first_name last_name email username acc_creation_date');
+            return await User.findById(uid, 'first_name last_name email channels_owned username acc_creation_date');
 
         } catch (error) {
             console.error('Unable to retrieve user data:', error);
@@ -173,7 +173,7 @@ class DataBaseService {
     /**
      * Fetches channels owned by the user
      * @param uid User ID
-     * @returns String array of channelIDs || null
+     * @returns Channel Array || null
      */
 
     queryUserChannels = async (uid : string) => {
@@ -182,7 +182,13 @@ class DataBaseService {
 
             const user = await User.findById(uid, 'channels_owned');
 
-            return user?.channels_owned;
+            const usrChannelArray : typeof Channel [] | null [] | any [] = await Promise.all(
+                user?.channels_owned.map(channelID => Channel.findById(channelID)) || []
+            );
+
+            // console.log(usrChannelArray[0]._id);
+
+            return usrChannelArray;
         
         } catch (error) {
             console.error("Error fetching channels by IDs:", error);
@@ -347,6 +353,7 @@ class DataBaseService {
                 channel_name: channelMeta.channel_name,
                 description: channelMeta.description,
                 subscriber_count: 0,
+                acc_creation_date : Date.now(),
                 channel_icon_src: '',
                 channel_banner_src: '',
                 videos: []

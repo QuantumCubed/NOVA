@@ -55,8 +55,8 @@ services:
     working_dir: /nodejs-web-server
     networks:
       - nova-net
-    #stdin_open: true   # Equivalent to -i flag
-    #tty: true          # Equivalent to -t flag
+    # stdin_open: true   # Equivalent to -i flag
+    # tty: true          # Equivalent to -t flag
     command: ["npm", "run", "dev"]
     depends_on:
       - mongod

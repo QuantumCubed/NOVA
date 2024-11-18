@@ -24,7 +24,13 @@ app.use('/', home, userFn); // URL = /
 // app.use('/upload', userFx); URL = /upload
 
 const MongoService = new DataBaseService();
-MongoService.establishDBConnection();
+
+try {
+    MongoService.establishDBConnection();
+} catch (error : any) {
+    console.error('Failed to connect to Database!\nError:', error.message);
+}
+
 
 app.listen(port, IP, () => {
     console.log(`Example app listening on http://${IP}:${port}`);

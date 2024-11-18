@@ -213,7 +213,7 @@ router.post('/channel/create', authToken, async (req, res) => {
         await MongoService.createChannel({
             channel_owner: UID,
             channel_name: String(req.body.channel_name),
-            description: String(req.body.description)
+            description: String(req.body.channel_description)
         });
 
         res.sendStatus(200);
@@ -299,15 +299,17 @@ router.get('/user/profile', authToken, async (req, res) => {
 
         // Exclude sensitive information like password
 
-        const { first_name, last_name, username, email, acc_creation_date } = user;
+        const { first_name, last_name, email, channels_owned, username, acc_creation_date } = user;
 
         res.status(200).json({
             first_name,
             last_name,
-            username,
             email,
+            channels_owned,
+            username,
             acc_creation_date,
         });
+
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).json({ message: 'Internal Server Error!' });
