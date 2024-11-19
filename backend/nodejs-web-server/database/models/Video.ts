@@ -14,7 +14,7 @@ const videoSchemaDefinition = new Schema({
     likedUsers: [{ type : String }],
     dislikeCount: { type: Number, default: 0 },
     dislikedUsers: [{ type : String }],
-    viewCount: Number,
+    viewCount: { type: Number, default: 0 },
     comments: [String],
 },
 

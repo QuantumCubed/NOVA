@@ -111,6 +111,40 @@ class DataBaseService {
     }
 
     /**
+     * Returns the path of the channel icon
+     * @param cid ChannelID
+     * @returns Channel Icon Path || null
+     */
+
+    queryChannelIcon = async (cid : string) => {
+
+        try {
+            return (await Channel.findById(cid, 'channel_icon_src'))?.channel_icon_src
+        } catch (error) {
+            console.error('Unable to retrieve channel icon:', error);
+            return null;
+        }
+
+    }
+
+    /**
+     * Returns the path of the channel banner
+     * @param cid ChannelID
+     * @returns Channel Icon banner || null
+     */
+
+    queryChannelBanner = async (cid : string) => {
+
+        try {
+            return (await Channel.findById(cid, 'channel_banner_src'))?.channel_banner_src
+        } catch (error) {
+            console.error('Unable to retrieve channel banner:', error);
+            return null;
+        }
+
+    }
+
+    /**
      * Queries a user's channel based on the user's ID and channel's name
      * @param uid UserID
      * @param query Channel Name
@@ -611,11 +645,65 @@ class DataBaseService {
                 { new: true, runValidators: true }
             );
         } catch (err: any) {
-            console.error('Error Uploading Thumbnail!', err.message);
+            console.error('Error Uploading Thumbnail:', err.message);
             return;
         }
 
         console.log('Thumbnail Uploaded!');
+
+    }
+
+    updateChannelVisuals = async (uid : string, cid : string, icon_file? : string, banner_file? : string) => {
+
+        if (!icon_file && !banner_file) { return; }
+
+        if (!icon_file) { icon_file = '' }
+        if (!banner_file) { banner_file = '' }
+
+        try {
+
+            const isOwner = await Channel.findById(cid).where('owner').equals(uid);
+
+            if (!isOwner) {
+                throw new Error('User does not control that channel!');
+            }
+
+        } catch (error) {
+            console.error('Error validating channel permissions:', error);
+        }
+
+        const visualsUploadPath = path.join(__dirname, '..', 'uploads', 'channel_rec');
+
+        const rawChannelPath = path.join(
+            __dirname,
+            '../../../',
+            'data',
+            'channels',
+            cid
+        );
+        console.log(path.join(rawChannelPath, icon_file));
+        try {
+            //await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
+            // await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
+            await fs.promises.copyFile(path.join(visualsUploadPath, banner_file), path.join(rawChannelPath, banner_file));
+            //await fs.promises.unlink(visualsUploadPath);
+            await fs.promises.unlink(path.join(visualsUploadPath, icon_file));
+            await fs.promises.unlink(path.join(visualsUploadPath, banner_file));
+            await Channel.findByIdAndUpdate(
+                cid,
+                { 
+                    channel_icon_src : `/data/channels/${cid}/${icon_file}`,
+                    channel_banner_src : `/data/channels/${cid}/${banner_file}`
+                },
+                { new: true, runValidators: true }
+            );
+        } catch (err: any) {
+            console.error('Error Uploading Visuals:', err.message);
+            return;
+        }
+
+        console.log('Visuals Uploaded!');
 
     }
 
@@ -937,6 +1025,45 @@ class DataBaseService {
             console.error('An Error has occured:', error);
         }
         
+    }
+
+    /**
+     * Increments the view count for a video
+     * @param vid VideoID
+     * @returns Video view count
+     */
+
+    incrementViewCount = async (vid : string) => {
+
+        try {
+            const newVideo = await Video.findByIdAndUpdate(
+                vid,
+                {
+                    $inc : { viewCount : 1 }
+                },
+                { new: true, runValidators: true }
+            );
+            return newVideo?.viewCount;
+        } catch (error) {
+            console.error('Error incrementing view count:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves the view count of the given video
+     * @param vid VideoID
+     * @returns ViewCount
+     */
+
+    retViewCount = async (vid : string) => {
+        try {
+            const video = await Video.findById(vid, 'viewCount');
+            return video?.viewCount;
+        } catch (error) {
+            console.error('Error retrieving view count:', error);
+            return null;
+        }
     }
 
     // WIP

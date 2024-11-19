@@ -75,6 +75,22 @@ const vidThumbnailStoreConfig = multer.diskStorage({
 
 const thumbnailUpload = multer({ storage: vidThumbnailStoreConfig });
 
+const channelStoreConfig = multer.diskStorage({
+
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/channel_rec/');
+    },
+
+    filename: (req, file, cb) => {
+
+        cb(null, file.originalname);
+
+    },
+
+});
+
+const channel_visuals = multer({ storage: channelStoreConfig });
+
 /**
  * Middleware to authenticate and validate JWT token
  * @param req Request
@@ -574,6 +590,100 @@ router.get('/:vid/thumbnail', async (req, res) => {
 
 });
 
+router.post('/watch/:vid', async (req, res) => {
+
+    try {
+
+        const videoViews = await MongoService.incrementViewCount(String(req.params.vid));
+
+        res.status(200).json({ views : videoViews });
+
+    } catch (error) {
+        console.error('Unable to increment views:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+router.get('/retrieve/views/:vid', async (req, res) => {
+
+    try {
+
+        const views = await MongoService.retViewCount(String(req.params.vid));
+
+        res.status(200).json({ views : views });
+    } catch (error) {
+        console.error('Unable to retrieve views:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+router.post('/channel/:cid/visuals/upload', authToken,
+    channel_visuals.fields(
+        [   { name : 'channel_icon', maxCount : 1 },
+            { name : 'channel_banner', maxCount : 1 }
+        ]), async (req, res) => {
+
+            if (!req.files) {
+                res.status(400).send('No files uploaded!');
+                return;
+            }
+
+            // console.log(req.files);
+
+            try {
+
+                const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+                // console.log(files['channel_icon']);
+                // console.log(files['channel_banner']);
+
+                const channelIcon = files['channel_icon'][0].originalname
+                const channelBanner = files['channel_banner'][0].originalname
+
+                await MongoService.updateChannelVisuals(String(req.user?.UID), String(req.params.cid), String(channelIcon), String(channelBanner));
+        
+                res.status(200).json({ message: 'Channel Visuals Uploaded!' });
+        
+            } catch (error) {
+                console.error('Error uploading visuals:', error);
+                res.status(500).json({ message: 'Internal Server Error!' });
+            }
+});
+
+router.get('/channel/:cid/channel_icon', async (req, res) => {
+
+    try {
+        const icon_src = await MongoService.queryChannelIcon(String(req.params.cid))
+
+        if (!icon_src || icon_src === '') {
+            res.status(404).json({ message: 'Specified Resource Not Found!' });
+            return;
+        }
+
+        res.status(200).sendFile(icon_src);
+    } catch (error) {
+        console.error('Unable to fetch channel_icon:', error);
+    }
+});
+
+router.get('/channel/:cid/channel_banner', async (req, res) => {
+
+    try {
+        const banner_src = await MongoService.queryChannelBanner(String(req.params.cid))
+
+        if (!banner_src || banner_src === '') {
+            res.status(404).json({ message: 'Specified Resource Not Found!' });
+            return;
+        }
+
+        res.status(200).sendFile(banner_src);
+    } catch (error) {
+        console.error('Unable to fetch channel_banner:', error);
+    }
+});
+
 // router.post('/:vid/comment', authToken, async (req, res) => {
 
 
@@ -609,7 +719,5 @@ router.get('/protected', authToken, (req, res) => {
     res.json({ message: 'THIS IS A PROTECTED ROUTE!', user: req.user });
 
 });
-
-
 
 export default router;
