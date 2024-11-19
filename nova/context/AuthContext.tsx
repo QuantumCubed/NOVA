@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 // Define the structure of user data
 interface UserData {
@@ -12,6 +13,7 @@ interface UserData {
   last_name?: string;
   email?: string;
   acc_creation_date?: string;
+  pfp_src?: string; // Added pfp_src
   exp: number;
   iat: number;
 }
@@ -24,6 +26,7 @@ interface AuthContextType {
   login: (credentials: any) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   createChannel: (channelData: any) => Promise<void>;
+  refetchUser: () => Promise<void>; // Added refetchUser
 }
 
 // Initialize the AuthContext with default values
@@ -34,6 +37,7 @@ export const AuthContext = createContext<AuthContextType>({
   login: async () => ({ success: false }),
   logout: () => {},
   createChannel: async () => {},
+  refetchUser: async () => {}, // Added refetchUser
 });
 
 // AuthProvider component that wraps the application
@@ -41,6 +45,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+
+  // Helper function to parse JWT token
+  const parseJwt = (token: string): UserData | null => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Failed to parse JWT:", error);
+      return null;
+    }
+  };
 
   // Signup function
   const signup = async (userData: any) => {
@@ -59,8 +82,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       console.log("Signup successful");
+      toast.success("Signup successful! Please log in.");
+      router.push("/login");
     } catch (error: any) {
       console.error("Signup error:", error);
+      toast.error(error.message || "Signup failed.");
       throw error;
     }
   };
@@ -113,19 +139,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Combine basic userData and profileData
       const fullUserData: UserData = {
-        ...userData,
-        ...profileData,
+        UID: userData.UID,
+        username: userData.username,
         channels_owned: profileData.channels_owned || [],
+        first_name: profileData.first_name,
+        last_name: profileData.last_name,
+        email: profileData.email,
+        acc_creation_date: profileData.acc_creation_date,
+        pfp_src: profileData.pfp_src, // Ensure pfp_src is included
+        exp: userData.exp,
+        iat: userData.iat,
       };
 
       setUser(fullUserData);
       setLoading(false);
 
       console.log("Login successful");
+      toast.success("Login successful!");
       return { success: true };
     } catch (error: any) {
       console.error("Login error:", error);
       setLoading(false);
+      toast.error(error.message || "Login failed.");
       return { success: false, message: error.message || "Login failed" };
     }
   };
@@ -135,6 +170,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     setUser(null);
     router.push("/login");
+    toast.info("Logged out successfully.");
   };
 
   // Create Channel function
@@ -160,28 +196,58 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       console.log("Channel created successfully");
+      toast.success("Channel created successfully!");
+      await refetchUser(); // Update channels_owned
     } catch (error: any) {
       console.error("Channel creation error:", error);
+      toast.error(error.message || "Channel creation failed.");
       throw error;
     }
   };
 
-  // Helper function to parse JWT token
-  const parseJwt = (token: string): UserData | null => {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
-      );
+  // Refetch user function
+  const refetchUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setUser(null);
+      return;
+    }
 
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error("Failed to parse JWT:", error);
-      return null;
+    try {
+      const profileResponse = await fetch("http://localhost:3001/user/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!profileResponse.ok) {
+        const errorText = await profileResponse.text();
+        console.error("Profile Fetch Error Response:", errorText);
+        throw new Error("Failed to fetch user profile");
+      }
+
+      const profileData = await profileResponse.json();
+
+      // Combine basic userData and profileData
+      const fullUserData: UserData = {
+        UID: user?.UID || "",
+        username: user?.username || "",
+        channels_owned: profileData.channels_owned || [],
+        first_name: profileData.first_name,
+        last_name: profileData.last_name,
+        email: profileData.email,
+        acc_creation_date: profileData.acc_creation_date,
+        pfp_src: profileData.pfp_src, // Ensure pfp_src is included
+        exp: user?.exp || 0,
+        iat: user?.iat || 0,
+      };
+
+      setUser(fullUserData);
+      console.log("User data refetched successfully.");
+    } catch (error: any) {
+      console.error("Error fetching user profile:", error);
+      logout();
     }
   };
 
@@ -217,9 +283,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
           // Combine basic userData and profileData
           const fullUserData: UserData = {
-            ...userData,
-            ...profileData,
+            UID: userData.UID,
+            username: userData.username,
             channels_owned: profileData.channels_owned || [],
+            first_name: profileData.first_name,
+            last_name: profileData.last_name,
+            email: profileData.email,
+            acc_creation_date: profileData.acc_creation_date,
+            pfp_src: profileData.pfp_src, // Ensure pfp_src is included
+            exp: userData.exp,
+            iat: userData.iat,
           };
 
           setUser(fullUserData);
@@ -239,7 +312,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, signup, login, logout, createChannel }}
+      value={{ user, loading, signup, login, logout, createChannel, refetchUser }} // Included refetchUser
     >
       {children}
     </AuthContext.Provider>

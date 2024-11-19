@@ -1,11 +1,19 @@
 // pages/dashboard.tsx
 
-import { useContext, useEffect, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useRef,
+} from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "react-toastify"; // Import toast for notifications
 
 // Define the Channel interface
 interface Channel {
@@ -16,7 +24,7 @@ interface Channel {
 }
 
 export default function Dashboard() {
-  const authContext = useContext(AuthContext);
+  const { user, loading, refetchUser } = useContext(AuthContext);
   const router = useRouter();
 
   // State to hold the user's channels with detailed info
@@ -24,16 +32,20 @@ export default function Dashboard() {
   const [channelsLoading, setChannelsLoading] = useState<boolean>(true);
   const [channelsError, setChannelsError] = useState<string | null>(null);
 
+  // States for profile picture upload
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // Reference to the hidden file input
+
   useEffect(() => {
     // Redirect to login if not authenticated
-    if (!authContext.loading && !authContext.user) {
+    if (!loading && !user) {
       router.push("/login");
     }
-  }, [authContext, router]);
+  }, [loading, user, router]);
 
   useEffect(() => {
     // Fetch channels only if the user is authenticated
-    if (!authContext.loading && authContext.user) {
+    if (!loading && user) {
       const fetchChannels = async () => {
         try {
           const response = await fetch("http://localhost:3001/channels", {
@@ -60,9 +72,9 @@ export default function Dashboard() {
 
       fetchChannels();
     }
-  }, [authContext.loading, authContext.user]);
+  }, [loading, user]);
 
-  if (authContext.loading || channelsLoading) {
+  if (loading || channelsLoading) {
     return (
       <div>
         <Navbar />
@@ -71,7 +83,7 @@ export default function Dashboard() {
     );
   }
 
-  if (!authContext.user) {
+  if (!user) {
     return null;
   }
 
@@ -81,8 +93,63 @@ export default function Dashboard() {
     last_name,
     email,
     acc_creation_date,
-    // channels_owned, // Removed since we're fetching channels separately
-  } = authContext.user;
+    UID, // Ensure UID is available
+    pfp_src, // Profile picture source
+  } = user;
+
+  // Handler to trigger the hidden file input
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Handler for file selection and upload
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // Validate file type (optional)
+    const validTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Only JPEG, PNG, and GIF files are allowed.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("profile_pic", file);
+
+    setIsUploading(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/profile/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include the token
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to upload profile picture.");
+      }
+
+      toast.success("Profile picture updated successfully!");
+
+      // Refetch user data to get the updated profile picture
+      await refetchUser();
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast.error(error.message || "An error occurred during upload.");
+    } finally {
+      setIsUploading(false);
+      // Reset the file input value to allow uploading the same file again if needed
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -125,15 +192,30 @@ export default function Dashboard() {
             {/* Profile Picture Section */}
             <div className="profile-picture-section">
               <Image
-                src="/anonymous.jpg" // Replace with user's actual profile picture if available
-                alt="Anonymous Profile"
+                src={`http://localhost:3001/${UID}/profile_picture?${
+                  new Date().getTime()
+                }`} // Added timestamp for cache busting
+                alt="Profile Picture"
                 width={200}
                 height={200}
                 className="profile-picture"
+                key={pfp_src} // Forces React to reload the Image component when pfp_src changes
               />
-              <button className="edit-profile-picture-button">
-                Edit Profile Picture
+              <button
+                className="edit-profile-picture-button"
+                onClick={handleButtonClick}
+                disabled={isUploading}
+              >
+                {isUploading ? "Uploading..." : "Edit Profile Picture"}
               </button>
+              {/* Hidden File Input */}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
             </div>
           </div>
 

@@ -15,20 +15,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <AuthProvider>
-        <Component {...pageProps} />
-        {/* Include ToastContainer once in your app */}
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light" // Options: 'light', 'dark', 'colored'
-        />
+      <Component {...pageProps} />
+      {/* Include ToastContainer once in your app */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" // Options: 'light', 'dark', 'colored'
+      />
     </AuthProvider>
   );
 }
