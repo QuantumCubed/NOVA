@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import styles from "./ChannelCard.module.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify"; // Import toast
 
 interface Channel {
   _id: string;
@@ -14,9 +16,30 @@ interface Channel {
   videos: string[]; // vIDs
 }
 
-const ChannelCard = ({ channel }: { channel: Channel }) => {
+interface ChannelCardProps {
+  channel: Channel;
+  isEditable?: boolean;
+  onEdit?: (channelId: string) => void;
+  onDelete?: (channelId: string) => void;
+}
+
+const ChannelCard = ({ channel, isEditable = false, onEdit, onDelete }: ChannelCardProps) => {
   // Encode the channel name to make it URL-safe
   const encodedChannelName = encodeURIComponent(channel.channel_name);
+
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(channel._id);
+      toast.info("Edit action triggered.");
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(channel._id);
+      toast.warn("Delete action triggered.");
+    }
+  };
 
   return (
     <div className={styles.channelCard}>
@@ -24,7 +47,7 @@ const ChannelCard = ({ channel }: { channel: Channel }) => {
         <a>
           <div className={styles.channelBanner}>
             {channel.channel_banner_src ? (
-              <img src={channel.channel_banner_src} alt={`${channel.channel_name} Banner`} />
+              <img src={`http://127.0.0.1:3001/channel/${channel._id}/channel_banner`} alt={`${channel.channel_name} Banner`} />
             ) : (
               <div className={styles.defaultBanner}>No Banner</div>
             )}
@@ -32,7 +55,7 @@ const ChannelCard = ({ channel }: { channel: Channel }) => {
           <div className={styles.channelInfo}>
             <div className={styles.channelIcon}>
               {channel.channel_icon_src ? (
-                <img src={channel.channel_icon_src} alt={`${channel.channel_name} Icon`} />
+                <img src={`http://127.0.0.1:3001/channel/${channel._id}/channel_icon`} alt={`${channel.channel_name} Icon`} />
               ) : (
                 <div className={styles.defaultIcon}>CI</div>
               )}
@@ -47,6 +70,24 @@ const ChannelCard = ({ channel }: { channel: Channel }) => {
           </div>
         </a>
       </Link>
+      {isEditable && (
+        <div className={styles.actionButtons}>
+          <button
+            onClick={handleEdit}
+            className={styles.editButton}
+            aria-label="Edit Channel"
+          >
+            <FaEdit />
+          </button>
+          <button
+            onClick={handleDelete}
+            className={styles.deleteButton}
+            aria-label="Delete Channel"
+          >
+            <FaTrash />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

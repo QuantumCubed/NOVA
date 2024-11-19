@@ -5,16 +5,17 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import {
   FaHome,
-  FaUpload,
   FaSignInAlt,
   FaUserPlus,
   FaSignOutAlt,
   FaBars,
   FaSun,
   FaMoon,
+  FaTv, // Import TV icon
 } from "react-icons/fa";
 import styles from "./Navbar.module.css";
 import Sidebar from "./Sidebar";
+import { toast } from "react-toastify"; // Import toast
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -35,13 +36,17 @@ const Navbar = () => {
     if (isDarkMode) {
       document.documentElement.setAttribute("data-theme", "light");
       setIsDarkMode(false);
+      toast.info("Switched to Light Mode");
     } else {
       document.documentElement.setAttribute("data-theme", "dark");
       setIsDarkMode(true);
+      toast.info("Switched to Dark Mode");
     }
   };
 
-  const handleSearchInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const query = e.target.value;
     setSearchQuery(query);
 
@@ -52,23 +57,29 @@ const Navbar = () => {
     }
 
     try {
-      // Fetch search results from the backend
+      // Use the actual backend URL directly
       const response = await fetch(
         `http://localhost:3001/search?search=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
-        // Read the error message from the response
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An error occurred during the search.");
+        // Attempt to parse error message from response
+        let errorMessage = "An error occurred during the search.";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (parseError) {
+          console.error("Failed to parse error response:", parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       setSearchResults(data);
       setShowResults(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching search results:", error);
-      // Optionally display an error message to the user
+      toast.error(error.message || "Search failed. Please try again.");
     }
   };
 
@@ -91,6 +102,12 @@ const Navbar = () => {
     };
   }, []);
 
+  // Handle Logout with toast
+  const handleLogout = () => {
+    authContext?.logout();
+    toast.success("Logged out successfully!");
+  };
+
   return (
     <>
       <nav className={styles.navbar}>
@@ -107,6 +124,11 @@ const Navbar = () => {
               <FaHome size={24} />
             </div>
           </Link>
+          <Link href="/channellist" passHref legacyBehavior>
+            <div className={styles.navItem}>
+              <FaTv size={24} />
+            </div>
+          </Link>
           {/* Removed the Upload button/icon from the Navbar */}
         </div>
         <div className={styles.navCenter}>
@@ -118,18 +140,22 @@ const Navbar = () => {
               className={styles.searchInput}
               placeholder="Search videos..."
             />
-            {showResults && searchResults.length > 0 && (
+            {showResults && (
               <div className={styles.searchResults} ref={searchResultsRef}>
-                {searchResults.map((video) => (
-                  <Link
-                    key={video._id}
-                    href={`/video/${video._id}`}
-                    passHref
-                    legacyBehavior
-                  >
-                    <div className={styles.resultItem}>{video.title}</div>
-                  </Link>
-                ))}
+                {searchResults.length > 0 ? (
+                  searchResults.map((video) => (
+                    <Link
+                      key={video._id}
+                      href={`/video/${video._id}`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <a className={styles.resultItem}>{video.title}</a>
+                    </Link>
+                  ))
+                ) : (
+                  <div className={styles.resultItem}>No results found.</div>
+                )}
               </div>
             )}
           </div>
@@ -147,7 +173,7 @@ const Navbar = () => {
             <>
               {/* Removed Upload Button from Navbar */}
               <button
-                onClick={authContext.logout}
+                onClick={handleLogout}
                 className={styles.navItem}
                 aria-label="Logout"
               >
