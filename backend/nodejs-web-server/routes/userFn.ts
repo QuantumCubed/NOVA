@@ -639,11 +639,22 @@ router.post('/channel/:cid/visuals/upload', authToken,
                 // console.log(files['channel_icon']);
                 // console.log(files['channel_banner']);
 
+                if (!files['channel_icon']) {
+                    const channelBanner = files['channel_banner'][0].originalname
+                    await MongoService.updateChannelVisuals(String(req.user?.UID), String(req.params.cid), undefined, String(channelBanner));
+                    res.status(200).json({ message: 'Channel Banner Uploaded!' });
+                    return;
+                }
+
+                if (!files['channel_banner']) {
+                    const channelIcon = files['channel_icon'][0].originalname
+                    await MongoService.updateChannelVisuals(String(req.user?.UID), String(req.params.cid), String(channelIcon), undefined);
+                    res.status(200).json({ message: 'Channel Icon Uploaded!' });
+                    return;
+                }
                 const channelIcon = files['channel_icon'][0].originalname
                 const channelBanner = files['channel_banner'][0].originalname
-
                 await MongoService.updateChannelVisuals(String(req.user?.UID), String(req.params.cid), String(channelIcon), String(channelBanner));
-        
                 res.status(200).json({ message: 'Channel Visuals Uploaded!' });
         
             } catch (error) {

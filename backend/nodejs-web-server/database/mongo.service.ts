@@ -80,7 +80,7 @@ class DataBaseService {
 
     }
 
-    queryUserPFP = async (uid : string) => {
+    queryUserPFP = async (uid: string) => {
 
         try {
 
@@ -95,7 +95,7 @@ class DataBaseService {
 
     }
 
-    queryVideoThumbnail = async (vid : string) => {
+    queryVideoThumbnail = async (vid: string) => {
 
         try {
 
@@ -116,7 +116,7 @@ class DataBaseService {
      * @returns Channel Icon Path || null
      */
 
-    queryChannelIcon = async (cid : string) => {
+    queryChannelIcon = async (cid: string) => {
 
         try {
             return (await Channel.findById(cid, 'channel_icon_src'))?.channel_icon_src
@@ -133,7 +133,7 @@ class DataBaseService {
      * @returns Channel Icon banner || null
      */
 
-    queryChannelBanner = async (cid : string) => {
+    queryChannelBanner = async (cid: string) => {
 
         try {
             return (await Channel.findById(cid, 'channel_banner_src'))?.channel_banner_src
@@ -172,7 +172,7 @@ class DataBaseService {
      * @returns Channel || null
      */
 
-    queryChannelByID = async (cid : string) => {
+    queryChannelByID = async (cid: string) => {
 
         try {
             return await Channel.findById(cid);
@@ -225,13 +225,13 @@ class DataBaseService {
      * @returns videoArray || null
      */
 
-    queryVideoByRegex = async (query : string) => {
+    queryVideoByRegex = async (query: string) => {
         try {
             const videoArray = await Video.find({
                 $or: [
-                    { title : new RegExp(query, 'i') },
-                    { user : new RegExp(query, 'i') },
-                    { tags : new RegExp(query, 'i') }
+                    { title: new RegExp(query, 'i') },
+                    { user: new RegExp(query, 'i') },
+                    { tags: new RegExp(query, 'i') }
                 ]
             });
             // console.log(videoArray);
@@ -512,7 +512,7 @@ class DataBaseService {
             await Channel.findByIdAndUpdate(
                 vidMeta.channel_id,
                 {
-                    $push: { videos : newVideo._id.toString() },
+                    $push: { videos: newVideo._id.toString() },
                 }
             );
 
@@ -653,12 +653,9 @@ class DataBaseService {
 
     }
 
-    updateChannelVisuals = async (uid : string, cid : string, icon_file? : string, banner_file? : string) => {
+    updateChannelVisuals = async (uid: string, cid: string, icon_file?: string, banner_file?: string) => {
 
         if (!icon_file && !banner_file) { return; }
-
-        if (!icon_file) { icon_file = '' }
-        if (!banner_file) { banner_file = '' }
 
         try {
 
@@ -681,23 +678,44 @@ class DataBaseService {
             'channels',
             cid
         );
-        console.log(path.join(rawChannelPath, icon_file));
+        // console.log(path.join(rawChannelPath, icon_file));
         try {
             //await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
             // await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
-            await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
-            await fs.promises.copyFile(path.join(visualsUploadPath, banner_file), path.join(rawChannelPath, banner_file));
-            //await fs.promises.unlink(visualsUploadPath);
-            await fs.promises.unlink(path.join(visualsUploadPath, icon_file));
-            await fs.promises.unlink(path.join(visualsUploadPath, banner_file));
-            await Channel.findByIdAndUpdate(
-                cid,
-                { 
-                    channel_icon_src : `/data/channels/${cid}/${icon_file}`,
-                    channel_banner_src : `/data/channels/${cid}/${banner_file}`
-                },
-                { new: true, runValidators: true }
-            );
+            if (icon_file) {
+                await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
+                await fs.promises.unlink(path.join(visualsUploadPath, icon_file));
+                await Channel.findByIdAndUpdate(
+                    cid,
+                    {
+                        channel_icon_src: `/data/channels/${cid}/${icon_file}`,
+                    },
+                    { new: true, runValidators: true }
+                );
+                return;
+            }
+
+            if (banner_file) {
+                await fs.promises.copyFile(path.join(visualsUploadPath, banner_file), path.join(rawChannelPath, banner_file));
+                await fs.promises.unlink(path.join(visualsUploadPath, banner_file));
+                await Channel.findByIdAndUpdate(
+                    cid,
+                    {
+                        channel_banner_src: `/data/channels/${cid}/${banner_file}`
+                    },
+                    { new: true, runValidators: true }
+                );
+                return;
+            }
+
+            // await Channel.findByIdAndUpdate(
+            //     cid,
+            //     {
+            //         channel_icon_src: `/data/channels/${cid}/${icon_file}`,
+            //         channel_banner_src: `/data/channels/${cid}/${banner_file}`
+            //     },
+            //     { new: true, runValidators: true }
+            // );
         } catch (err: any) {
             console.error('Error Uploading Visuals:', err.message);
             return;
@@ -751,17 +769,17 @@ class DataBaseService {
      * @returns true or false
      */
 
-    isSubscribed = async (uid : string, cid : string) => {
+    isSubscribed = async (uid: string, cid: string) => {
 
         try {
-            if(await Channel.findById(cid).where('subscribers').in([uid])) {
+            if (await Channel.findById(cid).where('subscribers').in([uid])) {
                 return true;
             }
             return false;
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-    
+
     }
 
     /**
@@ -771,7 +789,7 @@ class DataBaseService {
      * @returns Subscription status
      */
 
-    userSubHandler = async (uid : string, cid : string) => {
+    userSubHandler = async (uid: string, cid: string) => {
 
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -783,14 +801,14 @@ class DataBaseService {
             if (isSub) {
                 const unsub = await this.userUnsubHandler(uid, cid);
                 await session.commitTransaction();
-                return { message : 'Sucessfully Unsubscribed!',  subscriber_count : unsub?.subscriber_count }; // unsubbed
+                return { message: 'Sucessfully Unsubscribed!', subscriber_count: unsub?.subscriber_count }; // unsubbed
             }
 
             const updatedChannel = await Channel.findByIdAndUpdate(
                 cid,
                 {
-                    $push: { subscribers : uid },
-                    $inc : { subscriber_count : 1 }
+                    $push: { subscribers: uid },
+                    $inc: { subscriber_count: 1 }
                 },
                 { new: true, runValidators: true }
             );
@@ -798,13 +816,13 @@ class DataBaseService {
 
             await User.findByIdAndUpdate(
                 uid,
-                { $push: { subscribed_to : cid } },
+                { $push: { subscribed_to: cid } },
                 { runValidators: true }
             );
 
             await session.commitTransaction();
 
-            return { message : 'Sucessfully Subscribed!', subscriber_count : updatedChannel?.subscriber_count }; // subbed // return updatedChannel?.subscriber_count;
+            return { message: 'Sucessfully Subscribed!', subscriber_count: updatedChannel?.subscriber_count }; // subbed // return updatedChannel?.subscriber_count;
 
         } catch (error) {
             await session.commitTransaction();
@@ -820,22 +838,22 @@ class DataBaseService {
      * @returns ChannelDocument
      */
 
-    userUnsubHandler = async (uid : string, cid : string) => {
+    userUnsubHandler = async (uid: string, cid: string) => {
 
         try {
 
             const updatedChannel = await Channel.findByIdAndUpdate(
                 cid,
                 {
-                    $pull: { subscribers : uid },
-                    $inc : { subscriber_count : -1 }
+                    $pull: { subscribers: uid },
+                    $inc: { subscriber_count: -1 }
                 },
                 { new: true, runValidators: true }
             );
-    
+
             await User.findByIdAndUpdate(
                 uid,
-                { $pull: { subscribed_to : cid } },
+                { $pull: { subscribed_to: cid } },
                 { new: true, runValidators: true }
             );
 
@@ -844,7 +862,7 @@ class DataBaseService {
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-        
+
     }
 
     /**
@@ -854,17 +872,17 @@ class DataBaseService {
      * @returns true or false
      */
 
-    hasLiked = async (uid : string, vid : string) => {
+    hasLiked = async (uid: string, vid: string) => {
 
         try {
-            if(await Video.findById(vid).where('likedUsers').in([uid])) {
+            if (await Video.findById(vid).where('likedUsers').in([uid])) {
                 return true;
             }
             return false;
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-    
+
     }
 
     /**
@@ -874,7 +892,7 @@ class DataBaseService {
      * @returns VideoDocument
      */
 
-    videoLikeHandler = async (uid : string, vid : string) => {
+    videoLikeHandler = async (uid: string, vid: string) => {
 
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -886,21 +904,21 @@ class DataBaseService {
             if (hasliked) {
                 const unlike = await this.videoUnlikeHandler(uid, vid);
                 await session.commitTransaction();
-                return { message : 'Sucessfully Unliked!', like_count : unlike?.likeCount }; // unsubbed
+                return { message: 'Sucessfully Unliked!', like_count: unlike?.likeCount }; // unsubbed
             }
 
             const updatedVideo = await Video.findByIdAndUpdate(
                 vid,
                 {
-                    $push: { likedUsers : uid },
-                    $inc : { likeCount : 1 }
+                    $push: { likedUsers: uid },
+                    $inc: { likeCount: 1 }
                 },
                 { new: true, runValidators: true }
             );
 
             await session.commitTransaction();
 
-            return { message : 'Sucessfully Liked!', like_count : updatedVideo?.likeCount }; // subbed // return updatedChannel?.subscriber_count;
+            return { message: 'Sucessfully Liked!', like_count: updatedVideo?.likeCount }; // subbed // return updatedChannel?.subscriber_count;
 
         } catch (error) {
             await session.commitTransaction();
@@ -916,15 +934,15 @@ class DataBaseService {
      * @returns VideoDocument
      */
 
-    videoUnlikeHandler = async (uid : string, vid : string) => {
+    videoUnlikeHandler = async (uid: string, vid: string) => {
 
         try {
 
             const updatedVideo = await Video.findByIdAndUpdate(
                 vid,
                 {
-                    $pull: { likedUsers : uid },
-                    $inc : { likeCount : -1 }
+                    $pull: { likedUsers: uid },
+                    $inc: { likeCount: -1 }
                 },
                 { new: true, runValidators: true }
             );
@@ -934,7 +952,7 @@ class DataBaseService {
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-        
+
     }
 
     /**
@@ -944,17 +962,17 @@ class DataBaseService {
      * @returns true or false
      */
 
-    hasDisliked = async (uid : string, vid : string) => {
+    hasDisliked = async (uid: string, vid: string) => {
 
         try {
-            if(await Video.findById(vid).where('dislikedUsers').in([uid])) {
+            if (await Video.findById(vid).where('dislikedUsers').in([uid])) {
                 return true;
             }
             return false;
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-    
+
     }
 
     /**
@@ -964,7 +982,7 @@ class DataBaseService {
      * @returns VideoDocument
      */
 
-    videoDislikeHandler = async (uid : string, vid : string) => {
+    videoDislikeHandler = async (uid: string, vid: string) => {
 
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -976,21 +994,21 @@ class DataBaseService {
             if (hasDisliked) {
                 const undisliked = await this.videoUndislikeHandler(uid, vid);
                 await session.commitTransaction();
-                return { message : 'Sucessfully Undisliked!', dislike_count : undisliked?.dislikeCount }; // unsubbed
+                return { message: 'Sucessfully Undisliked!', dislike_count: undisliked?.dislikeCount }; // unsubbed
             }
 
             const updatedVideo = await Video.findByIdAndUpdate(
                 vid,
                 {
-                    $push: { dislikedUsers : uid },
-                    $inc : { dislikeCount : 1 }
+                    $push: { dislikedUsers: uid },
+                    $inc: { dislikeCount: 1 }
                 },
                 { new: true, runValidators: true }
             );
 
             await session.commitTransaction();
 
-            return { message : 'Sucessfully Disliked!', dislike_count : updatedVideo?.dislikeCount }; // subbed // return updatedChannel?.subscriber_count;
+            return { message: 'Sucessfully Disliked!', dislike_count: updatedVideo?.dislikeCount }; // subbed // return updatedChannel?.subscriber_count;
 
         } catch (error) {
             await session.commitTransaction();
@@ -1006,15 +1024,15 @@ class DataBaseService {
      * @returns VideoDocument
      */
 
-    videoUndislikeHandler = async (uid : string, vid : string) => {
+    videoUndislikeHandler = async (uid: string, vid: string) => {
 
         try {
 
             const updatedVideo = await Video.findByIdAndUpdate(
                 vid,
                 {
-                    $pull: { dislikedUsers : uid },
-                    $inc : { dislikeCount : -1 }
+                    $pull: { dislikedUsers: uid },
+                    $inc: { dislikeCount: -1 }
                 },
                 { new: true, runValidators: true }
             );
@@ -1024,7 +1042,7 @@ class DataBaseService {
         } catch (error) {
             console.error('An Error has occured:', error);
         }
-        
+
     }
 
     /**
@@ -1033,13 +1051,13 @@ class DataBaseService {
      * @returns Video view count
      */
 
-    incrementViewCount = async (vid : string) => {
+    incrementViewCount = async (vid: string) => {
 
         try {
             const newVideo = await Video.findByIdAndUpdate(
                 vid,
                 {
-                    $inc : { viewCount : 1 }
+                    $inc: { viewCount: 1 }
                 },
                 { new: true, runValidators: true }
             );
@@ -1056,7 +1074,7 @@ class DataBaseService {
      * @returns ViewCount
      */
 
-    retViewCount = async (vid : string) => {
+    retViewCount = async (vid: string) => {
         try {
             const video = await Video.findById(vid, 'viewCount');
             return video?.viewCount;
