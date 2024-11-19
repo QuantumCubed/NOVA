@@ -1,12 +1,12 @@
-// channels/[name].tsx
+// pages/channels/[name].tsx
 
 import { useRouter } from "next/router";
 import { useEffect, useState, useContext } from "react";
 import Navbar from "../../components/Navbar";
 import VideoCard from "../../components/VideoCard";
-import styles from "../../styles/ChannelPage.module.css"; // Ensure this file exists
+import styles from "../../styles/ChannelPage.module.css";
 import { AuthContext } from "../../context/AuthContext";
-import { FaUpload, FaEdit, FaTimes } from "react-icons/fa";
+import { FaUpload, FaEdit, FaTimes, FaCheck } from "react-icons/fa";
 
 interface Video {
   _id: string;
@@ -17,53 +17,37 @@ interface Video {
   channel_name: string;
   date_published: string;
   view_count: number;
-  duration: number; // Duration in seconds
+  duration: number;
 }
 
 interface Channel {
   _id: string;
-  owner: string; // User ID of the owner
+  owner: string;
   channel_name: string;
   description: string;
   subscriber_count: number;
   channel_icon_src: string;
   channel_banner_src: string;
-  videos: Video[]; // Populated videos
+  videos: Video[];
 }
-
-const formatDuration = (duration: number) => {
-  const hours = Math.floor(duration / 3600);
-  const minutes = Math.floor((duration % 3600) / 60);
-  const seconds = duration % 60;
-
-  const hoursStr = hours > 0 ? `${hours}:` : "";
-  const minutesStr =
-    minutes < 10 && hours > 0 ? `0${minutes}:` : `${minutes}:`;
-  const secondsStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
-
-  return `${hoursStr}${minutesStr}${secondsStr}`;
-};
 
 const ChannelPage = () => {
   const router = useRouter();
-  const { name } = router.query; // 'name' includes '@', e.g., '@test1'
+  const { name } = router.query; // e.g., '@test1'
   const authContext = useContext(AuthContext);
 
   const [channel, setChannel] = useState<Channel | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [subscribing, setSubscribing] = useState<boolean>(false);
+  const [subError, setSubError] = useState<string | null>(null);
+
+  // Modal states for uploading and editing
   const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Upload form states
-  const [videoTitle, setVideoTitle] = useState<string>("");
-  const [videoDescription, setVideoDescription] = useState<string>("");
-  const [videoTags, setVideoTags] = useState<string>("");
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-
-  // Edit description states
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [newDescription, setNewDescription] = useState<string>(channel?.description || "");
   const [updatingDescription, setUpdatingDescription] = useState<boolean>(false);
@@ -72,7 +56,6 @@ const ChannelPage = () => {
   useEffect(() => {
     if (!name) return;
 
-    // Remove the '@' prefix if present
     const channelName = (name as string).startsWith("@")
       ? (name as string).substring(1)
       : (name as string);
@@ -80,15 +63,32 @@ const ChannelPage = () => {
     const fetchChannel = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/channels/name/${encodeURIComponent(
-            channelName
-          )}`
+          `http://localhost:3001/channels/name/${encodeURIComponent(channelName)}`
         );
         if (!response.ok) {
           throw new Error("Channel not found.");
         }
         const data: Channel = await response.json();
         setChannel(data);
+
+        // After fetching the channel, check subscription status if user is logged in and not the owner
+        if (authContext?.user && authContext.user.UID !== data.owner) {
+          const subResponse = await fetch(
+            `http://localhost:3001/channels/${data._id}/isSubscribed`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+              },
+            }
+          );
+          if (subResponse.ok) {
+            const subData = await subResponse.json();
+            setIsSubscribed(subData.isSubscribed);
+          } else {
+            console.error("Failed to fetch subscription status.");
+          }
+        }
       } catch (error: any) {
         console.error("Error fetching channel:", error);
         setError(error.message);
@@ -98,9 +98,8 @@ const ChannelPage = () => {
     };
 
     fetchChannel();
-  }, [name]);
+  }, [name, authContext?.user]);
 
-  // Update newDescription when channel data changes
   useEffect(() => {
     if (channel) {
       setNewDescription(channel.description);
@@ -111,6 +110,46 @@ const ChannelPage = () => {
     authContext?.user && channel
       ? authContext.user.UID === channel.owner
       : false;
+
+  const handleSubscribe = async () => {
+    if (!authContext?.user) {
+      router.push("/login");
+      return;
+    }
+
+    setSubscribing(true);
+    setSubError(null);
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/subscribe/${channel?._id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Subscription failed.");
+      }
+
+      const result = await response.json();
+      setIsSubscribed(result.message === "Sucessfully Subscribed!");
+      setChannel((prevChannel) =>
+        prevChannel
+          ? { ...prevChannel, subscriber_count: result.subscriber_count }
+          : prevChannel
+      );
+    } catch (error: any) {
+      console.error("Subscription error:", error);
+      setSubError(error.message);
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   // Upload Modal Functions
   const openUploadModal = () => {
@@ -128,6 +167,13 @@ const ChannelPage = () => {
     setThumbnailFile(null);
     setUploadError(null);
   };
+
+  // Upload form states
+  const [videoTitle, setVideoTitle] = useState<string>("");
+  const [videoDescription, setVideoDescription] = useState<string>("");
+  const [videoTags, setVideoTags] = useState<string>("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,7 +203,7 @@ const ChannelPage = () => {
       }
 
       const response = await fetch(
-        `http://localhost:3001/channels/${channel?._id}/upload`,
+        `http://localhost:3001/${channel?._id}/upload`,
         {
           method: "POST",
           headers: {
@@ -242,10 +288,10 @@ const ChannelPage = () => {
         throw new Error(errorData.message || "Failed to update description.");
       }
 
-      const responseData = await response.json(); // Await the Promise first
-      const updatedChannel: Channel = responseData.channel; // Access the 'channel' property
+      const responseData = await response.json();
+      const updatedChannel: Channel = responseData.channel;
 
-      setChannel(updatedChannel); // Update the channel state with the new description
+      setChannel(updatedChannel);
       closeEditModal();
     } catch (error: any) {
       console.error("Error updating description:", error);
@@ -315,6 +361,27 @@ const ChannelPage = () => {
           </div>
           <p>Subscribers: {channel.subscriber_count.toLocaleString()}</p>
           <p>Videos: {channel.videos.length}</p>
+          {/* Subscribe/Unsubscribe Button */}
+          {!isChannelOwner && (
+            <button
+              className={`${styles.subscribeButton} ${
+                isSubscribed ? styles.subscribed : ""
+              }`}
+              onClick={handleSubscribe}
+              disabled={subscribing}
+            >
+              {subscribing ? (
+                "Processing..."
+              ) : isSubscribed ? (
+                <>
+                  <FaCheck /> Subscribed
+                </>
+              ) : (
+                "Subscribe"
+              )}
+            </button>
+          )}
+          {subError && <p className={styles.errorMessage}>{subError}</p>}
           {/* Upload Button */}
           {isChannelOwner && (
             <button className={styles.uploadButton} onClick={openUploadModal}>
@@ -338,9 +405,13 @@ const ChannelPage = () => {
         <div className={styles.modalOverlay} onClick={closeUploadModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
-            <button className={styles.closeButton} onClick={closeUploadModal}>
+            <button
+              className={styles.closeButton}
+              onClick={closeUploadModal}
+              aria-label="Close Modal"
+            >
               <FaTimes size={20} />
             </button>
             <h2>Upload Video</h2>
@@ -417,9 +488,13 @@ const ChannelPage = () => {
         <div className={styles.modalOverlay} onClick={closeEditModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
-            <button className={styles.closeButton} onClick={closeEditModal}>
+            <button
+              className={styles.closeButton}
+              onClick={closeEditModal}
+              aria-label="Close Modal"
+            >
               <FaTimes size={20} />
             </button>
             <h2>Edit Channel Description</h2>
