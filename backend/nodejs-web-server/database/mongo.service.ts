@@ -80,7 +80,7 @@ class DataBaseService {
 
     }
 
-    queryUserPFP = async (uid: string) => {
+    queryUserPFP = async (uid : string) => {
 
         try {
 
@@ -90,6 +90,21 @@ class DataBaseService {
 
         } catch (error) {
             console.error('Unable to retrieve user pfp:', error);
+            return null;
+        }
+
+    }
+
+    queryVideoThumbnail = async (vid : string) => {
+
+        try {
+
+            const video = await Video.findById(vid, 'thumbnail_src');
+
+            return video?.thumbnail_src || '';
+
+        } catch (error) {
+            console.error('Unable to retrieve video thumbnail:', error);
             return null;
         }
 
@@ -176,13 +191,13 @@ class DataBaseService {
      * @returns videoArray || null
      */
 
-    queryVideoByRegex = async (query: string) => {
+    queryVideoByRegex = async (query : string) => {
         try {
             const videoArray = await Video.find({
                 $or: [
-                    { title: new RegExp(query, 'i') },
-                    { user: new RegExp(query, 'i') },
-                    { tags: new RegExp(query, 'i') }
+                    { title : new RegExp(query, 'i') },
+                    { user : new RegExp(query, 'i') },
+                    { tags : new RegExp(query, 'i') }
                 ]
             });
             // console.log(videoArray);
@@ -460,6 +475,13 @@ class DataBaseService {
 
             // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
 
+            await Channel.findByIdAndUpdate(
+                vidMeta.channel_id,
+                {
+                    $push: { videos : newVideo._id.toString() },
+                }
+            );
+
             Object.assign(newVideo, { video_src: result.watchPath });
             await newVideo.save();
 
@@ -580,7 +602,9 @@ class DataBaseService {
         );
 
         try {
-            await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            // await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            await fs.promises.copyFile(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            await fs.promises.unlink(thumbnailUploadPath);
             await Video.findByIdAndUpdate(
                 vid,
                 { thumbnail_src: `/data/videos/${vid}/${filename}` },
@@ -728,6 +752,186 @@ class DataBaseService {
             );
 
             return updatedChannel;
+
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+        
+    }
+
+    /**
+     * Determines if the user has liked the given video
+     * @param uid UserID
+     * @param vid ChannelID
+     * @returns true or false
+     */
+
+    hasLiked = async (uid : string, vid : string) => {
+
+        try {
+            if(await Video.findById(vid).where('likedUsers').in([uid])) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+    
+    }
+
+    /**
+     * Removes a like from a video
+     * @param uid UserID
+     * @param vid VideoID
+     * @returns VideoDocument
+     */
+
+    videoLikeHandler = async (uid : string, vid : string) => {
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+
+            const hasliked = await this.hasLiked(uid, vid)
+
+            if (hasliked) {
+                const unlike = await this.videoUnlikeHandler(uid, vid);
+                await session.commitTransaction();
+                return { message : 'Sucessfully Unliked!', like_count : unlike?.likeCount }; // unsubbed
+            }
+
+            const updatedVideo = await Video.findByIdAndUpdate(
+                vid,
+                {
+                    $push: { likedUsers : uid },
+                    $inc : { likeCount : 1 }
+                },
+                { new: true, runValidators: true }
+            );
+
+            await session.commitTransaction();
+
+            return { message : 'Sucessfully Liked!', like_count : updatedVideo?.likeCount }; // subbed // return updatedChannel?.subscriber_count;
+
+        } catch (error) {
+            await session.commitTransaction();
+            console.error('An Error has occured:', error);
+        }
+
+    }
+
+    /**
+     * Removes a like from a video
+     * @param uid UserID
+     * @param vid VideoID
+     * @returns VideoDocument
+     */
+
+    videoUnlikeHandler = async (uid : string, vid : string) => {
+
+        try {
+
+            const updatedVideo = await Video.findByIdAndUpdate(
+                vid,
+                {
+                    $pull: { likedUsers : uid },
+                    $inc : { likeCount : -1 }
+                },
+                { new: true, runValidators: true }
+            );
+
+            return updatedVideo;
+
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+        
+    }
+
+    /**
+     * Determines if the user has disliked the given video
+     * @param uid UserID
+     * @param vid ChannelID
+     * @returns true or false
+     */
+
+    hasDisliked = async (uid : string, vid : string) => {
+
+        try {
+            if(await Video.findById(vid).where('dislikedUsers').in([uid])) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+    
+    }
+
+    /**
+     * Adds a dislike to a video
+     * @param uid UserID
+     * @param vid VideoID
+     * @returns VideoDocument
+     */
+
+    videoDislikeHandler = async (uid : string, vid : string) => {
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+
+            const hasDisliked = await this.hasDisliked(uid, vid)
+
+            if (hasDisliked) {
+                const undisliked = await this.videoUndislikeHandler(uid, vid);
+                await session.commitTransaction();
+                return { message : 'Sucessfully Undisliked!', dislike_count : undisliked?.dislikeCount }; // unsubbed
+            }
+
+            const updatedVideo = await Video.findByIdAndUpdate(
+                vid,
+                {
+                    $push: { dislikedUsers : uid },
+                    $inc : { dislikeCount : 1 }
+                },
+                { new: true, runValidators: true }
+            );
+
+            await session.commitTransaction();
+
+            return { message : 'Sucessfully Disliked!', dislike_count : updatedVideo?.dislikeCount }; // subbed // return updatedChannel?.subscriber_count;
+
+        } catch (error) {
+            await session.commitTransaction();
+            console.error('An Error has occured:', error);
+        }
+
+    }
+
+    /**
+     * Removes a dislike from a video
+     * @param uid UserID
+     * @param vid VideoID
+     * @returns VideoDocument
+     */
+
+    videoUndislikeHandler = async (uid : string, vid : string) => {
+
+        try {
+
+            const updatedVideo = await Video.findByIdAndUpdate(
+                vid,
+                {
+                    $pull: { dislikedUsers : uid },
+                    $inc : { dislikeCount : -1 }
+                },
+                { new: true, runValidators: true }
+            );
+
+            return updatedVideo;
 
         } catch (error) {
             console.error('An Error has occured:', error);

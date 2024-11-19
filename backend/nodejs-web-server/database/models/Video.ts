@@ -10,8 +10,10 @@ const videoSchemaDefinition = new Schema({
     channel : String, // CID
     thumbnail_src : String,
     video_src : String,
-    likeCount: Number,
-    dislikeCount: Number,
+    likeCount: { type: Number, default: 0 },
+    likedUsers: [{ type : String }],
+    dislikeCount: { type: Number, default: 0 },
+    dislikedUsers: [{ type : String }],
     viewCount: Number,
     comments: [String],
 },

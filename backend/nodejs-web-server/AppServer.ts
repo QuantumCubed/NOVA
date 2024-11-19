@@ -18,6 +18,7 @@ app.use(cors({
         origin: 'http://localhost:3000', // Your frontend origin
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
+        // credentials: true
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/', home, userFn); // URL = /

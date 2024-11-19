@@ -271,9 +271,9 @@ router.post('/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbna
 
     try {
 
-        await MongoService.updateVideoThumbnail(String(req.user.UID), req.params.vid, req.file.originalname);
+        await MongoService.updateVideoThumbnail(String(req.user.UID), String(req.params.vid), String(req.file.originalname));
 
-        res.sendStatus(200);
+        res.status(200).json({ message: 'Thumbnail Uploaded!' });
 
     } catch (error) {
         console.error('Error uploading thumbnail:', error);
@@ -330,11 +330,11 @@ router.get('/search', async (req, res) => {
 
         const videoArray = await MongoService.queryVideoByRegex(query);
 
-        console.log(videoArray);
+        // console.log(videoArray);
 
         try {
             const videoArray = await MongoService.queryVideoByRegex(query);
-            console.log('Search results:', videoArray);
+        //    console.log('Search results:', videoArray);
             res.status(200).json(videoArray);
         } catch (error) {
             console.error('Error fetching search results:', error);
@@ -477,6 +477,108 @@ router.get('/load/channels', async (req, res) => {
     }
 
 });
+
+router.post('/:vid/like', authToken, async (req, res) => {
+
+    if (!req.user) { 
+        res.status(403).json({ message : 'You need to be signed in! '});
+        return;
+    }
+
+    try {
+
+        const uid = String(req.user.UID);
+        const vid = String(req.params.vid)
+        const hasLiked = await MongoService.hasLiked(uid, vid);
+        const hasDisliked = await MongoService.hasDisliked(uid, vid);
+
+        if (!hasLiked && hasDisliked) {
+
+            await MongoService.videoDislikeHandler(uid, vid);
+
+            const result = await MongoService.videoLikeHandler(uid, vid);
+
+            res.status(200).json(result);
+
+            return;
+
+        }
+
+        const result = await MongoService.videoLikeHandler(uid, vid);
+        res.status(200).json(result);
+        return;
+
+    } catch (error) {
+        console.error('Unable to (un)like:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+        return;
+    }
+
+});
+
+router.post('/:vid/dislike', authToken, async (req, res) => {
+
+    if (!req.user) { 
+        res.status(403).json({ message : 'You need to be signed in! '});
+        return;
+    }
+
+    try {
+
+        const uid = String(req.user.UID);
+        const vid = String(req.params.vid)
+        const hasLiked = await MongoService.hasLiked(uid, vid);
+        const hasDisliked = await MongoService.hasDisliked(uid, vid);
+
+        if (!hasDisliked && hasLiked) {
+
+            await MongoService.videoLikeHandler(uid, vid);
+
+            const result = await MongoService.videoDislikeHandler(uid, vid);
+
+            res.status(200).json(result);
+
+            return;
+
+        }
+
+        const result = await MongoService.videoDislikeHandler(uid, vid);
+        res.status(200).json(result);
+        return;
+
+    } catch (error) {
+        console.error('Unable to (un)dislike:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+        return;
+    }
+
+});
+
+router.get('/:vid/thumbnail', async (req, res) => {
+
+    try {
+
+        const thumbnail_path = await MongoService.queryVideoThumbnail(String(req.params.vid))
+    
+        if (!thumbnail_path || thumbnail_path === '') {
+            res.status(404).json({ message: 'Specified Resource Not Found!' });
+            return;
+        }
+    
+        res.status(200).sendFile(thumbnail_path);
+    
+    } catch (error) {
+        console.error('Error fetching user pfp:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+// router.post('/:vid/comment', authToken, async (req, res) => {
+
+
+
+// });
 
 // router.get('/watch/:vID', async (req, res) => {
 
