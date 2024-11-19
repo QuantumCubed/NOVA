@@ -17,8 +17,12 @@ export default function Login() {
     setError(null);
     if (authContext) {
       try {
-        await authContext.login({ email_log, password_log });
-        router.push("/dashboard");
+        const result = await authContext.login({ email_log, password_log });
+        if (result.success) {
+          router.push("/dashboard");
+        } else {
+          setError(result.message || "Login failed");
+        }
       } catch (error: any) {
         console.error("Login error:", error);
         setError(error.message || "An error occurred during login.");

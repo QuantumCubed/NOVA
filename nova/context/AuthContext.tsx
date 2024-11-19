@@ -21,7 +21,7 @@ interface AuthContextType {
   user: UserData | null;
   loading: boolean;
   signup: (userData: any) => Promise<void>;
-  login: (credentials: any) => Promise<void>;
+  login: (credentials: any) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   createChannel: (channelData: any) => Promise<void>;
 }
@@ -31,7 +31,7 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   signup: async () => {},
-  login: async () => {},
+  login: async () => ({ success: false }),
   logout: () => {},
   createChannel: async () => {},
 });
@@ -65,8 +65,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Login function with updated token parsing
-  const login = async (credentials: any) => {
+  // Login function with updated error handling
+  const login = async (
+    credentials: any
+  ): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
@@ -78,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        return { success: false, message: errorData.message || "Login failed" };
       }
 
       // **Use response.json() to correctly parse the token**
@@ -90,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userData = parseJwt(token);
 
       if (!userData) {
-        throw new Error("Invalid token");
+        return { success: false, message: "Invalid token" };
       }
 
       // Fetch full user profile using the token
@@ -104,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!profileResponse.ok) {
         const errorText = await profileResponse.text();
         console.error("Profile Fetch Error Response:", errorText);
-        throw new Error("Failed to fetch user profile");
+        return { success: false, message: "Failed to fetch user profile" };
       }
 
       const profileData = await profileResponse.json();
@@ -120,10 +122,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
 
       console.log("Login successful");
+      return { success: true };
     } catch (error: any) {
       console.error("Login error:", error);
       setLoading(false);
-      throw error;
+      return { success: false, message: error.message || "Login failed" };
     }
   };
 
@@ -235,7 +238,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout, createChannel }}>
+    <AuthContext.Provider
+      value={{ user, loading, signup, login, logout, createChannel }}
+    >
       {children}
     </AuthContext.Provider>
   );
