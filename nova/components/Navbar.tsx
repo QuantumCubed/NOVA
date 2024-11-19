@@ -55,23 +55,29 @@ const Navbar = () => {
     }
 
     try {
-      // Fetch search results from the backend
+      // Use the actual backend URL directly
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/search?search=${encodeURIComponent(query)}`
+        `http://localhost:3001/search?search=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
-        // Read the error message from the response
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An error occurred during the search.");
+        // Attempt to parse error message from response
+        let errorMessage = "An error occurred during the search.";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (parseError) {
+          console.error("Failed to parse error response:", parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       setSearchResults(data);
       setShowResults(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching search results:", error);
-      toast.error("Search failed. Please try again.");
+      toast.error(error.message || "Search failed. Please try again.");
     }
   };
 
