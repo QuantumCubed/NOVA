@@ -5,54 +5,44 @@ import {
   useEffect,
   useState,
   ChangeEvent,
-  FormEvent,
   useRef,
 } from "react";
-import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
-import { toast } from "react-toastify"; // Import toast for notifications
+import { toast } from "react-toastify";
 
-// Define the Channel interface
 interface Channel {
   _id: string;
   channel_name: string;
   description: string;
-  // Include other fields if necessary
+  // Add other fields if necessary
 }
 
-export default function Dashboard() {
+const Dashboard = () => {
+  // **1. Declare all Hooks at the top level, unconditionally**
   const { user, loading, refetchUser } = useContext(AuthContext);
-  const router = useRouter();
 
-  // State to hold the user's channels with detailed info
   const [channels, setChannels] = useState<Channel[]>([]);
   const [channelsLoading, setChannelsLoading] = useState<boolean>(true);
   const [channelsError, setChannelsError] = useState<string | null>(null);
 
-  // States for profile picture upload
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [imageError, setImageError] = useState(false); // Hook for image error
+
   const fileInputRef = useRef<HTMLInputElement | null>(null); // Reference to the hidden file input
 
+  // **2. Fetch channels owned by the user**
   useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
-
-  useEffect(() => {
-    // Fetch channels only if the user is authenticated
-    if (!loading && user) {
-      const fetchChannels = async () => {
+    const fetchChannels = async () => {
+      if (user && user.channels_owned.length > 0) {
         try {
           const response = await fetch("http://localhost:3001/channels", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adjust if using cookies or other auth methods
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           });
 
@@ -68,43 +58,21 @@ export default function Dashboard() {
         } finally {
           setChannelsLoading(false);
         }
-      };
+      } else {
+        setChannelsLoading(false);
+      }
+    };
 
-      fetchChannels();
-    }
-  }, [loading, user]);
+    fetchChannels();
+  }, [user]);
 
-  if (loading || channelsLoading) {
-    return (
-      <div>
-        <Navbar />
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
-
-  const {
-    username,
-    first_name,
-    last_name,
-    email,
-    acc_creation_date,
-    UID, // Ensure UID is available
-    pfp_src, // Profile picture source
-  } = user;
-
-  // Handler to trigger the hidden file input
+  // **3. Profile Picture Upload Handlers**
   const handleButtonClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // Handler for file selection and upload
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -151,6 +119,41 @@ export default function Dashboard() {
     }
   };
 
+  // **4. Image Error Handler**
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  // **5. Handle Logout**
+  const handleLogout = () => {
+    // Assuming Navbar handles logout, this can be removed or kept as per your implementation
+    // If you want a logout button here, ensure it's implemented correctly
+  };
+
+  // **6. Render Component**
+  if (loading || channelsLoading) {
+    return (
+      <div className="dashboard-container">
+        <Navbar />
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Already redirected to login via AuthContext
+  }
+
+  const {
+    username,
+    first_name,
+    last_name,
+    email,
+    acc_creation_date,
+    UID, // Ensure UID is available
+    pfp_src, // Profile picture source
+  } = user;
+
   return (
     <div className="dashboard-container">
       <Navbar />
@@ -192,14 +195,16 @@ export default function Dashboard() {
             {/* Profile Picture Section */}
             <div className="profile-picture-section">
               <Image
-                src={`http://localhost:3001/${UID}/profile_picture?${
-                  new Date().getTime()
-                }`} // Added timestamp for cache busting
+                src={
+                  imageError
+                    ? "/default-profile-picture.png" // Fallback image
+                    : `http://localhost:3001/${UID}/profile_picture?${new Date().getTime()}`
+                }
                 alt="Profile Picture"
                 width={200}
                 height={200}
                 className="profile-picture"
-                key={pfp_src} // Forces React to reload the Image component when pfp_src changes
+                onError={handleImageError} // Handle image load errors
               />
               <button
                 className="edit-profile-picture-button"
@@ -251,4 +256,6 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

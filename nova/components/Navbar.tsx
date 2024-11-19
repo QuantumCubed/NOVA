@@ -44,7 +44,9 @@ const Navbar = () => {
     }
   };
 
-  const handleSearchInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const query = e.target.value;
     setSearchQuery(query);
 
@@ -110,7 +112,11 @@ const Navbar = () => {
     <>
       <nav className={styles.navbar}>
         <div className={styles.navLeft}>
-          <button onClick={toggleSidebar} className={styles.navItem} aria-label="Open Menu">
+          <button
+            onClick={toggleSidebar}
+            className={styles.navItem}
+            aria-label="Open Menu"
+          >
             <FaBars size={24} />
           </button>
           <Link href="/" passHref legacyBehavior>
@@ -134,31 +140,43 @@ const Navbar = () => {
               className={styles.searchInput}
               placeholder="Search videos..."
             />
-            {showResults && searchResults.length > 0 && (
+            {showResults && (
               <div className={styles.searchResults} ref={searchResultsRef}>
-                {searchResults.map((video) => (
-                  <Link
-                    key={video._id}
-                    href={`/video/${video._id}`}
-                    passHref
-                    legacyBehavior
-                  >
-                    <div className={styles.resultItem}>{video.title}</div>
-                  </Link>
-                ))}
+                {searchResults.length > 0 ? (
+                  searchResults.map((video) => (
+                    <Link
+                      key={video._id}
+                      href={`/video/${video._id}`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <a className={styles.resultItem}>{video.title}</a>
+                    </Link>
+                  ))
+                ) : (
+                  <div className={styles.resultItem}>No results found.</div>
+                )}
               </div>
             )}
           </div>
         </div>
         <div className={styles.navRight}>
           {/* Theme Toggle Button */}
-          <button onClick={toggleTheme} className={styles.navItem} aria-label="Toggle Dark Mode">
+          <button
+            onClick={toggleTheme}
+            className={styles.navItem}
+            aria-label="Toggle Dark Mode"
+          >
             {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
           </button>
           {authContext?.user ? (
             <>
               {/* Removed Upload Button from Navbar */}
-              <button onClick={handleLogout} className={styles.navItem} aria-label="Logout">
+              <button
+                onClick={handleLogout}
+                className={styles.navItem}
+                aria-label="Logout"
+              >
                 <FaSignOutAlt size={24} />
               </button>
             </>
