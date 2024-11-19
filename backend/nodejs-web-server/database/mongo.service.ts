@@ -455,7 +455,7 @@ class DataBaseService {
 
             });
 
-            await this.createChannelDirectory(channelMeta.channel_owner);
+            await this.createChannelDirectory(newChannel._id.toString());
 
             await User.findByIdAndUpdate(
                 channelMeta.channel_owner,
@@ -678,10 +678,9 @@ class DataBaseService {
             'channels',
             cid
         );
-        // console.log(path.join(rawChannelPath, icon_file));
+
         try {
-            //await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
-            // await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
+            
             if (icon_file) {
                 await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
                 await fs.promises.unlink(path.join(visualsUploadPath, icon_file));
