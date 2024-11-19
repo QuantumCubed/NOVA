@@ -135,6 +135,20 @@ class DataBaseService {
     }
 
     /**
+     * Returns all channels in the collection
+     * @returns Channel Array
+     */
+
+    queryAllChannels = async () => {
+        try {
+            return await Channel.find();
+        } catch (error) {
+            console.error('Unable to retrieve all channels:', error);
+            return null;
+        }
+    }
+
+    /**
      * Queries a video based on videoID
      * @param vid userID
      * @returns videoID || null

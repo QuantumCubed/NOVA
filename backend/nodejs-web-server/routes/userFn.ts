@@ -466,6 +466,18 @@ router.get('/channels/:channelId/isSubscribed', authToken, async (req, res) => {
 
 });
 
+router.get('/load/channels', async (req, res) => {
+
+    try {
+        const channels = await MongoService.queryAllChannels(); // Exclude v field
+        res.status(200).json(channels);
+    } catch (error) {
+        console.error('Error fetching channels:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+});
+
 // router.get('/watch/:vID', async (req, res) => {
 
 //     const videoID = String(req.params.vID);
