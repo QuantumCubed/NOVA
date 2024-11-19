@@ -147,7 +147,9 @@ export default function Dashboard() {
                 {channels.map((channel) => (
                   <li key={channel._id}>
                     <Link
-                      href={`/channels/@${encodeURIComponent(channel.channel_name)}`}
+                      href={`/channels/@${encodeURIComponent(
+                        channel.channel_name
+                      )}`}
                       passHref
                       legacyBehavior
                     >
@@ -157,7 +159,7 @@ export default function Dashboard() {
                 ))}
               </ul>
             ) : (
-              <p>You have not created any channels yet.</p>
+              <p className="no-channels">You have not created any channels.</p>
             )}
             <Link href="/channels" passHref legacyBehavior>
               <button className="create-channel-button">Manage Channels</button>

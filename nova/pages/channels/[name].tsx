@@ -1,10 +1,8 @@
-// channels/[name].tsx
-
 import { useRouter } from "next/router";
 import { useEffect, useState, useContext } from "react";
 import Navbar from "../../components/Navbar";
 import VideoCard from "../../components/VideoCard";
-import styles from "../../styles/ChannelPage.module.css"; // Ensure this file exists
+import styles from "../../styles/ChannelPage.module.css";
 import { AuthContext } from "../../context/AuthContext";
 import { FaUpload, FaEdit, FaTimes } from "react-icons/fa";
 
@@ -17,7 +15,7 @@ interface Video {
   channel_name: string;
   date_published: string;
   view_count: number;
-  duration: number; // Duration in seconds
+  duration: number;
 }
 
 interface Channel {
@@ -28,7 +26,7 @@ interface Channel {
   subscriber_count: number;
   channel_icon_src: string;
   channel_banner_src: string;
-  videos: Video[]; // Populated videos
+  videos: Video[];
 }
 
 const formatDuration = (duration: number) => {
@@ -37,8 +35,7 @@ const formatDuration = (duration: number) => {
   const seconds = duration % 60;
 
   const hoursStr = hours > 0 ? `${hours}:` : "";
-  const minutesStr =
-    minutes < 10 && hours > 0 ? `0${minutes}:` : `${minutes}:`;
+  const minutesStr = minutes < 10 && hours > 0 ? `0${minutes}:` : `${minutes}:`;
   const secondsStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
 
   return `${hoursStr}${minutesStr}${secondsStr}`;
@@ -46,7 +43,7 @@ const formatDuration = (duration: number) => {
 
 const ChannelPage = () => {
   const router = useRouter();
-  const { name } = router.query; // 'name' includes '@', e.g., '@test1'
+  const { name } = router.query;
   const authContext = useContext(AuthContext);
 
   const [channel, setChannel] = useState<Channel | null>(null);
@@ -56,23 +53,23 @@ const ChannelPage = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Upload form states
   const [videoTitle, setVideoTitle] = useState<string>("");
   const [videoDescription, setVideoDescription] = useState<string>("");
   const [videoTags, setVideoTags] = useState<string>("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
-  // Edit description states
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [newDescription, setNewDescription] = useState<string>(channel?.description || "");
-  const [updatingDescription, setUpdatingDescription] = useState<boolean>(false);
+  const [newDescription, setNewDescription] = useState<string>(
+    channel?.description || ""
+  );
+  const [updatingDescription, setUpdatingDescription] =
+    useState<boolean>(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!name) return;
 
-    // Remove the '@' prefix if present
     const channelName = (name as string).startsWith("@")
       ? (name as string).substring(1)
       : (name as string);
@@ -100,7 +97,6 @@ const ChannelPage = () => {
     fetchChannel();
   }, [name]);
 
-  // Update newDescription when channel data changes
   useEffect(() => {
     if (channel) {
       setNewDescription(channel.description);
@@ -112,7 +108,6 @@ const ChannelPage = () => {
       ? authContext.user.UID === channel.owner
       : false;
 
-  // Upload Modal Functions
   const openUploadModal = () => {
     setIsUploadModalOpen(true);
     setUploadError(null);
@@ -120,7 +115,6 @@ const ChannelPage = () => {
 
   const closeUploadModal = () => {
     setIsUploadModalOpen(false);
-    // Reset form states
     setVideoTitle("");
     setVideoDescription("");
     setVideoTags("");
@@ -172,7 +166,6 @@ const ChannelPage = () => {
         throw new Error(errorData.message || "Video upload failed.");
       }
 
-      // Refresh the channel data to include the new video
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
           channel!.channel_name
@@ -185,8 +178,6 @@ const ChannelPage = () => {
 
       const updatedChannel: Channel = await updatedChannelResponse.json();
       setChannel(updatedChannel);
-
-      // Close the modal upon successful upload
       closeUploadModal();
     } catch (error: any) {
       console.error("Error uploading video:", error);
@@ -196,7 +187,6 @@ const ChannelPage = () => {
     }
   };
 
-  // Edit Description Modal Functions
   const openEditModal = () => {
     setIsEditModalOpen(true);
     setUpdateError(null);
@@ -242,10 +232,8 @@ const ChannelPage = () => {
         throw new Error(errorData.message || "Failed to update description.");
       }
 
-      const responseData = await response.json(); // Await the Promise first
-      const updatedChannel: Channel = responseData.channel; // Access the 'channel' property
-
-      setChannel(updatedChannel); // Update the channel state with the new description
+      const updatedChannel: Channel = (await response.json()).channel;
+      setChannel(updatedChannel);
       closeEditModal();
     } catch (error: any) {
       console.error("Error updating description:", error);
@@ -274,7 +262,11 @@ const ChannelPage = () => {
   }
 
   return (
-    <div className={styles.channelPage}>
+    <div
+      className={`${styles.channelPage} ${
+        document.body.classList.contains("dark-mode") ? styles.darkMode : ""
+      }`}
+    >
       <Navbar />
       <div className={styles.channelBanner}>
         {channel.channel_banner_src ? (
@@ -315,7 +307,6 @@ const ChannelPage = () => {
           </div>
           <p>Subscribers: {channel.subscriber_count.toLocaleString()}</p>
           <p>Videos: {channel.videos.length}</p>
-          {/* Upload Button */}
           {isChannelOwner && (
             <button className={styles.uploadButton} onClick={openUploadModal}>
               <FaUpload /> Upload Video
@@ -332,13 +323,11 @@ const ChannelPage = () => {
           <p>No videos available for this channel.</p>
         )}
       </main>
-
-      {/* Upload Modal */}
       {isUploadModalOpen && (
         <div className={styles.modalOverlay} onClick={closeUploadModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <button className={styles.closeButton} onClick={closeUploadModal}>
               <FaTimes size={20} />
@@ -411,19 +400,20 @@ const ChannelPage = () => {
           </div>
         </div>
       )}
-
-      {/* Edit Description Modal */}
       {isEditModalOpen && (
         <div className={styles.modalOverlay} onClick={closeEditModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <button className={styles.closeButton} onClick={closeEditModal}>
               <FaTimes size={20} />
             </button>
             <h2>Edit Channel Description</h2>
-            <form onSubmit={handleDescriptionUpdate} className={styles.editForm}>
+            <form
+              onSubmit={handleDescriptionUpdate}
+              className={styles.editForm}
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="newDescription">Description</label>
                 <textarea

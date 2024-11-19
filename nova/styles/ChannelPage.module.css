@@ -1,12 +1,5 @@
 /* styles/ChannelPage.module.css */
 
-.channelPage {
-  padding: 2rem;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
 .channelBanner img {
   width: 100%;
   height: 300px;
@@ -75,6 +68,7 @@
 }
 
 /* Description Container */
+/* Description Container */
 .descriptionContainer {
   display: flex;
   align-items: center;
@@ -83,13 +77,53 @@
 
 .descriptionContainer p {
   flex: 1;
-  margin-right: 0.5rem;
+  margin-right: 1rem; /* Ensures the edit button is 1rem away */
   white-space: pre-wrap; /* Preserve line breaks */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3; /* Limit to 3 lines */
   -webkit-box-orient: vertical;
+}
+
+/* Dark mode background */
+body.dark-mode {
+  background-image: url("/space.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  filter: brightness(50%); /* Dim the background */
+}
+
+/* Transition for a smooth appearance on refresh */
+.channelPage {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .descriptionContainer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .descriptionContainer p {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .editButton {
+    align-self: flex-end; /* Align the edit button to the end */
+  }
 }
 
 /* Edit Button */
@@ -290,17 +324,48 @@
     justify-content: center;
   }
 
-  .descriptionContainer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .descriptionContainer p {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
-
   .editButton {
     align-self: flex-end; /* Align the edit button to the end */
   }
+}
+
+/* Channel Details Container */
+.channelDetails {
+  background-color: var(--details-bg-light); /* Light mode default */
+  color: var(--text-color-light); /* Light mode text color */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode for Channel Details */
+body.dark-mode .channelDetails {
+  background-color: var(--details-bg-dark); /* Dark mode background */
+  color: var(--text-color-dark); /* Dark mode text color */
+}
+
+/* Adjust Description and Buttons */
+.descriptionContainer p {
+  color: inherit; /* Matches parent text color */
+  white-space: pre-wrap; /* Preserve line breaks */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  color: inherit; /* Matches parent text color */
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: color 0.3s ease;
+  padding: 0.25rem;
+}
+
+.editButton:hover {
+  color: #ff90b3; /* Hover color */
 }

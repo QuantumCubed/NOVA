@@ -800,6 +800,11 @@ main {
   }
 }
 
+.video-card a {
+  text-decoration: none !important; /* Force removal of underline */
+  display: block; /* Ensures the link takes the entire card space */
+}
+
 /* Video Card Styles */
 .video-card {
   background-color: var(--sidebar-background);
@@ -927,4 +932,8 @@ video {
 .home-container > * {
   position: relative;
   z-index: 2;
+}
+
+.no-channels {
+  margin-left: 1rem;
 }
