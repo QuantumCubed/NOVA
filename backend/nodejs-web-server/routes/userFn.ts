@@ -430,6 +430,42 @@ router.put('/channels/:id/description', authToken, async (req: any, res: any) =>
     }
 });
 
+router.post('/subscribe/:cid', authToken, async (req, res) => {
+
+    if (!req.user) { 
+        res.status(403).json({ message : 'You need to be signed in! '});
+        return;
+    }
+
+    try {
+        const result = await MongoService.userSubHandler(String(req.user.UID), String(req.params.cid));
+        res.status(200).json(result);
+        return;
+    } catch (error) {
+        console.error('Unable to (un)subscribe:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+        return;
+    }
+
+});
+
+router.get('/channels/:channelId/isSubscribed', authToken, async (req, res) => {
+
+    if (!req.user) { 
+        res.status(403).json({ message : 'You need to be signed in! '});
+        return;
+    }
+
+    try {
+        const isSubscribed = await MongoService.isSubscribed(String(req.user.UID), String(req.params.channelId));
+        res.status(200).json({ isSubscribed :  isSubscribed });
+    } catch (error) {
+        console.error('Unable to (un)subscribe:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
 // router.get('/watch/:vID', async (req, res) => {
 
 //     const videoID = String(req.params.vID);

@@ -587,6 +587,7 @@ class DataBaseService {
      * @param newDescription The new description
      * @returns Updated Channel object or null
      */
+
     updateChannelDescription = async (channelId: string, newDescription: string) => {
         try {
             const updatedChannel = await Channel.findByIdAndUpdate(
@@ -602,10 +603,11 @@ class DataBaseService {
     };
 
     /**
-* Fetches a channel by its name, including its videos
-* @param name Channel name
-* @returns Channel object with populated videos or null
-*/
+    * Fetches a channel by its name, including its videos
+    * @param name Channel name
+    * @returns Channel object with populated videos or null
+    */
+
     fetchChannelByName = async (name: string) => {
         try {
             const channel = await Channel.findOne({ channel_name: name }).populate('videos');
@@ -615,6 +617,109 @@ class DataBaseService {
             return null;
         }
     };
+
+    /**
+     * Determines if the user is subscribed to the given channel
+     * @param uid UserID
+     * @param cid ChannelID
+     * @returns true or false
+     */
+
+    isSubscribed = async (uid : string, cid : string) => {
+
+        try {
+            if(await Channel.findById(cid).where('subscribers').in([uid])) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+    
+    }
+
+    /**
+     * Subscribes a user to a channel
+     * @param uid UserID
+     * @param cid ChannelID
+     * @returns Subscription status
+     */
+
+    userSubHandler = async (uid : string, cid : string) => {
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+
+            const isSub = await this.isSubscribed(uid, cid)
+
+            if (isSub) {
+                const unsub = await this.userUnsubHandler(uid, cid);
+                await session.commitTransaction();
+                return { message : 'Sucessfully Unsubscribed!',  subscriber_count : unsub?.subscriber_count }; // unsubbed
+            }
+
+            const updatedChannel = await Channel.findByIdAndUpdate(
+                cid,
+                {
+                    $push: { subscribers : uid },
+                    $inc : { subscriber_count : 1 }
+                },
+                { new: true, runValidators: true }
+            );
+
+
+            await User.findByIdAndUpdate(
+                uid,
+                { $push: { subscribed_to : cid } },
+                { runValidators: true }
+            );
+
+            await session.commitTransaction();
+
+            return { message : 'Sucessfully Subscribed!', subscriber_count : updatedChannel?.subscriber_count }; // subbed // return updatedChannel?.subscriber_count;
+
+        } catch (error) {
+            await session.commitTransaction();
+            console.error('An Error has occured:', error);
+        }
+
+    }
+
+    /**
+     * Unsubscribes a user from a channel
+     * @param uid UserID
+     * @param cid ChannelID
+     * @returns ChannelDocument
+     */
+
+    userUnsubHandler = async (uid : string, cid : string) => {
+
+        try {
+
+            const updatedChannel = await Channel.findByIdAndUpdate(
+                cid,
+                {
+                    $pull: { subscribers : uid },
+                    $inc : { subscriber_count : -1 }
+                },
+                { new: true, runValidators: true }
+            );
+    
+            await User.findByIdAndUpdate(
+                uid,
+                { $pull: { subscribed_to : cid } },
+                { new: true, runValidators: true }
+            );
+
+            return updatedChannel;
+
+        } catch (error) {
+            console.error('An Error has occured:', error);
+        }
+        
+    }
 
     // WIP
 

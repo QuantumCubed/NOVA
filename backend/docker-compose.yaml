@@ -48,7 +48,7 @@ services:
     image: node
     container_name: nova-ws-c
     ports:
-      - 3000:3000
+      - 3001:3001
     volumes:
       - ./nodejs-web-server/:/nodejs-web-server
       - nova_data:/data

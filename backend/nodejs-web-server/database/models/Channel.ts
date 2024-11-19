@@ -7,6 +7,7 @@ const channelSchemaDefinition = new Schema({
     channel_name: { type: String, required: true, unique: true }, // Ensures uniqueness
     description: { type: String, default: '' },
     subscriber_count: { type: Number, default: 0 },
+    subscribers: [{ type : String }],
     acc_creation_date: { type: Date, default: Date.now },
     channel_icon_src: { type: String, default: '' },
     channel_banner_src: { type: String, default: '' },

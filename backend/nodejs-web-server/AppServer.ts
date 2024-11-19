@@ -9,7 +9,7 @@ dotenv.config();
 
 const LAN = true; // false = local
 const app = express();
-const port = 3000; // change to 3001
+const port = 3001; // change to 3001
 const IP = LAN ? '0.0.0.0' : '127.0.0.1';
 
 // app.use(express.static('public'));
