@@ -3,15 +3,14 @@ import mongoose from 'mongoose'
 const { Schema, model } = mongoose;
 
 const channelSchemaDefinition = new Schema({
-
-    owner: String,
-    channel_name: String,
-    description: String,
-    subscriber_count: Number,
-    acc_creation_date: Date,
-    channel_icon_src: String,
-    channel_banner_src: String,
-    videos: [String], // vIDs,
+    owner: { type: String, required: true },
+    channel_name: { type: String, required: true, unique: true }, // Ensures uniqueness
+    description: { type: String, default: '' },
+    subscriber_count: { type: Number, default: 0 },
+    acc_creation_date: { type: Date, default: Date.now },
+    channel_icon_src: { type: String, default: '' },
+    channel_banner_src: { type: String, default: '' },
+    videos: [{ type: Schema.Types.ObjectId, ref: 'Video' }], // References Video model
 },
 
 { collection : 'channels' }

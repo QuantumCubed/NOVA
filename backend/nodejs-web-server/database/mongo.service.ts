@@ -9,13 +9,13 @@ import gRPC_Client from '../api/gRPC/gRPC';
 
 interface VideoMetaData {
 
-    title : string,
-    description : string,
-    tags : [string],
-    user : string,
-    channel_name : string,
-    channel_id : string
-    
+    title: string,
+    description: string,
+    tags: [string],
+    user: string,
+    channel_name: string,
+    channel_id: string
+
 }
 
 interface UserMetaData {
@@ -25,7 +25,7 @@ interface UserMetaData {
     email: string,
     password: string,
     username: string,
-    pfp_src : string
+    pfp_src: string
 
 }
 
@@ -36,27 +36,27 @@ interface ChannelMetaData {
 }
 
 class DataBaseService {
-    
-    private readonly URI : string;
 
-    constructor () {
+    private readonly URI: string;
+
+    constructor() {
         this.URI = process.env.URI || 'undefined'; // || "mongodb://localhost:27017/";
     }
 
     /**
      * Establishes Database Connection
      */
-    
+
     establishDBConnection = async () => {
 
         try {
             await mongoose.connect(this.URI,
-                { dbName : process.env.DB }
+                { dbName: process.env.DB }
             );
             console.log('Database Connection Sucessful! ✅');
         }
 
-        catch (err : any) {
+        catch (err: any) {
             console.error('DB Connection has failed!', err.message);
         }
     }
@@ -67,7 +67,7 @@ class DataBaseService {
      * @returns User || null
      */
 
-    queryUserData = async (uid : string) => {
+    queryUserData = async (uid: string) => {
 
         try {
 
@@ -80,6 +80,21 @@ class DataBaseService {
 
     }
 
+    queryUserPFP = async (uid: string) => {
+
+        try {
+
+            const user = await User.findById(uid, 'pfp_src');
+
+            return user?.pfp_src || '';
+
+        } catch (error) {
+            console.error('Unable to retrieve user pfp:', error);
+            return null;
+        }
+
+    }
+
     /**
      * Queries a user's channel based on the user's ID and channel's name
      * @param uid UserID
@@ -87,14 +102,31 @@ class DataBaseService {
      * @returns channelID || null
      */
 
-    queryUserChannelID = async (uid : string, query : string) => {
+    queryUserChannelID = async (uid: string, query: string) => {
 
         try {
             const channel = await Channel.findOne({
-                owner : uid,
-                channel_name : query
+                owner: uid,
+                channel_name: query
             });
             return channel?._id.toString();
+        } catch (error) {
+            console.error('Error fetching channels:', error);
+            return null;
+        }
+
+    }
+
+    /**
+     * Returns a channel from ChannelID
+     * @param cid ChannelID
+     * @returns Channel || null
+     */
+
+    queryChannelByID = async (cid : string) => {
+
+        try {
+            return await Channel.findById(cid);
         } catch (error) {
             console.error('Error fetching channels:', error);
             return null;
@@ -108,10 +140,10 @@ class DataBaseService {
      * @returns videoID || null
      */
 
-    queryVideoByID = async (vid : string) => {
+    queryVideoByID = async (vid: string) => {
 
         try {
-            
+
             // const video = await Video.findById(vid);
             // return video?.video_src?.toString();
 
@@ -130,7 +162,7 @@ class DataBaseService {
      * @returns videoArray || null
      */
 
-    queryVideoByRegex = async (query : string) => {
+    queryVideoByRegex = async (query: string) => {
         try {
             const videoArray = await Video.find({
                 $or: [
@@ -154,7 +186,7 @@ class DataBaseService {
      * @returns videoArray || null
      */
 
-    nVidQuery = async (n : number) => {
+    nVidQuery = async (n: number) => {
 
         try {
 
@@ -176,20 +208,20 @@ class DataBaseService {
      * @returns Channel Array || null
      */
 
-    queryUserChannels = async (uid : string) => {
+    queryUserChannels = async (uid: string) => {
 
         try {
 
             const user = await User.findById(uid, 'channels_owned');
 
-            const usrChannelArray : typeof Channel [] | null [] | any [] = await Promise.all(
+            const usrChannelArray: typeof Channel[] | null[] | any[] = await Promise.all(
                 user?.channels_owned.map(channelID => Channel.findById(channelID)) || []
             );
 
             // console.log(usrChannelArray[0]._id);
 
             return usrChannelArray;
-        
+
         } catch (error) {
             console.error("Error fetching channels by IDs:", error);
             return null;
@@ -202,16 +234,16 @@ class DataBaseService {
      * @param UID UserID
      */
 
-    createUserDirectory = async (UID : string) => {
+    createUserDirectory = async (UID: string) => {
 
         // const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID);
 
         const dirPath = path.join('/', 'data', 'users', UID);
 
         try {
-            await fs.promises.mkdir(dirPath, { recursive : true });
+            await fs.promises.mkdir(dirPath, { recursive: true });
             console.log('Account Directories Created!\n', dirPath);
-        } catch (err : any) {
+        } catch (err: any) {
             console.error('Error Creating User Directories!', err.message);
         }
 
@@ -222,16 +254,16 @@ class DataBaseService {
      * @param channelID The channelID of the channel
      */
 
-    createChannelDirectory = async (channelID : string) => {
+    createChannelDirectory = async (channelID: string) => {
 
         // const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
 
         const dirPath = path.join('/', 'data', 'channels', channelID);
 
         try {
-            await fs.promises.mkdir(dirPath, { recursive : true });
+            await fs.promises.mkdir(dirPath, { recursive: true });
             console.log('Channel Directories Created!\n', dirPath);
-        } catch (err : any) {
+        } catch (err: any) {
             console.error('Error Creating User Directories!', err.message);
         }
 
@@ -244,7 +276,7 @@ class DataBaseService {
      * @returns gRPC status and the target src path for the transcoded output || null
      */
 
-    createVideoDirectory = async (videoID : string, videoFile : string) => {
+    createVideoDirectory = async (videoID: string, videoFile: string) => {
 
         const dirPathUpload = path.join(__dirname, '..', 'uploads', 'videos', videoFile);
 
@@ -274,14 +306,14 @@ class DataBaseService {
 
         try {
 
-            await fs.promises.mkdir(dirPathRaw, { recursive : true });
-            await fs.promises.mkdir(dirPathOut, { recursive : true });
+            await fs.promises.mkdir(dirPathRaw, { recursive: true });
+            await fs.promises.mkdir(dirPathOut, { recursive: true });
             // await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
             await fs.promises.copyFile(dirPathUpload, path.join(dirPathRaw, videoFile));
             await fs.promises.unlink(dirPathUpload);
             console.log('Videos Directories Created!');
-            
-        } catch (err : any) {
+
+        } catch (err: any) {
             console.error('Error Creating Video Directories!', err.message);
             return null;
         }
@@ -296,9 +328,9 @@ class DataBaseService {
 
             await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
 
-            return { status : 'OK', watchPath : (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
+            return { status: 'OK', watchPath: (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
 
-        } catch(error) {
+        } catch (error) {
             console.error('gRPC Error:', error);
             return null;
 
@@ -311,7 +343,7 @@ class DataBaseService {
      * @param userMeta User data to input in DB
      */
 
-    createUser = async (userMeta : UserMetaData) => {
+    createUser = async (userMeta: UserMetaData) => {
 
         try {
 
@@ -343,7 +375,7 @@ class DataBaseService {
      * @param channelMeta Channel data to input in DB
      */
 
-    createChannel = async (channelMeta : ChannelMetaData) => {
+    createChannel = async (channelMeta: ChannelMetaData) => {
 
         try {
 
@@ -353,7 +385,7 @@ class DataBaseService {
                 channel_name: channelMeta.channel_name,
                 description: channelMeta.description,
                 subscriber_count: 0,
-                acc_creation_date : Date.now(),
+                acc_creation_date: Date.now(),
                 channel_icon_src: '',
                 channel_banner_src: '',
                 videos: []
@@ -364,12 +396,12 @@ class DataBaseService {
 
             await User.findByIdAndUpdate(
                 channelMeta.channel_owner,
-                { $push : { channels_owned : newChannel._id.toString() } },
-                { new : true, runValidators : true } 
+                { $push: { channels_owned: newChannel._id.toString() } },
+                { new: true, runValidators: true }
             );
 
             console.log('Channel added to DB!');
-        
+
         } catch (error) {
             console.log('Error creating channel:', error);
         }
@@ -383,20 +415,20 @@ class DataBaseService {
      * @param thumbnailFileName The thumbnail file name for the video
      */
 
-    uploadVideo = async (vidMeta : VideoMetaData, vidFileName : string, thumbnailFileName? : string) => {
+    uploadVideo = async (vidMeta: VideoMetaData, vidFileName: string, thumbnailFileName?: string) => {
 
         try {
 
             const newVideo = await Video.create({
 
-                title : vidMeta.title,
+                title: vidMeta.title,
                 description: vidMeta.description,
-                tags : vidMeta.tags,
-                date_published : Date.now(),
-                user : vidMeta.user,
-                channel : vidMeta.channel_id,
-                thumbnail_src : 'temp',
-                video_src : 'temp',
+                tags: vidMeta.tags,
+                date_published: Date.now(),
+                user: vidMeta.user,
+                channel: vidMeta.channel_id,
+                thumbnail_src: 'temp',
+                video_src: 'temp',
                 likeCount: 0,
                 dislikeCount: 0,
                 viewCount: 0,
@@ -414,7 +446,7 @@ class DataBaseService {
 
             // { status : status, watchPath : (videoBasePath + `out/output.mpd`) }
 
-            Object.assign(newVideo, { video_src : result.watchPath });
+            Object.assign(newVideo, { video_src: result.watchPath });
             await newVideo.save();
 
             console.log('Video added to DB!');
@@ -431,11 +463,11 @@ class DataBaseService {
      * @returns User's UID && Username || null
      */
 
-    loginAuth = async (email : string, password : string | Buffer) => {
+    loginAuth = async (email: string, password: string | Buffer) => {
 
         try {
-            
-            const user = await User.findOne({ email : email });
+
+            const user = await User.findOne({ email: email });
 
             if (!user) { throw new Error('User not found!'); }
 
@@ -445,7 +477,7 @@ class DataBaseService {
 
             // console.log('Login Sucessful! JWT Token Generated!');
 
-            return { id : user._id.toString(), username : user.username };
+            return { id: user._id.toString(), username: user.username };
 
         } catch (error) {
             console.error('Failed to authenticate user:', error);
@@ -461,7 +493,7 @@ class DataBaseService {
      */
 
 
-    updateUserPFP = async (uid : string, filename : string) => {
+    updateUserPFP = async (uid: string, filename: string) => {
 
         const pfpUploadPath = path.join(__dirname, '..', 'uploads', 'images', filename);
 
@@ -472,19 +504,21 @@ class DataBaseService {
             'users',
             uid,
         );
-        
+
         try {
 
-            await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
+            // await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
+            await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
+            await fs.promises.unlink(pfpUploadPath);
             await User.findByIdAndUpdate(
                 uid,
-                { pfp_src : `/data/users/${uid}/${filename}`},
-                { new : true, runValidators : true }
+                { pfp_src: `/data/users/${uid}/${filename}` },
+                { new: true, runValidators: true }
             );
 
-        } catch (err : any) {
+        } catch (err: any) {
             console.error('Error Uploading PFP!', err.message);
-        }        
+        }
 
         console.log('PFP Uploaded!');
 
@@ -498,15 +532,15 @@ class DataBaseService {
      * @returns 
      */
 
-    updateVideoThumbnail = async (uid : string, vid : string, filename : string) => {
+    updateVideoThumbnail = async (uid: string, vid: string, filename: string) => {
 
         try {
 
             const user = await User.findById(uid, 'channels_owned');
-            const userChannels : string [] | null  = user ? user.channels_owned : null;
+            const userChannels: string[] | null = user ? user.channels_owned : null;
 
             const video = await Video.findById(vid, 'channel');
-            const videoChannel : string | null | undefined  = video ? video.channel : null;
+            const videoChannel: string | null | undefined = video ? video.channel : null;
 
             // console.log(user);
             // console.log(userChannels);
@@ -535,10 +569,10 @@ class DataBaseService {
             await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
             await Video.findByIdAndUpdate(
                 vid,
-                { thumbnail_src : `/data/videos/${vid}/${filename}`},
-                { new : true, runValidators : true }
+                { thumbnail_src: `/data/videos/${vid}/${filename}` },
+                { new: true, runValidators: true }
             );
-        } catch (err : any) {
+        } catch (err: any) {
             console.error('Error Uploading Thumbnail!', err.message);
             return;
         }
@@ -547,31 +581,66 @@ class DataBaseService {
 
     }
 
+    /**
+     * Updates the description of a channel
+     * @param channelId The ID of the channel to update
+     * @param newDescription The new description
+     * @returns Updated Channel object or null
+     */
+    updateChannelDescription = async (channelId: string, newDescription: string) => {
+        try {
+            const updatedChannel = await Channel.findByIdAndUpdate(
+                channelId,
+                { description: newDescription },
+                { new: true, runValidators: true }
+            );
+            return updatedChannel;
+        } catch (error) {
+            console.error('Error updating channel description:', error);
+            return null;
+        }
+    };
+
+    /**
+* Fetches a channel by its name, including its videos
+* @param name Channel name
+* @returns Channel object with populated videos or null
+*/
+    fetchChannelByName = async (name: string) => {
+        try {
+            const channel = await Channel.findOne({ channel_name: name }).populate('videos');
+            return channel;
+        } catch (error) {
+            console.error('Error fetching channel by name:', error);
+            return null;
+        }
+    };
+
     // WIP
 
-    deleteVideo = async (uid : string, cid : string, vid : string) => {
+    deleteVideo = async (uid: string, cid: string, vid: string) => {
 
-        
+
 
     }
 
     // WIP
 
-    deleteChannel = async (uid : string, cid : string) => {
+    deleteChannel = async (uid: string, cid: string) => {
 
-        
+
 
     }
 
     // WIP
 
-    deleteUser = async (uid : string, password : string | Buffer) => {
+    deleteUser = async (uid: string, password: string | Buffer) => {
 
         const user = await User.findById(uid);
 
         if (user) {
-        
-        const validated = await bcrypt.compare(password, user.password?.toString() || '');
+
+            const validated = await bcrypt.compare(password, user.password?.toString() || '');
             if (validated) {
                 try {
                     await fs.promises.rm(path.join(
@@ -581,10 +650,10 @@ class DataBaseService {
                         'users',
                         uid
                     ));
-                    await Video.deleteMany({ user : uid });
-                    await Channel.deleteMany({ owner : uid });
+                    await Video.deleteMany({ user: uid });
+                    await Channel.deleteMany({ owner: uid });
                     await User.findByIdAndDelete(uid);
-                } catch (err : any) {
+                } catch (err: any) {
                     console.error('Unable to delete user', err.message);
                 }
             }

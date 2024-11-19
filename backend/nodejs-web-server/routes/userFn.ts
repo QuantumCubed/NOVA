@@ -5,16 +5,16 @@ import DataBaseService from '../database/mongo.service';
 import jwt from 'jsonwebtoken';
 
 interface UserPayload {
-    UID : string;
-    username : string;
+    UID: string;
+    username: string;
 }
 declare global {
     namespace Express {
-      interface Request {
-        user?: UserPayload
-      }
+        interface Request {
+            user?: UserPayload
+        }
     }
-  }
+}
 
 
 
@@ -25,15 +25,15 @@ const sk = process.env.CRYPT_SK;
 const secretKey = 'my-secret-key';
 console.log('Secret Key:', sk)
 
-if (!secretKey) { console.error('Secret Key:', secretKey); throw new Error ('Secret Key is Undefined!'); }
+if (!secretKey) { console.error('Secret Key:', secretKey); throw new Error('Secret Key is Undefined!'); }
 
 const videoStoreConfig = multer.diskStorage({
 
-    destination : (req, file, cb) => {
+    destination: (req, file, cb) => {
         cb(null, 'uploads/videos/');
     },
 
-    filename : (req, file, cb) => {
+    filename: (req, file, cb) => {
 
         cb(null, Date.now() + path.extname(file.originalname));
 
@@ -41,15 +41,15 @@ const videoStoreConfig = multer.diskStorage({
 
 });
 
-const videoUpload = multer({ storage : videoStoreConfig });
+const videoUpload = multer({ storage: videoStoreConfig });
 
 const pfpStoreConfig = multer.diskStorage({
 
-    destination : (req, file, cb) => {
+    destination: (req, file, cb) => {
         cb(null, 'uploads/images/');
     },
 
-    filename : (req, file, cb) => {
+    filename: (req, file, cb) => {
 
         cb(null, file.originalname);
 
@@ -57,15 +57,15 @@ const pfpStoreConfig = multer.diskStorage({
 
 });
 
-const pfpUpload = multer({ storage : pfpStoreConfig });
+const pfpUpload = multer({ storage: pfpStoreConfig });
 
 const vidThumbnailStoreConfig = multer.diskStorage({
 
-    destination : (req, file, cb) => {
+    destination: (req, file, cb) => {
         cb(null, 'uploads/thumbnails/');
     },
 
-    filename : (req, file, cb) => {
+    filename: (req, file, cb) => {
 
         cb(null, file.originalname);
 
@@ -73,7 +73,7 @@ const vidThumbnailStoreConfig = multer.diskStorage({
 
 });
 
-const thumbnailUpload = multer({ storage : vidThumbnailStoreConfig });
+const thumbnailUpload = multer({ storage: vidThumbnailStoreConfig });
 
 /**
  * Middleware to authenticate and validate JWT token
@@ -83,14 +83,14 @@ const thumbnailUpload = multer({ storage : vidThumbnailStoreConfig });
  * @returns Void
  */
 
-const authToken = async (req : Request, res : Response, next : NextFunction) => {
+const authToken = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
         const authHeader = req.headers['authorization'];
         const token = authHeader?.split(' ')[1];
 
-        if(!token) { res.status(401).json({ message : 'Access Denied!' }); return; }
+        if (!token) { res.status(401).json({ message: 'Access Denied!' }); return; }
 
         const decoded = jwt.verify(token, secretKey) as UserPayload;
         req.user = decoded;
@@ -99,11 +99,11 @@ const authToken = async (req : Request, res : Response, next : NextFunction) => 
     } catch (err) {
 
         if (err instanceof jwt.JsonWebTokenError) {
-            res.status(403).json({ message : 'Invalid Token!' })
+            res.status(403).json({ message: 'Invalid Token!' })
             return;
         }
 
-        res.status(500).json({ message : 'Internal Server Error!' });
+        res.status(500).json({ message: 'Internal Server Error!' });
         return;
 
     }
@@ -131,8 +131,8 @@ router.post('/user/add', async (req, res) => {
             email: email,
             password: password,
             username: username,
-            pfp_src : 'temp' //pfp_src
-    
+            pfp_src: 'temp' //pfp_src
+
         });
 
         res.sendStatus(200);
@@ -154,12 +154,12 @@ router.post('/auth/login', async (req, res) => { // AforAppleBforBall
     try {
         const user = await MongoService.loginAuth(String(email_log), String(password_log));
 
-        if (!user) { 
-                res.status(400).json({ message : 'Invalid Password!' }); 
-                return; 
+        if (!user) {
+            res.status(400).json({ message: 'Invalid Password!' });
+            return;
         }
 
-        const token = jwt.sign({ UID : user?.id, username : user?.username }, secretKey, { expiresIn : '1h' });
+        const token = jwt.sign({ UID: user?.id, username: user?.username }, secretKey, { expiresIn: '1h' });
 
         console.log('Login Sucessful! JWT Token Generated!');
 
@@ -178,7 +178,7 @@ router.post('/auth/login', async (req, res) => { // AforAppleBforBall
 
 // Endpoint to upload a user's profile picture
 
-router.post('/profile/upload', authToken, pfpUpload.single('profile_pic'), async (req : any, res : any) => {
+router.post('/profile/upload', authToken, pfpUpload.single('profile_pic'), async (req: any, res: any) => {
 
     if (!req.file) {
         return res.status(400).send('No file uploaded!');
@@ -193,7 +193,7 @@ router.post('/profile/upload', authToken, pfpUpload.single('profile_pic'), async
 
         res.sendStatus(200);
 
-    } catch(error) {
+    } catch (error) {
         console.error('Error uploading profile:', error);
         res.status(500).json({ message: 'Internal Server Error!' });
     }
@@ -227,7 +227,7 @@ router.post('/channel/create', authToken, async (req, res) => {
 
 // Endpoint to upload a video to the specified channel
 
-router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (req : any, res : any) => {
+router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (req: any, res: any) => {
 
     if (!req.file) {
         res.status(400).send('No file uploaded.');
@@ -242,15 +242,15 @@ router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (
         // console.log(title, description, tags, channel_name, filename);
 
         await MongoService.uploadVideo({
-            title : title,
-            description : description,
-            tags : tags,
-            user : String(req.user.UID),
-            channel_name : channel_name,
-            channel_id : req.params.cid
+            title: title,
+            description: description,
+            tags: tags,
+            user: String(req.user.UID),
+            channel_name: channel_name,
+            channel_id: req.params.cid
         }, filename);
-    
-        res.status(200).send(`File uploaded: ${ req.file.filename }`);
+
+        res.status(200).send(`File uploaded: ${req.file.filename}`);
 
     } catch (error) {
         console.error('Error uploading video:', error);
@@ -261,7 +261,7 @@ router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (
 
 // Endpoint to upload a thumbnail to a video
 
-router.post('/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbnail'), async (req : any, res: any) => {
+router.post('/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbnail'), async (req: any, res: any) => {
 
     if (!req.file) {
         return res.status(400).send('No file uploaded!');
@@ -326,7 +326,7 @@ router.get('/search', async (req, res) => {
 
     console.log('Search query:', query);
 
-    if(query.trim().length != 0) {
+    if (query.trim().length != 0) {
 
         const videoArray = await MongoService.queryVideoByRegex(query);
 
@@ -351,7 +351,7 @@ router.get('/channels', authToken, async (req: Request, res: Response) => {
     try {
 
         const channelsOwned = await MongoService.queryUserChannels(String(req.user?.UID));
-        
+
         if (channelsOwned?.length === 0) {
             res.status(200).json([]); // User owns 0 channels
             return;
@@ -364,6 +364,70 @@ router.get('/channels', authToken, async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal Server Error!' });
     }
 
+});
+
+router.get('/:uid/profile_picture', async (req, res) => {
+
+    try {
+
+        const pfp_path = await MongoService.queryUserPFP(String(req.params.uid))
+
+        if (!pfp_path || pfp_path === '') {
+            res.status(404).json({ message: 'Specified Resource Not Found!' });
+            return;
+        }
+
+        res.status(200).sendFile(pfp_path);
+
+    } catch (error) {
+        console.error('Error fetching user pfp:', error);
+        res.status(500).json({ message: 'Internal Server Error!' });
+    }
+
+});
+
+router.get('/channels/name/:name', async (req: any, res: any) => {
+    const { name } = req.params;
+    try {
+        const channel = await MongoService.fetchChannelByName(String(name));
+        if (!channel) {
+            return res.status(404).json({ message: 'Channel not found' });
+        }
+        res.status(200).json(channel);
+    } catch (error) {
+        console.error('Error fetching channel by name:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.put('/channels/:id/description', authToken, async (req: any, res: any) => {
+    const { id } = req.params;
+    const { description } = req.body;
+
+    if (typeof description !== 'string' || description.trim().length === 0) {
+        return res.status(400).json({ message: 'Description cannot be empty.' });
+    }
+
+    try {
+        const channel = await MongoService.queryChannelByID(String(id));
+
+        if (!channel) {
+            return res.status(404).json({ message: 'Channel not found.' });
+        }
+
+        // Check if the authenticated user is the owner of the channel
+        if (channel.owner !== req.user?.UID) {
+            return res.status(403).json({ message: 'You are not authorized to edit this channel.' });
+        }
+
+        // Update the description
+        const updatedChannel = await MongoService.updateChannelDescription(String(id), String(description).trim());
+
+        res.status(200).json({ message: 'Channel description updated successfully.', updatedChannel });
+    } catch (error) {
+        console.error('Error updating channel description:', error);
+        res.status(500).json({ message: 'Internal Server Error.' });
+    }
 });
 
 // router.get('/watch/:vID', async (req, res) => {
@@ -392,7 +456,7 @@ router.get('/load/home', async (req, res) => {
 
 router.get('/protected', authToken, (req, res) => {
 
-    res.json({ message : 'THIS IS A PROTECTED ROUTE!', user : req.user });
+    res.json({ message: 'THIS IS A PROTECTED ROUTE!', user: req.user });
 
 });
 
