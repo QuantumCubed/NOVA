@@ -5,16 +5,17 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import {
   FaHome,
-  FaUpload,
   FaSignInAlt,
   FaUserPlus,
   FaSignOutAlt,
   FaBars,
   FaSun,
   FaMoon,
+  FaTv, // Import TV icon
 } from "react-icons/fa";
 import styles from "./Navbar.module.css";
 import Sidebar from "./Sidebar";
+import { toast } from "react-toastify"; // Import toast
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -35,9 +36,11 @@ const Navbar = () => {
     if (isDarkMode) {
       document.documentElement.setAttribute("data-theme", "light");
       setIsDarkMode(false);
+      toast.info("Switched to Light Mode");
     } else {
       document.documentElement.setAttribute("data-theme", "dark");
       setIsDarkMode(true);
+      toast.info("Switched to Dark Mode");
     }
   };
 
@@ -54,7 +57,7 @@ const Navbar = () => {
     try {
       // Fetch search results from the backend
       const response = await fetch(
-        `http://localhost:3001/search?search=${encodeURIComponent(query)}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/search?search=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
@@ -68,7 +71,7 @@ const Navbar = () => {
       setShowResults(true);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // Optionally display an error message to the user
+      toast.error("Search failed. Please try again.");
     }
   };
 
@@ -91,20 +94,27 @@ const Navbar = () => {
     };
   }, []);
 
+  // Handle Logout with toast
+  const handleLogout = () => {
+    authContext?.logout();
+    toast.success("Logged out successfully!");
+  };
+
   return (
     <>
       <nav className={styles.navbar}>
         <div className={styles.navLeft}>
-          <button
-            onClick={toggleSidebar}
-            className={styles.navItem}
-            aria-label="Open Menu"
-          >
+          <button onClick={toggleSidebar} className={styles.navItem} aria-label="Open Menu">
             <FaBars size={24} />
           </button>
           <Link href="/" passHref legacyBehavior>
             <div className={styles.navItem}>
               <FaHome size={24} />
+            </div>
+          </Link>
+          <Link href="/channellist" passHref legacyBehavior>
+            <div className={styles.navItem}>
+              <FaTv size={24} />
             </div>
           </Link>
           {/* Removed the Upload button/icon from the Navbar */}
@@ -136,21 +146,13 @@ const Navbar = () => {
         </div>
         <div className={styles.navRight}>
           {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className={styles.navItem}
-            aria-label="Toggle Dark Mode"
-          >
+          <button onClick={toggleTheme} className={styles.navItem} aria-label="Toggle Dark Mode">
             {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
           </button>
           {authContext?.user ? (
             <>
               {/* Removed Upload Button from Navbar */}
-              <button
-                onClick={authContext.logout}
-                className={styles.navItem}
-                aria-label="Logout"
-              >
+              <button onClick={handleLogout} className={styles.navItem} aria-label="Logout">
                 <FaSignOutAlt size={24} />
               </button>
             </>
