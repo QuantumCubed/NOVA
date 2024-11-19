@@ -1,4 +1,4 @@
-// frontend/components/ChannelCard.tsx
+// components/ChannelCard.tsx
 
 import Link from "next/link";
 import styles from "./ChannelCard.module.css";
@@ -15,9 +15,12 @@ interface Channel {
 }
 
 const ChannelCard = ({ channel }: { channel: Channel }) => {
+  // Encode the channel name to make it URL-safe
+  const encodedChannelName = encodeURIComponent(channel.channel_name);
+
   return (
     <div className={styles.channelCard}>
-      <Link href={`/channels/${channel._id}`} passHref legacyBehavior>
+      <Link href={`/channels/@${encodedChannelName}`} passHref legacyBehavior>
         <a>
           <div className={styles.channelBanner}>
             {channel.channel_banner_src ? (

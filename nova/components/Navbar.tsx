@@ -107,7 +107,7 @@ const Navbar = () => {
               <FaHome size={24} />
             </div>
           </Link>
-          {/* Removed the Channels button/icon from the Navbar */}
+          {/* Removed the Upload button/icon from the Navbar */}
         </div>
         <div className={styles.navCenter}>
           <div className={styles.navbarSearch}>
@@ -145,11 +145,7 @@ const Navbar = () => {
           </button>
           {authContext?.user ? (
             <>
-              <Link href="/upload" passHref legacyBehavior>
-                <div className={styles.navItem}>
-                  <FaUpload size={24} />
-                </div>
-              </Link>
+              {/* Removed Upload Button from Navbar */}
               <button
                 onClick={authContext.logout}
                 className={styles.navItem}

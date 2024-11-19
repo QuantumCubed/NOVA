@@ -1,21 +1,68 @@
-import { useContext, useEffect } from "react";
+// pages/dashboard.tsx
+
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 
+// Define the Channel interface
+interface Channel {
+  _id: string;
+  channel_name: string;
+  description: string;
+  // Include other fields if necessary
+}
+
 export default function Dashboard() {
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
+  // State to hold the user's channels with detailed info
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [channelsLoading, setChannelsLoading] = useState<boolean>(true);
+  const [channelsError, setChannelsError] = useState<string | null>(null);
+
   useEffect(() => {
+    // Redirect to login if not authenticated
     if (!authContext.loading && !authContext.user) {
       router.push("/login");
     }
   }, [authContext, router]);
 
-  if (authContext.loading) {
+  useEffect(() => {
+    // Fetch channels only if the user is authenticated
+    if (!authContext.loading && authContext.user) {
+      const fetchChannels = async () => {
+        try {
+          const response = await fetch("http://localhost:3001/channels", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adjust if using cookies or other auth methods
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch channels.");
+          }
+
+          const data: Channel[] = await response.json();
+          setChannels(data);
+        } catch (error: any) {
+          console.error("Error fetching channels:", error);
+          setChannelsError(error.message || "An error occurred.");
+        } finally {
+          setChannelsLoading(false);
+        }
+      };
+
+      fetchChannels();
+    }
+  }, [authContext.loading, authContext.user]);
+
+  if (authContext.loading || channelsLoading) {
     return (
       <div>
         <Navbar />
@@ -34,7 +81,7 @@ export default function Dashboard() {
     last_name,
     email,
     acc_creation_date,
-    channels_owned,
+    // channels_owned, // Removed since we're fetching channels separately
   } = authContext.user;
 
   return (
@@ -78,7 +125,7 @@ export default function Dashboard() {
             {/* Profile Picture Section */}
             <div className="profile-picture-section">
               <Image
-                src="/anonymous.jpg"
+                src="/anonymous.jpg" // Replace with user's actual profile picture if available
                 alt="Anonymous Profile"
                 width={200}
                 height={200}
@@ -95,16 +142,16 @@ export default function Dashboard() {
             <h2 className="user-info-title-channels">
               <strong>Your Channels</strong>
             </h2>
-            {channels_owned && channels_owned.length > 0 ? (
+            {channels && channels.length > 0 ? (
               <ul className="channels-list">
-                {channels_owned.map((channelId) => (
-                  <li key={channelId}>
+                {channels.map((channel) => (
+                  <li key={channel._id}>
                     <Link
-                      href={`/channels/${channelId}`}
+                      href={`/channels/@${encodeURIComponent(channel.channel_name)}`}
                       passHref
                       legacyBehavior
                     >
-                      <a className="channel-link">Channel ID: {channelId}</a>
+                      <a className="channel-link">@{channel.channel_name}</a>
                     </Link>
                   </li>
                 ))}
@@ -117,6 +164,8 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+        {/* Display error message if channels failed to load */}
+        {channelsError && <p className="error-message">{channelsError}</p>}
       </div>
     </div>
   );

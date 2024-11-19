@@ -1,65 +1,7 @@
-// // components/VideoCard.tsx
-
-// import Link from 'next/link';
-
-// interface Video {
-//   _id: string;
-//   title: string;
-//   description: string;
-//   video_src: string;
-// }
-
-// const VideoCard = ({ video }: { video: Video }) => {
-//   return (
-//     <div className="video-card">
-//       <Link href={`/video/${video._id}`}>
-//         <img
-//           src={`http://127.0.0.1:3001/uploads/${video.video_src}/thumbnail.jpg`}
-//           alt={video.title}
-//           className="video-thumbnail"
-//         />
-//       </Link>
-//       <div className="video-info">
-//         <h3 className="video-title">{video.title}</h3>
-//         <p className="video-description">{video.description}</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default VideoCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // components/VideoCard.tsx
 
 import Link from 'next/link';
+import styles from './VideoCard.module.css'; // Ensure this path is correct
 
 interface Video {
   _id: string;
@@ -87,24 +29,26 @@ const formatDuration = (duration: number) => {
 
 const VideoCard = ({ video }: { video: Video }) => {
   return (
-    <div className="video-card">
-      <Link href={`/video/${video._id}`}>
-        <div className="thumbnail-wrapper">
-          <img
-            src={video.thumbnail_src}
-            alt={video.title}
-            className="video-thumbnail"
-          />
-          <span className="duration">{formatDuration(video.duration)}</span>
-        </div>
+    <div className={styles.videoCard}>
+      <Link href={`/video/${video._id}`} passHref legacyBehavior>
+        <a>
+          <div className={styles.thumbnailWrapper}>
+            <img
+              src={video.thumbnail_src}
+              alt={video.title}
+              className={styles.videoThumbnail}
+            />
+            <span className={styles.duration}>{formatDuration(video.duration)}</span>
+          </div>
+          <div className={styles.videoInfo}>
+            <h3 className={styles.videoTitle}>{video.title}</h3>
+            <p className={styles.channelName}>@{video.channel_name}</p>
+            <p className={styles.metadata}>
+              {video.view_count.toLocaleString()} views • {new Date(video.date_published).toLocaleDateString()}
+            </p>
+          </div>
+        </a>
       </Link>
-      <div className="video-info">
-        <h3 className="video-title">{video.title}</h3>
-        <p className="channel-name">{video.channel_name}</p>
-        <p className="metadata">
-          {video.view_count.toLocaleString()} views • {video.date_published}
-        </p>
-      </div>
     </div>
   );
 };
