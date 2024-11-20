@@ -453,6 +453,10 @@ p {
 
 /* DASHBOARD */
 
+.no-channels {
+  margin-left: 0.75rem;
+}
+
 /* Dashboard Container Styling */
 .dashboard-container {
   display: flex;

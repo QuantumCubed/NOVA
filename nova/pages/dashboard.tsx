@@ -13,10 +13,6 @@ interface Channel {
   description: string;
   // Add other fields if necessary
 }
-// Helper function to truncate channel names
-const truncateChannelName = (name: string, length: number = 23) => {
-  return name.length > length ? name.slice(0, length) + "..." : name;
-};
 
 const Dashboard = () => {
   // **1. Declare all Hooks at the top level, unconditionally**
@@ -135,7 +131,7 @@ const Dashboard = () => {
     return (
       <div className="dashboard-container">
         <Navbar />
-        <p></p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -160,6 +156,7 @@ const Dashboard = () => {
       <div className="dashboard-content">
         <h1 className="dashboard-title">Welcome to Your Dashboard</h1>
         <div className="cards-container">
+          {/* User Information Card */}
           <div className="user-info-card">
             <div className="user-info-section">
               <h2 className="user-info-title">
@@ -190,18 +187,20 @@ const Dashboard = () => {
                 </p>
               )}
             </div>
+
+            {/* Profile Picture Section */}
             <div className="profile-picture-section">
               <Image
                 src={
-                  imageError || !pfp_src
-                    ? "/anonymous.jpg"
+                  imageError
+                    ? "/default-profile-picture.png" // Fallback image
                     : `http://localhost:3001/${UID}/profile_picture?${new Date().getTime()}`
                 }
                 alt="Profile Picture"
                 width={200}
                 height={200}
                 className="profile-picture"
-                onError={handleImageError}
+                onError={handleImageError} // Handle image load errors
               />
               <button
                 className="edit-profile-picture-button"
@@ -210,6 +209,7 @@ const Dashboard = () => {
               >
                 {isUploading ? "Uploading..." : "Edit Profile Picture"}
               </button>
+              {/* Hidden File Input */}
               <input
                 type="file"
                 accept="image/*"
@@ -219,6 +219,8 @@ const Dashboard = () => {
               />
             </div>
           </div>
+
+          {/* Channels Card */}
           <div className="user-info-card">
             <h2 className="user-info-title-channels">
               <strong>Your Channels</strong>
@@ -234,9 +236,7 @@ const Dashboard = () => {
                       passHref
                       legacyBehavior
                     >
-                      <a className="channel-link">
-                        @{truncateChannelName(channel.channel_name)}
-                      </a>
+                      <a className="channel-link">@{channel.channel_name}</a>
                     </Link>
                   </li>
                 ))}
@@ -249,6 +249,7 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
+        {/* Display error message if channels failed to load */}
         {channelsError && <p className="error-message">{channelsError}</p>}
       </div>
     </div>
