@@ -1,5 +1,3 @@
-// pages/channelsList.tsx
-
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ChannelCard from "../components/ChannelCard";
@@ -71,14 +69,14 @@ const ChannelList = () => {
   }
 
   const truncateDescription = (description: string) => {
-    if (description.length > 100) {
-      return description.slice(0, 17) + "...";
+    if (description.length > 15) {
+      return description.slice(0, 15) + "...";
     }
     return description;
   };
 
   const truncateChannelName = (name: string) => {
-    if (name.length > 10) return name.slice(0, 15) + "...";
+    if (name.length > 10) return name.slice(0, 14) + "...";
     return name;
   };
 
