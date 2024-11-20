@@ -25,7 +25,6 @@ interface UserMetaData {
     email: string,
     password: string,
     username: string,
-    pfp_src: string
 
 }
 
@@ -86,7 +85,7 @@ class DataBaseService {
 
             const user = await User.findById(uid, 'pfp_src');
 
-            return user?.pfp_src || '';
+            return user?.pfp_src;
 
         } catch (error) {
             console.error('Unable to retrieve user pfp:', error);
@@ -420,7 +419,6 @@ class DataBaseService {
                 password: await bcrypt.hash(userMeta.password, salt),
                 username: userMeta.username,
                 subscribed_to: [],
-                pfp_src: userMeta.pfp_src,
                 acc_creation_date: Date.now()
 
             });

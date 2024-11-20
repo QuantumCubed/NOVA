@@ -147,7 +147,6 @@ router.post('/user/add', async (req, res) => {
             email: email,
             password: password,
             username: username,
-            pfp_src: 'temp' //pfp_src
 
         });
 
@@ -455,7 +454,7 @@ router.get('/:uid/profile_picture', async (req, res) => {
 
         const pfp_path = await MongoService.queryUserPFP(String(req.params.uid))
 
-        if (!pfp_path || pfp_path === '') {
+        if (!pfp_path) {
             res.status(404).json({ message: 'Specified Resource Not Found!' });
             return;
         }
@@ -651,7 +650,7 @@ router.get('/:vid/thumbnail', async (req, res) => {
         res.status(200).sendFile(thumbnail_path);
     
     } catch (error) {
-        console.error('Error fetching user pfp:', error);
+        console.error('Error fetching video thumbnail:', error);
         res.status(500).json({ message: 'Internal Server Error!' });
     }
 
