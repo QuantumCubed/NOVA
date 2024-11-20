@@ -51,12 +51,15 @@ const ChannelPage = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [newDescription, setNewDescription] = useState<string>("");
-  const [updatingDescription, setUpdatingDescription] = useState<boolean>(false);
+  const [updatingDescription, setUpdatingDescription] =
+    useState<boolean>(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   // Banner Upload States
   const [isUploadingBanner, setIsUploadingBanner] = useState<boolean>(false);
-  const [bannerUploadError, setBannerUploadError] = useState<string | null>(null);
+  const [bannerUploadError, setBannerUploadError] = useState<string | null>(
+    null
+  );
   const bannerFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Channel Icon Upload States
@@ -74,7 +77,9 @@ const ChannelPage = () => {
     const fetchChannel = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/channels/name/${encodeURIComponent(channelName)}`
+          `http://localhost:3001/channels/name/${encodeURIComponent(
+            channelName
+          )}`
         );
 
         if (!response.ok) {
@@ -171,7 +176,9 @@ const ChannelPage = () => {
       });
 
       toast.success(
-        newSubscriptionState ? "Subscribed successfully!" : "Unsubscribed successfully!"
+        newSubscriptionState
+          ? "Subscribed successfully!"
+          : "Unsubscribed successfully!"
       );
     } catch (error: any) {
       console.error("Subscription error:", error);
@@ -538,7 +545,9 @@ const ChannelPage = () => {
       <div className={styles.channelBanner}>
         {channel.channel_banner_src ? (
           <img
-            src={`http://localhost:3001/channel/${channel._id}/channel_banner?t=${Date.now()}`}
+            src={`http://localhost:3001/channel/${
+              channel._id
+            }/channel_banner?t=${Date.now()}`}
             alt={`${channel.channel_name} Banner`}
             className={styles.bannerImage}
             onError={(e) => {
@@ -576,7 +585,9 @@ const ChannelPage = () => {
         <div className={styles.channelIcon}>
           {channel.channel_icon_src ? (
             <img
-              src={`http://localhost:3001/channel/${channel._id}/channel_icon?t=${Date.now()}`}
+              src={`http://localhost:3001/channel/${
+                channel._id
+              }/channel_icon?t=${Date.now()}`}
               alt={`${channel.channel_name} Icon`}
               className={styles.iconImage}
               onError={(e) => {
@@ -662,7 +673,7 @@ const ChannelPage = () => {
             <VideoCard key={video._id} video={video} />
           ))
         ) : (
-          <p>No videos available for this channel.</p>
+          <p className="no-videos">No videos available for this channel.</p>
         )}
       </main>
 
@@ -730,9 +741,7 @@ const ChannelPage = () => {
                   id="thumbnailFile"
                   accept="image/*"
                   onChange={(e) =>
-                    setThumbnailFile(
-                      e.target.files ? e.target.files[0] : null
-                    )
+                    setThumbnailFile(e.target.files ? e.target.files[0] : null)
                   }
                 />
               </div>
