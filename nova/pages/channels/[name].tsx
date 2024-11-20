@@ -13,22 +13,22 @@ interface Video {
   _id: string;
   title: string;
   description: string;
-  video_src: string;
-  thumbnail_src: string;
-  channel_name: string;
-  date_published: string;
-  viewCount: number; // Updated from view_count to viewCount
+  videoSrc: string;
+  thumbnailSrc: string;
+  channelName: string;
+  datePublished: string;
+  viewCount: number;
   duration: number;
 }
 
 interface Channel {
   _id: string;
   owner: string;
-  channel_name: string;
+  channelName: string;
   description: string;
-  subscriber_count: number;
-  channel_icon_src: string;
-  channel_banner_src: string;
+  subscriberCount: number;
+  channelIconSrc: string;
+  channelBannerSrc: string;
   videos: Video[];
 }
 
@@ -87,13 +87,37 @@ const ChannelPage = () => {
           throw new Error(errorData.message || "Channel not found.");
         }
 
-        const data: Channel = await response.json();
-        setChannel(data);
-        console.log("Fetched Channel Data:", data); // Debugging
+        const data: any = await response.json();
 
-        if (authContext?.user && authContext.user.UID !== data.owner) {
+        // Transform video fields from snake_case to camelCase
+        const transformedChannel: Channel = {
+          ...data,
+          channelName: data.channel_name,
+          subscriberCount: data.subscriber_count,
+          channelIconSrc: data.channel_icon_src,
+          channelBannerSrc: data.channel_banner_src,
+          videos: data.videos.map((video: any) => ({
+            _id: video._id,
+            title: video.title,
+            description: video.description,
+            videoSrc: video.video_src,
+            thumbnailSrc: video.thumbnail_src,
+            channelName: data.channel_name, // Assign channel name from channel data
+            datePublished: video.date_published,
+            viewCount: video.view_count,
+            duration: Number(video.duration) || 0, // Ensure duration is a number
+          })),
+        };
+
+        setChannel(transformedChannel);
+        console.log("Fetched Channel Data:", transformedChannel); // Debugging
+
+        if (
+          authContext?.user &&
+          authContext.user.UID !== transformedChannel.owner
+        ) {
           const subResponse = await fetch(
-            `http://localhost:3001/channels/${data._id}/isSubscribed`,
+            `http://localhost:3001/channels/${transformedChannel._id}/isSubscribed`,
             {
               method: "GET",
               headers: {
@@ -169,9 +193,9 @@ const ChannelPage = () => {
         if (!prevChannel) return null;
         return {
           ...prevChannel,
-          subscriber_count: newSubscriptionState
-            ? prevChannel.subscriber_count + 1
-            : prevChannel.subscriber_count - 1,
+          subscriberCount: newSubscriptionState
+            ? prevChannel.subscriberCount + 1
+            : prevChannel.subscriberCount - 1,
         };
       });
 
@@ -230,7 +254,7 @@ const ChannelPage = () => {
       formData.append("description", videoDescription);
       formData.append("tags", videoTags);
       formData.append("video_file", videoFile);
-      formData.append("channel_name", channel?.channel_name || "");
+      formData.append("channel_name", channel?.channelName || "");
       if (thumbnailFile) {
         formData.append("thumbnail", thumbnailFile);
       }
@@ -263,7 +287,7 @@ const ChannelPage = () => {
 
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channel_name
+          channel.channelName
         )}`
       );
 
@@ -271,7 +295,28 @@ const ChannelPage = () => {
         throw new Error("Failed to refresh channel data.");
       }
 
-      const updatedChannel: Channel = await updatedChannelResponse.json();
+      const updatedData: any = await updatedChannelResponse.json();
+
+      // Transform video fields from snake_case to camelCase
+      const updatedChannel: Channel = {
+        ...updatedData,
+        channelName: updatedData.channel_name,
+        subscriberCount: updatedData.subscriber_count,
+        channelIconSrc: updatedData.channel_icon_src,
+        channelBannerSrc: updatedData.channel_banner_src,
+        videos: updatedData.videos.map((video: any) => ({
+          _id: video._id,
+          title: video.title,
+          description: video.description,
+          videoSrc: video.video_src,
+          thumbnailSrc: video.thumbnail_src,
+          channelName: updatedData.channel_name, // Assign channel name from channel data
+          datePublished: video.date_published,
+          viewCount: video.view_count,
+          duration: Number(video.duration) || 0, // Ensure duration is a number
+        })),
+      };
+
       console.log("Updated Channel After Video Upload:", updatedChannel); // Debugging
       setChannel(updatedChannel);
 
@@ -339,7 +384,28 @@ const ChannelPage = () => {
         );
       }
 
-      const updatedChannel: Channel = responseData.updatedChannel;
+      const updatedData: any = responseData.updatedChannel;
+
+      // Transform video fields from snake_case to camelCase
+      const updatedChannel: Channel = {
+        ...updatedData,
+        channelName: updatedData.channel_name,
+        subscriberCount: updatedData.subscriber_count,
+        channelIconSrc: updatedData.channel_icon_src,
+        channelBannerSrc: updatedData.channel_banner_src,
+        videos: updatedData.videos.map((video: any) => ({
+          _id: video._id,
+          title: video.title,
+          description: video.description,
+          videoSrc: video.video_src,
+          thumbnailSrc: video.thumbnail_src,
+          channelName: updatedData.channel_name, // Assign channel name from channel data
+          datePublished: video.date_published,
+          viewCount: video.view_count,
+          duration: Number(video.duration) || 0, // Ensure duration is a number
+        })),
+      };
+
       console.log("Updated Channel After Description Change:", updatedChannel); // Debugging
       setChannel(updatedChannel);
       closeEditModal();
@@ -414,7 +480,7 @@ const ChannelPage = () => {
       // Refresh channel data
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channel_name
+          channel.channelName
         )}`
       );
 
@@ -422,7 +488,28 @@ const ChannelPage = () => {
         throw new Error("Failed to fetch updated channel data.");
       }
 
-      const updatedChannel: Channel = await updatedChannelResponse.json();
+      const updatedData: any = await updatedChannelResponse.json();
+
+      // Transform video fields from snake_case to camelCase
+      const updatedChannel: Channel = {
+        ...updatedData,
+        channelName: updatedData.channel_name,
+        subscriberCount: updatedData.subscriber_count,
+        channelIconSrc: updatedData.channel_icon_src,
+        channelBannerSrc: updatedData.channel_banner_src,
+        videos: updatedData.videos.map((video: any) => ({
+          _id: video._id,
+          title: video.title,
+          description: video.description,
+          videoSrc: video.video_src,
+          thumbnailSrc: video.thumbnail_src,
+          channelName: updatedData.channel_name, // Assign channel name from channel data
+          datePublished: video.date_published,
+          viewCount: video.view_count,
+          duration: Number(video.duration) || 0, // Ensure duration is a number
+        })),
+      };
+
       console.log("Updated Channel After Banner Upload:", updatedChannel); // Debugging
       setChannel(updatedChannel);
     } catch (error: any) {
@@ -498,7 +585,7 @@ const ChannelPage = () => {
       // Refresh channel data
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channel_name
+          channel.channelName
         )}`
       );
 
@@ -506,7 +593,28 @@ const ChannelPage = () => {
         throw new Error("Failed to fetch updated channel data.");
       }
 
-      const updatedChannel: Channel = await updatedChannelResponse.json();
+      const updatedData: any = await updatedChannelResponse.json();
+
+      // Transform video fields from snake_case to camelCase
+      const updatedChannel: Channel = {
+        ...updatedData,
+        channelName: updatedData.channel_name,
+        subscriberCount: updatedData.subscriber_count,
+        channelIconSrc: updatedData.channel_icon_src,
+        channelBannerSrc: updatedData.channel_banner_src,
+        videos: updatedData.videos.map((video: any) => ({
+          _id: video._id,
+          title: video.title,
+          description: video.description,
+          videoSrc: video.video_src,
+          thumbnailSrc: video.thumbnail_src,
+          channelName: updatedData.channel_name, // Assign channel name from channel data
+          datePublished: video.date_published,
+          viewCount: video.view_count,
+          duration: Number(video.duration) || 0, // Ensure duration is a number
+        })),
+      };
+
       console.log("Updated Channel After Icon Upload:", updatedChannel); // Debugging
       setChannel(updatedChannel);
     } catch (error: any) {
@@ -543,12 +651,10 @@ const ChannelPage = () => {
     <div className={styles.channelPage} key={channel._id}>
       <Navbar />
       <div className={styles.channelBanner}>
-        {channel.channel_banner_src ? (
+        {channel.channelBannerSrc ? (
           <img
-            src={`http://localhost:3001/channel/${
-              channel._id
-            }/channel_banner?t=${Date.now()}`}
-            alt={`${channel.channel_name} Banner`}
+            src={`http://localhost:3001/channel/${channel._id}/channel_banner?t=${Date.now()}`}
+            alt={`${channel.channelName} Banner`}
             className={styles.bannerImage}
             onError={(e) => {
               console.error("Failed to load banner image:", e);
@@ -583,12 +689,10 @@ const ChannelPage = () => {
       </div>
       <div className={styles.channelInfo}>
         <div className={styles.channelIcon}>
-          {channel.channel_icon_src ? (
+          {channel.channelIconSrc ? (
             <img
-              src={`http://localhost:3001/channel/${
-                channel._id
-              }/channel_icon?t=${Date.now()}`}
-              alt={`${channel.channel_name} Icon`}
+              src={`http://localhost:3001/channel/${channel._id}/channel_icon?t=${Date.now()}`}
+              alt={`${channel.channelName} Icon`}
               className={styles.iconImage}
               onError={(e) => {
                 console.error("Failed to load icon image:", e);
@@ -623,7 +727,7 @@ const ChannelPage = () => {
           )}
         </div>
         <div className={styles.channelDetails}>
-          <h1>@{channel.channel_name}</h1>
+          <h1>@{channel.channelName}</h1>
           <div className={styles.descriptionContainer}>
             <p>{channel.description}</p>
             {isChannelOwner && (
@@ -637,7 +741,7 @@ const ChannelPage = () => {
             )}
           </div>
           <p className="channelInfo">
-            Subscribers: {channel.subscriber_count.toLocaleString()}
+            Subscribers: {channel.subscriberCount.toLocaleString()}
           </p>
           <p className="channelInfo">Videos: {channel.videos.length}</p>
           {/* Subscribe/Unsubscribe Button */}
