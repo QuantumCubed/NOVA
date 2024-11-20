@@ -7,15 +7,17 @@ interface Video {
   _id: string;
   title: string;
   description: string;
-  video_src: string;
-  thumbnail_src: string;
-  channel_name: string;
-  date_published: string;
-  viewCount: number; // Updated from view_count to viewCount
-  duration: number; // Ensure this field exists in the backend
+  videoSrc: string;
+  thumbnailSrc: string;
+  channelName: string;
+  datePublished: string;
+  viewCount: number;
+  duration: number;
 }
 
 const formatDuration = (duration: number) => {
+  if (isNaN(duration) || duration < 0) return "0:00"; // Handle invalid durations
+
   const hours = Math.floor(duration / 3600);
   const minutes = Math.floor((duration % 3600) / 60);
   const seconds = duration % 60;
@@ -28,26 +30,32 @@ const formatDuration = (duration: number) => {
 };
 
 const VideoCard = ({ video }: { video: Video }) => {
+  const duration = Number(video.duration); // Ensure duration is a number
+
   return (
     <div className={styles.videoCard}>
       <Link href={`/video/${video._id}`} passHref legacyBehavior>
         <a>
           <div className={styles.thumbnailWrapper}>
             <img
-              src={video.thumbnail_src}
+              src={`http://localhost:3001/${video._id}/thumbnail`}
               alt={video.title}
               className={styles.videoThumbnail}
+              onError={(e) => {
+                console.error("Failed to load thumbnail:", e);
+                (e.target as HTMLImageElement).src = "/default-thumbnail.png"; // Fallback thumbnail
+              }}
             />
             <span className={styles.duration}>
-              {formatDuration(video.duration)}
+              {formatDuration(duration)}
             </span>
           </div>
           <div className={styles.videoInfo}>
             <h3 className={styles.videoTitle}>{video.title}</h3>
-            <p className={styles.channelName}>@{video.channel_name}</p>
+            <p className={styles.channelName}>@{video.channelName}</p>
             <p className={styles.metadata}>
-              {video.viewCount?.toLocaleString() || '0'} views •{" "}
-              {new Date(video.date_published).toLocaleDateString()}
+              {video.viewCount?.toLocaleString() || "0"} views •{" "}
+              {new Date(video.datePublished).toLocaleDateString()}
             </p>
           </div>
         </a>
