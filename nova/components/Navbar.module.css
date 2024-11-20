@@ -100,9 +100,9 @@ button.navItem:focus {
 .searchResults {
   position: absolute;
   top: 100%; /* Directly below the search bar */
-  left: 52.5%;
+  left: 50%;
   transform: translateX(-50%); /* Center results relative to the search bar */
-  width: 100%;
+  width: 80%;
   max-width: 600px;
   background-color: var(--background-color);
   border: 1px solid var(--text-color);
@@ -118,9 +118,9 @@ button.navItem:focus {
   cursor: pointer;
 }
 
-.resultItem:hover {
+/* .resultItem:hover {
   background-color: var(--hover-color);
-}
+} */
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {

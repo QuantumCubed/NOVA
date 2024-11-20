@@ -1,5 +1,3 @@
-// pages/channels.tsx
-
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useRouter } from "next/router";
@@ -17,6 +15,13 @@ interface Channel {
   channel_banner_src: string;
   videos: string[]; // vIDs
 }
+
+const truncateDescription = (description: string) => {
+  if (description.length > 15) {
+    return description.slice(0, 17) + "...";
+  }
+  return description;
+};
 
 export default function Channels() {
   const authContext = useContext(AuthContext);
@@ -92,7 +97,13 @@ export default function Channels() {
             <p className={styles.errorMessage}>{error}</p>
           ) : channels.length > 0 ? (
             channels.map((channel) => (
-              <ChannelCard key={channel._id} channel={channel} />
+              <ChannelCard
+                key={channel._id}
+                channel={{
+                  ...channel,
+                  description: truncateDescription(channel.description),
+                }}
+              />
             ))
           ) : (
             <p>You have not created any channels yet.</p>
