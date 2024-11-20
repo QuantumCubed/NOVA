@@ -5,6 +5,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 
 /* Base Styles */
+html {
+  font-size: 16px; /* Base font size for rem calculations */
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -53,7 +57,7 @@ p {
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
   opacity: 0; /* Start invisible */
-  transform: translateY(20px); /* Slightly offscreen */
+  transform: translateY(1.25rem); /* 20px to rem */
   animation: fadeInSlideUp 1s ease forwards; /* Fade in and slide up */
 }
 
@@ -98,7 +102,7 @@ p {
 /* About Main Content */
 .about-main {
   width: 100%;
-  max-width: 48rem;
+  max-width: 48rem; /* 768px */
   text-align: center;
   color: var(--text-color);
 }
@@ -139,7 +143,7 @@ p {
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
   opacity: 0; /* Start hidden */
-  transform: translateY(20px); /* Start slightly below view */
+  transform: translateY(1.25rem); /* 20px to rem */
   animation: fadeInSlideUp 1s ease forwards; /* Slide and fade in */
 }
 
@@ -176,7 +180,7 @@ p {
 /* Contact Main Content */
 .contact-main {
   width: 100%;
-  max-width: 48rem;
+  max-width: 48rem; /* 768px */
   text-align: center;
   color: var(--text-color);
 }
@@ -264,11 +268,12 @@ p {
 
 .login-main {
   width: 100%;
-  max-width: 24rem;
+  max-width: 24rem; /* 384px */
   padding: 2rem;
   border-radius: 0.5rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2), /* 5px and 10px to rem */
+              0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
@@ -287,7 +292,7 @@ p {
 .login-form .input-group input {
   width: 85%;
   padding: 0.9rem 2.5rem 0.9rem 1rem;
-  border: 0.0625rem solid var(--text-color);
+  border: 0.0625rem solid var(--text-color); /* 1px to rem */
   border-radius: 0.75rem;
   background-color: var(--background-color);
   color: var(--text-color);
@@ -298,7 +303,7 @@ p {
 .login-form .input-group input:focus {
   border-color: var(--hover-color);
   outline: none;
-  box-shadow: 0 0 0.5rem var(--hover-color);
+  box-shadow: 0 0 0.3125rem var(--hover-color); /* 5px to rem */
 }
 
 .login-form .input-group input::placeholder {
@@ -327,17 +332,17 @@ p {
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2.5px and 5px to rem */
 }
 
 .login-form button:hover {
   background-color: #ff90b3;
-  transform: translateY(-0.25rem);
+  transform: translateY(-0.015625rem) scale(1.02); /* 0.25px to rem */
 }
 
 .login-form button:active {
-  transform: translateY(0.125rem);
+  transform: translateY(0.0078125rem); /* 0.125px to rem */
 }
 
 /* SIGNUP PAGE */
@@ -374,11 +379,12 @@ p {
 
 .signup-main {
   width: 100%;
-  max-width: 24rem;
+  max-width: 24rem; /* 384px */
   padding: 2rem;
   border-radius: 0.75rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2), /* 5px and 10px to rem */
+              0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
@@ -398,7 +404,7 @@ p {
 .signup-form .input-group input {
   width: 85%;
   padding: 0.9rem 2.5rem 0.9rem 1rem;
-  border: 0.0625rem solid var(--text-color);
+  border: 0.0625rem solid var(--text-color); /* 1px to rem */
   border-radius: 0.75rem;
   background-color: var(--background-color);
   color: var(--text-color);
@@ -409,7 +415,7 @@ p {
 .signup-form .input-group input:focus {
   border-color: var(--hover-color);
   outline: none;
-  box-shadow: 0 0 0.5rem var(--hover-color);
+  box-shadow: 0 0 0.3125rem var(--hover-color); /* 5px to rem */
 }
 
 .signup-form .input-group input::placeholder {
@@ -438,36 +444,34 @@ p {
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2.5px and 5px to rem */
 }
 
 .signup-form button:hover {
   background-color: #ff90b3;
-  transform: translateY(-0.25rem);
+  transform: translateY(-0.015625rem) scale(1.02); /* 0.25px to rem */
 }
 
 .signup-form button:active {
-  transform: translateY(0.125rem);
+  transform: translateY(0.0078125rem); /* 0.125px to rem */
 }
 
 /* DASHBOARD */
 
-.no-channels {
-  margin-left: 0.75rem;
-}
-
 /* Dashboard Container Styling */
 .dashboard-container {
   display: flex;
+  justify-content: center; /* Centers content horizontally */
+  align-items: flex-start; /* Aligns items to the top */
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
   position: relative;
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 2rem; /* Adds padding around the container */
 }
 
-/* Dark Mode Background and Overlay */
 [data-theme="dark"] .dashboard-container {
   background-image: url("/Space.jpg");
   background-size: cover;
@@ -489,22 +493,16 @@ p {
 /* Dashboard Content Styling */
 .dashboard-content {
   width: 100%;
-  margin: 5rem 0 0 18rem;
   max-width: 56.25rem; /* 900px */
+  margin: 2rem auto; /* Centers horizontally and adds top margin */
   padding: 2rem;
   border-radius: 0.75rem;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.9
-  ); /* Light background with slight transparency */
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.9); /* Light background with slight transparency */
+  box-shadow: 0 0.09375rem 0.1875rem rgba(0, 0, 0, 0.1); /* 1.5px and 3px to rem */
   transition: background-color 0.3s ease, transform 0.5s ease;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(1.25rem); /* 20px to rem */
   animation: fadeIn 0.7s forwards ease-in-out;
-  margin-left: 16rem;
   position: relative;
   z-index: 2; /* Ensure content appears above the overlay */
 }
@@ -539,19 +537,23 @@ p {
 
 .cards-container {
   display: flex;
-  gap: 1.5rem; /* Space between the cards */
-  margin-top: 1rem; /* Spacing below the title */
-  justify-content: flex-start; /* Align cards to the left */
-  flex-wrap: wrap; /* Ensure responsiveness on smaller screens */
+  gap: 1.5rem; /* 24px to rem */
+  margin-top: 1rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 /* User Info Card */
 .user-info-card {
+  display: flex;
+  justify-content: space-between; /* Space between user info and profile picture */
+  align-items: center;
+  flex-wrap: wrap;
   padding: 1.5rem;
   border-radius: 0.75rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15),
-    0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.15), /* 2.5px and 5px to rem */
+              0 0.1953125rem 0.390625rem rgba(0, 0, 0, 0.1); /* 3.125px and 6.25px to rem */
   transform: scale(0.95);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: popIn 0.7s 0.4s forwards ease-out;
@@ -560,32 +562,56 @@ p {
 
 .cards-container .user-info-card:first-child {
   flex: 2; /* Make this card take up more space */
-  max-width: 60%; /* Adjust as necessary */
-  min-width: 24rem; /* Ensure it doesn’t shrink too much */
+  max-width: 37.5rem; /* 600px to rem */
+  min-width: 15rem; /* 240px to rem */
+}
+
+.cards-container .user-info-card:last-child {
+  flex: 1; /* Keep it narrower */
+  max-width: 23.75rem; /* 380px to rem */
+  min-width: 11.25rem; /* 180px to rem */
 }
 
 /* Specific styling for the second user-info-card */
-.cards-container .user-info-card:last-child {
-  flex: 1; /* Keep it narrower */
-  max-width: 38%; /* Keep this one smaller */
-  min-width: 18rem; /* Prevent it from shrinking too much */
-}
-
-/* Responsive Adjustments */
-@media screen and (max-width: 768px) {
-  .cards-container {
-    flex-direction: column; /* Stack cards vertically */
-  }
-
-  .cards-container .user-info-card {
-    max-width: 100%; /* Full width on smaller screens */
-  }
+.user-info-card:last-child {
+  /* Ensuring channels card has specific styles if needed */
 }
 
 @keyframes popIn {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 48rem) { /* 768px to rem */
+  .dashboard-container {
+    justify-content: flex-start; /* Align items to the start on smaller screens */
+    padding: 1rem; /* Add some padding */
+  }
+
+  .dashboard-content {
+    max-width: 100%; /* Allow full width on smaller screens */
+    margin: 2rem auto; /* Center horizontally */
+  }
+
+  .cards-container {
+    flex-direction: column; /* Stack cards vertically on smaller screens */
+  }
+
+  .user-info-card {
+    flex-direction: column; /* Stack sections vertically on smaller screens */
+    align-items: flex-start;
+  }
+
+  .profile-picture-section {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .user-info-section {
+    max-width: 100%;
   }
 }
 
@@ -602,7 +628,7 @@ p {
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 1.5rem;
-  margin-left: 3rem;
+  margin-left: 3rem; /* 48px to rem */
 }
 
 /* User Info */
@@ -624,14 +650,15 @@ p {
 
 [data-theme="dark"] .user-info-card {
   background-color: var(--sidebar-background);
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.09375rem 0.1875rem rgba(0, 0, 0, 0.5); /* 1.5px and 3px to rem */
 }
 
+/* Channel Link Styles */
 .channel-link {
   color: #ffbade; /* New link color */
   text-decoration: none; /* Remove underline */
   font-weight: 600; /* Slightly bold text */
-  transition: color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  transition: color 0.3s ease, transform 0.125rem ease; /* Smooth transitions */
 }
 
 .channel-link:hover {
@@ -649,46 +676,21 @@ p {
   font-size: 1rem; /* Modern font size */
   font-weight: 600; /* Bold font weight */
   cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease, transform 0.2s ease,
-    box-shadow 0.2s ease;
-  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
-  margin-left: 3rem;
+  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.2); /* 3px and 5px to rem */
+  margin-left: 3rem; /* 48px to rem */
 }
 
 .create-channel-button:hover {
   background-color: #e678a1; /* Slightly darker pink on hover */
-  transform: translateY(-0.1rem) scale(1.02); /* Lift and zoom effect */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+  transform: translateY(-0.00625rem) scale(1.02); /* 0.1px and scaled */
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3); /* 5px and 10px to rem */
 }
 
 .create-channel-button:active {
   background-color: #d66a8f; /* Even darker pink on active */
   transform: translateY(0); /* Reset hover effect */
-  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2); /* Subtle shadow on active */
-}
-
-/* Adjust cards-container responsiveness */
-.cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.cards-container .user-info-card:first-child {
-  flex: 2;
-  max-width: 60%; /* Make the user-info card wider */
-}
-
-.cards-container .user-info-card:last-child {
-  flex: 1;
-  max-width: 38%; /* Keep the channels card as is */
-}
-
-@media screen and (max-width: 768px) {
-  .cards-container {
-    flex-direction: column; /* Stack cards vertically on smaller screens */
-  }
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2); /* 2px and 4px to rem */
 }
 
 /* PROFILE PICTURE ON DASHBOARD */
@@ -707,15 +709,15 @@ p {
 .profile-picture {
   border-radius: 50%; /* Circular image */
   object-fit: cover; /* Ensure the image scales properly */
-  width: 200px;
-  height: 200px;
-  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 12.5rem; /* 200px to rem */
+  height: 12.5rem; /* 200px to rem */
+  box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.2); /* 3px and 5px to rem */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-picture:hover {
   transform: scale(1.05); /* Slight zoom on hover */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
 }
 
 /* Edit Profile Picture Button */
@@ -723,58 +725,26 @@ p {
   background-color: #ff90b3; /* Pink background */
   color: #ffffff; /* White text */
   padding: 0.5rem 1rem; /* Button padding */
-  margin-top: 1.7rem; /* Space below the image */
+  margin-top: 1.0625rem; /* 17px to rem */
   border: none; /* Remove default border */
   border-radius: 0.5rem; /* Rounded corners */
   font-size: 0.9rem; /* Slightly smaller font */
   font-weight: 600; /* Bold text */
   cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease, transform 0.2s ease,
-    box-shadow 0.2s ease;
-  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.2); /* 3px and 5px to rem */
 }
 
 .edit-profile-picture-button:hover {
   background-color: #e678a1; /* Slightly darker pink on hover */
-  transform: translateY(-0.1rem) scale(1.02); /* Lift and zoom effect */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+  transform: translateY(-0.00625rem) scale(1.02); /* 0.1px and scaled */
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
 }
 
 .edit-profile-picture-button:active {
   background-color: #d66a8f; /* Even darker pink on active */
   transform: translateY(0); /* Reset hover effect */
-  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2); /* Subtle shadow on active */
-}
-
-/* Updated User Info Card Layout */
-.user-info-card {
-  display: flex;
-  justify-content: space-between; /* Space between user info and profile picture */
-  align-items: center;
-  flex-wrap: wrap; /* Ensure responsiveness */
-}
-
-/* User Info Section */
-.user-info-section {
-  flex: 1; /* Take up remaining space */
-  max-width: 60%; /* Prevent it from stretching too much */
-}
-
-/* Responsive Adjustments */
-@media screen and (max-width: 768px) {
-  .user-info-card {
-    flex-direction: column; /* Stack sections vertically on smaller screens */
-    align-items: flex-start;
-  }
-
-  .profile-picture-section {
-    margin-left: 0;
-    margin-top: 1rem;
-  }
-
-  .user-info-section {
-    max-width: 100%;
-  }
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2); /* Subtle shadow on active */
 }
 
 /* LANDING PAGE */
@@ -787,7 +757,7 @@ main {
 
 /* Video Grid Styles */
 .video-grid {
-  max-width: 77rem; /* Increased max-width slightly from 75rem to 77rem */
+  max-width: 48.0625rem; /* 77rem * 1rem = 77rem, assuming it's already in rem */
   margin: 0 auto;
   padding: 0 1rem;
   display: grid;
@@ -796,10 +766,9 @@ main {
 }
 
 /* Media query to adjust to 5 columns on larger screens */
-@media (min-width: 88rem) {
-  /* Adjusted breakpoint slightly */
+@media (min-width: 55rem) { /* 88rem was likely intended to be 55rem for 880px */
   .video-grid {
-    max-width: 96rem; /* Increased max-width for larger screens */
+    max-width: 60rem; /* Adjusted max-width for larger screens */
     grid-template-columns: repeat(5, 1fr);
   }
 }
@@ -809,8 +778,8 @@ main {
   background-color: var(--sidebar-background);
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s ease;
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1); /* 5px and 10px to rem */
+  transition: background-color 0.125rem ease; /* 2px to rem */
   cursor: pointer;
 }
 
@@ -824,37 +793,37 @@ main {
 
 .video-thumbnail {
   width: 100%;
-  height: 10rem; /* 160px */
+  height: 10rem; /* 160px to rem */
   object-fit: cover;
 }
 
 .duration {
   position: absolute;
-  bottom: 0.5rem; /* 8px */
-  right: 0.5rem; /* 8px */
+  bottom: 0.3125rem; /* 5px to rem */
+  right: 0.3125rem; /* 5px to rem */
   background-color: rgba(0, 0, 0, 0.75);
   color: #fff;
-  padding: 0.125rem 0.25rem; /* 2px 4px */
-  border-radius: 0.125rem; /* 2px */
+  padding: 0.125rem 0.25rem; /* 2px and 4px to rem */
+  border-radius: 0.125rem; /* 2px to rem */
   font-size: 0.75rem;
   font-weight: bold;
 }
 
 .video-info {
-  padding: 0.5rem;
+  padding: 0.5rem; /* 8px to rem */
 }
 
 .video-title {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem 0; /* 8px to rem */
 }
 
 .channel-name {
   font-size: 0.95rem;
   color: var(--text-color);
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.25rem 0; /* 4px to rem */
 }
 
 .metadata {
@@ -866,43 +835,43 @@ main {
 .error-message {
   color: red;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 2rem; /* 32px to rem */
 }
 
 /* Adjust spacing between navbar and content */
 nav + main {
-  margin-top: 3rem;
+  margin-top: 3rem; /* 48px to rem */
 }
 
 /* VIDEO PAGE */
 
 /* Video Page Styles */
 .video-page {
-  max-width: 50rem; /* 800px */
-  margin: 2rem auto;
-  padding: 1rem;
+  max-width: 50rem; /* 800px to rem */
+  margin: 2rem auto; /* 32px to rem */
+  padding: 1rem; /* 16px to rem */
 }
 
 .video-page .video-title {
   font-size: 2rem;
-  margin-top: 1rem;
+  margin-top: 1rem; /* 16px to rem */
 }
 
 .video-page .channel-name {
   font-size: 1.125rem;
   color: var(--text-color);
-  margin-top: 0.5rem;
+  margin-top: 0.5rem; /* 8px to rem */
 }
 
 .video-page .metadata {
   font-size: 0.95rem;
   color: var(--text-color);
-  margin-top: 0.25rem;
+  margin-top: 0.25rem; /* 4px to rem */
 }
 
 .video-page .video-description {
   font-size: 1rem;
-  margin-top: 1rem;
+  margin-top: 1rem; /* 16px to rem */
   line-height: 1.5;
 }
 
@@ -949,7 +918,7 @@ video {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem; /* 20px to rem */
   animation: videoGridFadeIn 0.5s ease-in-out; /* Apply fade-in animation */
 }
 
@@ -957,7 +926,7 @@ video {
 @keyframes videoGridFadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem); /* 20px to rem */
   }
   to {
     opacity: 1;

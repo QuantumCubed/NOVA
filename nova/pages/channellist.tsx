@@ -1,3 +1,5 @@
+// pages/channelsList.tsx
+
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ChannelCard from "../components/ChannelCard";
@@ -69,14 +71,14 @@ const ChannelList = () => {
   }
 
   const truncateDescription = (description: string) => {
-    if (description.length > 10) {
-      return description.slice(0, 11) + "...";
+    if (description.length > 100) {
+      return description.slice(0, 100) + "...";
     }
     return description;
   };
 
   const truncateChannelName = (name: string) => {
-    if (name.length > 8) return name.slice(0, 10) + "...";
+    if (name.length > 10) return name.slice(0, 10) + "...";
     return name;
   };
 
@@ -94,11 +96,9 @@ const ChannelList = () => {
                 className={styles.channelCardWrapper}
               >
                 <ChannelCard
-                  channel={{
-                    ...channel,
-                    description: truncateDescription(channel.description),
-                    channel_name: truncateChannelName(channel.channel_name),
-                  }}
+                  channel={channel}
+                  displayName={truncateChannelName(channel.channel_name)}
+                  displayDescription={truncateDescription(channel.description)}
                 />
               </div>
             ))}
