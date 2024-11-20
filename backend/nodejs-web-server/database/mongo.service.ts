@@ -196,6 +196,15 @@ class DataBaseService {
         }
     }
 
+    queryAllVideos = async () => {
+        try {
+            return await Video.find();
+        } catch (error) {
+            console.error('Unable to retrieve all videos:', error);
+            return null;
+        }
+    }
+
     /**
      * Queries a video based on videoID
      * @param vid userID

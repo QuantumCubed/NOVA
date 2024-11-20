@@ -8,7 +8,7 @@ const videoSchemaDefinition = new Schema({
     date_published : Date,
     user : String,
     channel : String, // CID
-    thumbnail_src : String,
+    thumbnail_src : { type: String, default: '/nodejs-web-server/public/anonymous.jpg' },
     video_src : String,
     likeCount: { type: Number, default: 0 },
     likedUsers: [{ type : String }],
