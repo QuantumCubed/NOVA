@@ -130,10 +130,10 @@ const Dashboard = () => {
   if (loading || channelsLoading) {
     return (
       <>
-      <Navbar />
-      <div className="dashboard-container">
-        <p>Loading...</p>
-      </div>
+        <Navbar />
+        <div className="dashboard-container">
+          <p></p>
+        </div>
       </>
     );
   }
@@ -154,108 +154,112 @@ const Dashboard = () => {
 
   return (
     <>
-    <Navbar />
-    <div className="dashboard-container">
-      <div className="dashboard-content">
-        <h1 className="dashboard-title">Welcome to Your Dashboard</h1>
-        <div className="cards-container">
-          {/* User Information Card */}
-          <div className="user-info-card">
-            <div className="user-info-section">
-              <h2 className="user-info-title">
-                <strong>User Information</strong>
+      <Navbar />
+      <div className="dashboard-container">
+        <div className="dashboard-content">
+          <h1 className="dashboard-title">Welcome to Your Dashboard</h1>
+          <div className="cards-container">
+            {/* User Information Card */}
+            <div className="user-info-card">
+              <div className="user-info-section">
+                <h2 className="user-info-title">
+                  <strong>User Information</strong>
+                </h2>
+                <p className="user-info">
+                  <strong>Username:</strong> {username}
+                </p>
+                {first_name && (
+                  <p className="user-info">
+                    <strong>First Name:</strong> {first_name}
+                  </p>
+                )}
+                {last_name && (
+                  <p className="user-info">
+                    <strong>Last Name:</strong> {last_name}
+                  </p>
+                )}
+                {email && (
+                  <p className="user-info">
+                    <strong>Email:</strong> {email}
+                  </p>
+                )}
+                {acc_creation_date && (
+                  <p className="user-info">
+                    <strong>Account Created:</strong>{" "}
+                    {new Date(acc_creation_date).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+
+              {/* Profile Picture Section */}
+              <div className="profile-picture-section">
+                <Image
+                  src={
+                    imageError
+                      ? "/default-profile-picture.png" // Fallback image
+                      : `http://localhost:3001/${UID}/profile_picture?${new Date().getTime()}`
+                  }
+                  alt="Profile Picture"
+                  width={200}
+                  height={200}
+                  className="profile-picture"
+                  onError={handleImageError} // Handle image load errors
+                />
+                <button
+                  className="edit-profile-picture-button"
+                  onClick={handleButtonClick}
+                  disabled={isUploading}
+                >
+                  {isUploading ? "Uploading..." : "Edit Profile Picture"}
+                </button>
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+
+            {/* Channels Card */}
+            <div className="user-info-card">
+              <h2 className="user-info-title-channels">
+                <strong>Your Channels</strong>
               </h2>
-              <p className="user-info">
-                <strong>Username:</strong> {username}
-              </p>
-              {first_name && (
-                <p className="user-info">
-                  <strong>First Name:</strong> {first_name}
+              {channels && channels.length > 0 ? (
+                <ul className="channels-list">
+                  {channels.map((channel) => (
+                    <li key={channel._id}>
+                      <Link
+                        href={`/channels/@${encodeURIComponent(
+                          channel.channel_name
+                        )}`}
+                        passHref
+                        legacyBehavior
+                      >
+                        <a className="channel-link">@{channel.channel_name}</a>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="no-channels">
+                  You have not created any channels.
                 </p>
               )}
-              {last_name && (
-                <p className="user-info">
-                  <strong>Last Name:</strong> {last_name}
-                </p>
-              )}
-              {email && (
-                <p className="user-info">
-                  <strong>Email:</strong> {email}
-                </p>
-              )}
-              {acc_creation_date && (
-                <p className="user-info">
-                  <strong>Account Created:</strong>{" "}
-                  {new Date(acc_creation_date).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-
-            {/* Profile Picture Section */}
-            <div className="profile-picture-section">
-              <Image
-                src={
-                  imageError
-                    ? "/default-profile-picture.png" // Fallback image
-                    : `http://localhost:3001/${UID}/profile_picture?${new Date().getTime()}`
-                }
-                alt="Profile Picture"
-                width={200}
-                height={200}
-                className="profile-picture"
-                onError={handleImageError} // Handle image load errors
-              />
-              <button
-                className="edit-profile-picture-button"
-                onClick={handleButtonClick}
-                disabled={isUploading}
-              >
-                {isUploading ? "Uploading..." : "Edit Profile Picture"}
-              </button>
-              {/* Hidden File Input */}
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
+              <Link href="/channels" passHref legacyBehavior>
+                <button className="create-channel-button">
+                  Manage Channels
+                </button>
+              </Link>
             </div>
           </div>
-
-          {/* Channels Card */}
-          <div className="user-info-card">
-            <h2 className="user-info-title-channels">
-              <strong>Your Channels</strong>
-            </h2>
-            {channels && channels.length > 0 ? (
-              <ul className="channels-list">
-                {channels.map((channel) => (
-                  <li key={channel._id}>
-                    <Link
-                      href={`/channels/@${encodeURIComponent(
-                        channel.channel_name
-                      )}`}
-                      passHref
-                      legacyBehavior
-                    >
-                      <a className="channel-link">@{channel.channel_name}</a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="no-channels">You have not created any channels.</p>
-            )}
-            <Link href="/channels" passHref legacyBehavior>
-              <button className="create-channel-button">Manage Channels</button>
-            </Link>
-          </div>
+          {/* Display error message if channels failed to load */}
+          {channelsError && <p className="error-message">{channelsError}</p>}
         </div>
-        {/* Display error message if channels failed to load */}
-        {channelsError && <p className="error-message">{channelsError}</p>}
       </div>
-    </div>
     </>
   );
 };

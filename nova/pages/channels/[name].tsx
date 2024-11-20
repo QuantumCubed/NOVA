@@ -636,8 +636,10 @@ const ChannelPage = () => {
               </button>
             )}
           </div>
-          <p>Subscribers: {channel.subscriber_count.toLocaleString()}</p>
-          <p>Videos: {channel.videos.length}</p>
+          <p className="channelInfo">
+            Subscribers: {channel.subscriber_count.toLocaleString()}
+          </p>
+          <p className="channelInfo">Videos: {channel.videos.length}</p>
           {/* Subscribe/Unsubscribe Button */}
           {!isChannelOwner && (
             <button

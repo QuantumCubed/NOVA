@@ -115,17 +115,17 @@ const Navbar = () => {
           <button
             onClick={toggleSidebar}
             className={styles.navItem}
-            aria-label="Open Menu"
+            title="Menu"
           >
             <FaBars size={24} />
           </button>
           <Link href="/" passHref legacyBehavior>
-            <div className={styles.navItem}>
+            <div title="Home" className={styles.navItem}>
               <FaHome size={24} />
             </div>
           </Link>
           <Link href="/channellist" passHref legacyBehavior>
-            <div className={styles.navItem}>
+            <div title="Channels" className={styles.navItem}>
               <FaTv size={24} />
             </div>
           </Link>
@@ -165,7 +165,7 @@ const Navbar = () => {
           <button
             onClick={toggleTheme}
             className={styles.navItem}
-            aria-label="Toggle Dark Mode"
+            title="Toggle Theme"
           >
             {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
           </button>
@@ -175,7 +175,7 @@ const Navbar = () => {
               <button
                 onClick={handleLogout}
                 className={styles.navItem}
-                aria-label="Logout"
+                title="Logout"
               >
                 <FaSignOutAlt size={24} />
               </button>
