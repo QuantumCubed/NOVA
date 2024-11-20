@@ -920,11 +920,43 @@ video {
   display: flex; /* For proper alignment */
   flex-direction: column;
   overflow: hidden; /* Prevent content overflow */
-  animation: backgroundFadeIn 1.5s ease-in-out; /* Apply fade-in animation */
+}
+
+/* Dimmer overlay for the background */
+[data-theme="dark"] .home-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Adjust opacity as needed */
+  z-index: 1;
 }
 
 /* Ensure child elements appear above the overlay */
 .home-container > * {
   position: relative;
   z-index: 2;
+}
+
+/* Animation for the video grid */
+.video-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  animation: videoGridFadeIn 0.5s ease-in-out; /* Apply fade-in animation */
+}
+
+/* Keyframes for video grid fade-in */
+@keyframes videoGridFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

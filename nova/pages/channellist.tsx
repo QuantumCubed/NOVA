@@ -1,10 +1,8 @@
-// pages/channellist.tsx
-
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import ChannelCard from "../components/ChannelCard";
 import styles from "../styles/ChannelsList.module.css";
-import { toast } from "react-toastify"; // Import toast
+import { toast } from "react-toastify";
 
 interface Channel {
   _id: string;
@@ -25,26 +23,25 @@ const ChannelList = () => {
   useEffect(() => {
     const fetchChannels = async () => {
       try {
-        // Replace with your actual backend URL
         const response = await fetch(`http://localhost:3001/load/channels`);
         if (!response.ok) {
-          // Extract error message from response if available
           const errorData = await response.json();
           throw new Error(errorData.message || "Failed to fetch channels.");
         }
         const data: Channel[] = await response.json();
 
-        // Optional: Validate that data is an array
         if (!Array.isArray(data)) {
           throw new Error("Invalid data format received.");
         }
 
         setChannels(data);
-        toast.success("Channels loaded successfully!"); // Success toast
+        toast.success("Channels loaded successfully!");
       } catch (err: any) {
         console.error("Error fetching channels:", err);
         setError(err.message || "An error occurred while fetching channels.");
-        toast.error(err.message || "An error occurred while fetching channels."); // Error toast
+        toast.error(
+          err.message || "An error occurred while fetching channels."
+        );
       } finally {
         setLoading(false);
       }
@@ -71,6 +68,18 @@ const ChannelList = () => {
     );
   }
 
+  const truncateDescription = (description: string) => {
+    if (description.length > 10) {
+      return description.slice(0, 11) + "...";
+    }
+    return description;
+  };
+
+  const truncateChannelName = (name: string) => {
+    if (name.length > 8) return name.slice(0, 10) + "...";
+    return name;
+  };
+
   return (
     <div className={styles.channelListPage}>
       <Navbar />
@@ -78,8 +87,20 @@ const ChannelList = () => {
         <h1 className={styles.pageTitle}>All Channels</h1>
         {channels.length > 0 ? (
           <div className={styles.channelsGrid}>
-            {channels.map((channel) => (
-              <ChannelCard key={channel._id} channel={channel} />
+            {channels.map((channel, index) => (
+              <div
+                key={channel._id}
+                style={{ animationDelay: `${index * 0.1}s` }}
+                className={styles.channelCardWrapper}
+              >
+                <ChannelCard
+                  channel={{
+                    ...channel,
+                    description: truncateDescription(channel.description),
+                    channel_name: truncateChannelName(channel.channel_name),
+                  }}
+                />
+              </div>
             ))}
           </div>
         ) : (
