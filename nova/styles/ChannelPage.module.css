@@ -250,7 +250,31 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
+  margin: 0rem;
+}
+
+[data-theme="dark"] .videoGrid {
+  position: relative; /* For overlay stacking */
+  background-image: url("/Space.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Parallax effect */
+  min-height: 100vh; /* Ensure full height */
+  display: flex; /* For proper alignment */
+  flex-direction: column;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+[data-theme="dark"] .videoGrid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Adjust opacity as needed */
+  z-index: 1;
 }
 
 /* Modal Overlay */
@@ -500,5 +524,5 @@
 }
 
 .no-videos {
-  margin-left: 5rem;
+  margin-right: 1rem;
 }

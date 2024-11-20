@@ -72,13 +72,13 @@ const ChannelList = () => {
 
   const truncateDescription = (description: string) => {
     if (description.length > 100) {
-      return description.slice(0, 100) + "...";
+      return description.slice(0, 17) + "...";
     }
     return description;
   };
 
   const truncateChannelName = (name: string) => {
-    if (name.length > 10) return name.slice(0, 10) + "...";
+    if (name.length > 10) return name.slice(0, 15) + "...";
     return name;
   };
 
