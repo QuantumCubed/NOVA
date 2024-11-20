@@ -27,9 +27,10 @@
 }
 
 .mainContent {
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
   padding: 2rem 1rem; /* Adjusted padding */
+  margin-left: 7rem; /*centering content */
 }
 
 .pageTitle {
@@ -55,14 +56,14 @@
 /* Fade-In Animation for Cards */
 .channelCardWrapper {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(1.25rem);
   animation: fadeInUp 0.5s ease forwards;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem);
   }
   to {
     opacity: 1;
@@ -70,19 +71,19 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 64rem) {
   .channelsGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
   .channelsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30rem) {
   .channelsGrid {
     grid-template-columns: repeat(1, 1fr);
   }
