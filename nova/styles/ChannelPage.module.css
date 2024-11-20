@@ -11,6 +11,10 @@
   position: relative; /* Added for positioning the edit button */
 }
 
+.channelInfo {
+  font-weight: bold;
+}
+
 .channelBanner img {
   width: 100%;
   height: 300px;
@@ -129,16 +133,17 @@
 
 /* Description Container with Dynamic Alignment */
 .descriptionContainer {
-  display: flex;
   align-items: center; /* Align text and button vertically */
-  /* Ensure dynamic spacing between text and button */
-  margin-bottom: 1rem; /* Add some margin below */
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem; /* Add some margin below */
 }
 
 .descriptionContainer p {
   margin: 0; /* Remove any default margin from the <p> element */
   flex: 1; /* Allow the text to take up available space */
-  color: var(--text-color); /* Maintain proper contrast */
+  color: grey; /* Maintain proper contrast */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
 }
 
 /* Edit Button Styling */
