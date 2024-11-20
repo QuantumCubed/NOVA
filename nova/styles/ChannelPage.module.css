@@ -127,37 +127,45 @@
   color: var(--text-color);
 }
 
-/* Description Container */
+/* Description Container with Dynamic Alignment */
 .descriptionContainer {
   display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
+  align-items: center; /* Align text and button vertically */
+  /* Ensure dynamic spacing between text and button */
+  margin-bottom: 1rem; /* Add some margin below */
 }
 
 .descriptionContainer p {
-  flex: 1;
-  margin-right: 0.5rem;
-  white-space: pre-wrap; /* Preserve line breaks */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limit to 3 lines */
-  -webkit-box-orient: vertical;
+  margin: 0; /* Remove any default margin from the <p> element */
+  flex: 1; /* Allow the text to take up available space */
+  color: var(--text-color); /* Maintain proper contrast */
 }
 
-/* Edit Button */
+/* Edit Button Styling */
 .editButton {
-  background: none;
+  background-color: #ff90b3; /* Highlight color for the button */
   border: none;
-  color: var(--text-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
   cursor: pointer;
-  font-size: 1.25rem;
-  transition: color 0.3s ease;
-  padding: 0.25rem;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  color: #fff; /* White text for contrast */
+  display: flex;
+  align-items: center;
 }
 
 .editButton:hover {
-  color: #ff90b3; /* Hover color */
+  transform: translateY(-0.1rem); /* Subtle hover effect */
+  background-color: #ff5775; /* Slightly darker highlight on hover */
+}
+
+.editButton:active {
+  transform: translateY(0.1rem); /* Button pressed effect */
+}
+
+/* Dynamic handling for dark mode */
+[data-theme="dark"] .descriptionContainer p {
+  color: rgba(255, 255, 255, 0.85); /* Ensure visibility of text */
 }
 
 /* Upload Button */
@@ -434,4 +442,58 @@
     bottom: 5px;
     right: 5px;
   }
+}
+
+.channelPage {
+  padding: 0; /* Removed extra padding to position navbar at the top */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Description and Stats with Grey Background in Dark Mode */
+[data-theme="dark"] .channelInfo {
+  background-color: #202020;
+}
+
+/* Aligning Description Edit Button */
+.descriptionContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Adds spacing between description and button */
+  width: 1%;
+}
+
+/* Navbar sticky positioning fix */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--navbar-background);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade-up Animations for Elements */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.channelInfo,
+.videoGrid {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+.channelBanner {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+.no-videos {
+  margin-left: 5rem;
 }

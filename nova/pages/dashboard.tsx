@@ -1,12 +1,6 @@
 // pages/dashboard.tsx
 
-import {
-  useContext,
-  useEffect,
-  useState,
-  ChangeEvent,
-  useRef,
-} from "react";
+import { useContext, useEffect, useState, ChangeEvent, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
@@ -100,7 +94,9 @@ const Dashboard = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to upload profile picture.");
+        throw new Error(
+          errorData.message || "Failed to upload profile picture."
+        );
       }
 
       toast.success("Profile picture updated successfully!");
@@ -234,7 +230,9 @@ const Dashboard = () => {
                 {channels.map((channel) => (
                   <li key={channel._id}>
                     <Link
-                      href={`/channels/@${encodeURIComponent(channel.channel_name)}`}
+                      href={`/channels/@${encodeURIComponent(
+                        channel.channel_name
+                      )}`}
                       passHref
                       legacyBehavior
                     >
@@ -244,7 +242,7 @@ const Dashboard = () => {
                 ))}
               </ul>
             ) : (
-              <p>You have not created any channels yet.</p>
+              <p className="no-channels">You have not created any channels.</p>
             )}
             <Link href="/channels" passHref legacyBehavior>
               <button className="create-channel-button">Manage Channels</button>

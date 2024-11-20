@@ -1,0 +1,118 @@
+/* Default styles */
+.createChannelPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color); /* Fallback for light mode */
+  color: var(--text-color);
+  animation: fadeIn 0.8s ease-in-out;
+  position: relative; /* To position the overlay */
+}
+
+.createChannelPage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s; /* Smooth transition for overlay */
+  z-index: 0; /* Behind content */
+}
+
+[data-theme="dark"] .createChannelPage {
+  background-image: url("/Space.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+[data-theme="dark"] .createChannelPage::before {
+  opacity: 1; /* Show overlay in dark mode */
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative; /* Ensure content is above the overlay */
+  z-index: 1; /* Ensure content is above the overlay */
+}
+
+/* Other styles remain unchanged */
+.fadeIn {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.createChannelForm {
+  width: 100%;
+  max-width: 31.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 0.75rem;
+  border: 0.0625rem solid var(--text-color);
+  border-radius: 0.5rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #ffbade;
+  outline: none;
+  box-shadow: 0 0 0.5rem #ffbade;
+}
+
+.createButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #ffbade;
+  color: var(--background-color);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.createButton:hover {
+  background-color: #ff90b3;
+  transform: translateY(-0.25rem);
+}
+
+.errorMessage {
+  color: red;
+  text-align: center;
+}

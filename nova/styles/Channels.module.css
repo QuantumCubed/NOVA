@@ -1,125 +1,142 @@
 /* frontend/styles/Channels.module.css */
 
+/* Add fade-up animation */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem); /* 16px */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .channelsPage {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   color: var(--text-color);
   background-color: var(--background-color);
+  position: relative; /* Ensure relative positioning for overlay */
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.channelsPage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmer overlay */
+  z-index: -1; /* Ensure the overlay stays behind the content */
 }
 
 .channelsContent {
   flex: 1;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up effect for the main content */
 }
 
-.channelsMain {
+.headerRow {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.channelsMain h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: var(--text-color);
-}
-
-.channelsList {
-  display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1.5rem;
-  width: 100%;
-  margin-bottom: 3rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up for the header row */
 }
 
-.channelCard {
-  flex: 1 1 250px; /* Grow and shrink with a base size of 250px */
-  max-width: calc(33.33% - 1.5rem); /* Three columns on larger screens */
-  min-width: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fff;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-  text-decoration: none;
-}
-
-.channelCard:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  text-decoration: none;
-}
-
-.createChannelSection {
-  width: 100%;
-  max-width: 600px;
-}
-
-.createChannelSection h2 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
+.pageTitle {
+  font-size: 2rem;
+  font-weight: bold;
   color: var(--text-color);
+  margin-right: 2rem; /* Adjust this value to increase/decrease space */
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up for the page title */
 }
 
-.createChannelForm {
-  display: flex;
-  flex-direction: column;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5rem;
-}
-
-.formGroup label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.formGroup input,
-.formGroup textarea {
-  padding: 0.75rem;
-  border: 0.0625rem solid var(--text-color);
-  border-radius: 0.5rem;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.formGroup input:focus,
-.formGroup textarea:focus {
-  border-color: #ffbade; /* Highlight color */
-  outline: none;
-  box-shadow: 0 0 0.5rem #ffbade;
-}
-
-.createButton {
+.createChannelButton {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: bold;
+  background-color: #ffbade;
   color: var(--background-color);
-  background-color: #ffbade; /* Highlight color */
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up for the button */
 }
 
-.createButton:hover {
+/* Change button text color in light mode */
+[data-theme="light"] .createChannelButton {
+  color: #000000; /* Black text color */
+}
+
+.createChannelButton:hover {
   background-color: #ff90b3;
   transform: translateY(-0.25rem);
 }
 
-.createButton:active {
+.createChannelButton:active {
   transform: translateY(0.125rem);
+}
+
+.channelsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: start;
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up for the list of channels */
+}
+
+.channelCard {
+  flex: 1 1 20rem; /* Sets a minimum width of 20rem */
+  max-width: 30rem; /* Increases maximum width */
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  animation: fadeUp 0.5s ease-out forwards; /* Apply fade-up to each channel card */
+}
+
+.channelCard:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Channel card fade-up delay */
+.channelCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.channelCard:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.channelCard:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.channelCard:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.channelCard:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+/* Add fade-up animation to other sections if needed */
+.createChannelSection h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  animation: fadeUp 0.5s ease-out forwards; /* Fade-up for the create channel section title */
 }
 
 .errorMessage {
@@ -128,7 +145,7 @@
   text-align: center;
 }
 
-/* Parallax effect container with dark overlay */
+/* Dark theme overlay */
 [data-theme="dark"] .channelsPage {
   background-image: url("/Space.jpg");
   background-size: cover;
@@ -139,7 +156,6 @@
   display: flex; /* Aligns content */
   flex-direction: column;
   overflow: hidden; /* Prevent content overflow */
-  animation: backgroundFadeIn 1.5s ease-in-out; /* Apply fade-in animation */
 }
 
 /* Dark overlay effect applied only to the background */
@@ -150,7 +166,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black overlay */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
   z-index: -1; /* Ensure the overlay stays behind the content */
   opacity: 1; /* Make overlay visible */
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
 }

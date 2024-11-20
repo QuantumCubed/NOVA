@@ -1,72 +1,89 @@
-/* styles/ChannelsList.module.css */
-
 .channelListPage {
-    padding: 2rem;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  padding: 0; /* Removed extra padding */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] .channelListPage {
+  background-image: url("/Space.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .channelListPage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem; /* Adjusted padding */
+}
+
+.pageTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.channelsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  color: var(--text-color);
+}
+
+/* Fade-In Animation for Cards */
+.channelCardWrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .mainContent {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .pageTitle {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: var(--text-color);
-  }
-  
-  .channelsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
-  }
-  
-  .loading,
-  .error {
-    text-align: center;
-    font-size: 1.5rem;
-    margin-top: 2rem;
-    color: var(--text-color);
-  }
-  
-  /* Load More Button Styles (Optional for Pagination) */
-  .loadMoreButton {
-    display: block;
-    margin: 2rem auto;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #ffbade;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .loadMoreButton:hover {
-    background-color: #ff90b3;
-    transform: translateY(-0.25rem);
-  }
-  
-  .loadMoreButton:active {
-    background-color: #d66a8f;
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
-  
-  /* Responsive Adjustments */
-  @media (max-width: 768px) {
-    .channelsGrid {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    }
-  
-    .loadMoreButton {
-      width: 100%;
-    }
+}
+
+@media (max-width: 1024px) {
+  .channelsGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  
+}
+
+@media (max-width: 768px) {
+  .channelsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .channelsGrid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
