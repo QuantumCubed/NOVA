@@ -18,6 +18,8 @@ interface Channel {
 
 interface ChannelCardProps {
   channel: Channel;
+  displayName?: string;
+  displayDescription?: string;
   isEditable?: boolean;
   onEdit?: (channelId: string) => void;
   onDelete?: (channelId: string) => void;
@@ -25,6 +27,8 @@ interface ChannelCardProps {
 
 const ChannelCard = ({
   channel,
+  displayName,
+  displayDescription,
   isEditable = false,
   onEdit,
   onDelete,
@@ -72,8 +76,10 @@ const ChannelCard = ({
               )}
             </div>
             <div className={styles.channelDetails}>
-              <h3 className={styles.channelName}>{channel.channel_name}</h3>
-              <p className={styles.channelDescription}>{channel.description}</p>
+              <h3 className={styles.channelName}>{displayName || channel.channel_name}</h3>
+              <p className={styles.channelDescription}>
+                {displayDescription || channel.description}
+              </p>
               <p className={styles.subscriberCount}>
                 {channel.subscriber_count.toLocaleString()} Subscribers
               </p>
