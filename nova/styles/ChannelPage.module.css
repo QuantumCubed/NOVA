@@ -289,7 +289,7 @@
 }
 
 .uploadForm label {
-  display: block;
+  display:block;
   margin-bottom: 0.5rem;
 }
 
@@ -371,28 +371,6 @@
   box-shadow: 0 0 0.5rem rgba(255, 186, 222, 0.5);
 }
 
-/* Optional: Channel Icon Edit Button Styling */
-.iconEditButton {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.7);
-  border: none;
-  border-radius: 50%;
-  padding: 0.3rem;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.iconEditButton:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-}
-
-.iconEditButton:active {
-  transform: scale(1);
-}
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .channelInfo {
@@ -434,10 +412,10 @@
     bottom: 5px;
     right: 5px;
   }
-}
 
-/* Ensures links do not have default blue color on focus */
-.channelPage a {
-  color: inherit; /* Inherit the color from the parent */
-  text-decoration: none; /* Remove underline by default */
+  /* Ensures links do not have default blue color on focus */
+  .channelPage a {
+    color: inherit; /* Inherit the color from the parent */
+    text-decoration: none; /* Remove underline by default */
+  }
 }

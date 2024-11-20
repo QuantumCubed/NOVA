@@ -47,7 +47,7 @@ const ChannelCard = ({ channel, isEditable = false, onEdit, onDelete }: ChannelC
         <a>
           <div className={styles.channelBanner}>
             {channel.channel_banner_src ? (
-              <img src={channel.channel_banner_src} alt={`${channel.channel_name} Banner`} />
+              <img src={`http://127.0.0.1:3001/channel/${channel._id}/channel_banner`} alt={`${channel.channel_name} Banner`} />
             ) : (
               <div className={styles.defaultBanner}>No Banner</div>
             )}
@@ -55,7 +55,7 @@ const ChannelCard = ({ channel, isEditable = false, onEdit, onDelete }: ChannelC
           <div className={styles.channelInfo}>
             <div className={styles.channelIcon}>
               {channel.channel_icon_src ? (
-                <img src={channel.channel_icon_src} alt={`${channel.channel_name} Icon`} />
+                <img src={`http://127.0.0.1:3001/channel/${channel._id}/channel_icon`} alt={`${channel.channel_name} Icon`} />
               ) : (
                 <div className={styles.defaultIcon}>CI</div>
               )}

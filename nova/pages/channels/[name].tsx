@@ -51,15 +51,12 @@ const ChannelPage = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [newDescription, setNewDescription] = useState<string>("");
-  const [updatingDescription, setUpdatingDescription] =
-    useState<boolean>(false);
+  const [updatingDescription, setUpdatingDescription] = useState<boolean>(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   // Banner Upload States
   const [isUploadingBanner, setIsUploadingBanner] = useState<boolean>(false);
-  const [bannerUploadError, setBannerUploadError] = useState<string | null>(
-    null
-  );
+  const [bannerUploadError, setBannerUploadError] = useState<string | null>(null);
   const bannerFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Channel Icon Upload States
@@ -361,9 +358,6 @@ const ChannelPage = () => {
     }
 
     const formData = new FormData();
-    // Add both required fields - empty file for icon since we're only updating banner
-    const emptyFile = new File([""], "empty.png", { type: "image/png" });
-    formData.append("channel_icon", emptyFile);
     formData.append("channel_banner", file);
 
     setIsUploadingBanner(true);
@@ -455,10 +449,7 @@ const ChannelPage = () => {
     }
 
     const formData = new FormData();
-    // Add both required fields - empty file for banner since we're only updating icon
-    const emptyFile = new File([""], "empty.png", { type: "image/png" });
     formData.append("channel_icon", file);
-    formData.append("channel_banner", emptyFile);
 
     setIsUploadingIcon(true);
     setIconUploadError(null);
@@ -553,9 +544,7 @@ const ChannelPage = () => {
       <div className={styles.channelBanner}>
         {channel.channel_banner_src ? (
           <img
-            src={`http://localhost:3001${
-              channel.channel_banner_src
-            }?t=${Date.now()}`}
+            src={`http://localhost:3001/channel/${channel._id}/channel_banner?t=${Date.now()}`}
             alt={`${channel.channel_name} Banner`}
             className={styles.bannerImage}
             onError={(e) => {
@@ -593,9 +582,7 @@ const ChannelPage = () => {
         <div className={styles.channelIcon}>
           {channel.channel_icon_src ? (
             <img
-              src={`http://localhost:3001${
-                channel.channel_icon_src
-              }?t=${Date.now()}`}
+              src={`http://localhost:3001/channel/${channel._id}/channel_icon?t=${Date.now()}`}
               alt={`${channel.channel_name} Icon`}
               className={styles.iconImage}
               onError={(e) => {
@@ -702,7 +689,7 @@ const ChannelPage = () => {
             <h2>Upload Video</h2>
             <form onSubmit={handleUpload} className={styles.uploadForm}>
               <div className={styles.formGroup}>
-                <label htmlFor="videoTitle">Title</label>
+                <label htmlFor="videoTitle">Title</label
                 <input
                   type="text"
                   id="videoTitle"
@@ -749,7 +736,9 @@ const ChannelPage = () => {
                   id="thumbnailFile"
                   accept="image/*"
                   onChange={(e) =>
-                    setThumbnailFile(e.target.files ? e.target.files[0] : null)
+                    setThumbnailFile(
+                      e.target.files ? e.target.files[0] : null
+                    )
                   }
                 />
               </div>
