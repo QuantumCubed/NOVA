@@ -3,8 +3,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import dashjs from "dashjs";
-import styles from "../../styles/VideoPage.module.css"; // Ensure this CSS module exists
+import styles from "../../styles/VideoPage.module.css";
 
 interface Video {
   _id: string;
@@ -15,7 +14,7 @@ interface Video {
   channel_name: string;
   date_published: string;
   view_count: number;
-  duration: number; // Duration in seconds
+  duration: number;
 }
 
 export default function VideoPage() {
@@ -37,11 +36,9 @@ export default function VideoPage() {
           throw new Error("Video not found.");
         }
         const data = await response.json();
-        console.log("Fetched Video Data:", data); // Debugging line
+        console.log("Fetched Video Data:", data);
 
-        // **Correct the Path Prefix Here**
         if (data.video_src && !data.video_src.startsWith('http')) {
-          // Directly set to the correct backend URL
           data.video_src = `https://127.0.0.1:8443/watch/${id}/output.mpd`;
         }
 
@@ -59,14 +56,18 @@ export default function VideoPage() {
 
   useEffect(() => {
     if (video) {
-      const player = dashjs.MediaPlayer().create();
-      const videoElement = document.querySelector("#videoPlayer") as HTMLMediaElement | null;
-      if (videoElement) {
-        player.initialize(videoElement, video.video_src, true);
-      }
-      return () => {
-        player.reset();
-      };
+      import('dashjs').then(dashjs => {
+        const player = dashjs.MediaPlayer().create();
+        const videoElement = document.querySelector("#videoPlayer") as HTMLMediaElement | null;
+        if (videoElement) {
+          player.initialize(videoElement, video.video_src, true);
+        }
+        return () => {
+          player.reset();
+        };
+      }).catch(err => {
+        console.error("Failed to load dashjs:", err);
+      });
     }
   }, [video]);
 
