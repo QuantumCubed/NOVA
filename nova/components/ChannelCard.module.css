@@ -7,7 +7,8 @@
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  height: 350px; /* Increased height to accommodate action buttons */
+  height: 20rem;
+  width: 16rem;
 }
 
 .channelCard:hover {
@@ -17,13 +18,13 @@
 
 .channelBanner img {
   width: 100%;
-  height: 150px;
+  height: 9.375rem;
   object-fit: cover;
 }
 
 .defaultBanner {
   width: 100%;
-  height: 150px;
+  height: 9.375rem;
   background-color: #cccccc;
   display: flex;
   align-items: center;
@@ -38,16 +39,16 @@
 }
 
 .channelIcon img {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 50%;
   object-fit: cover;
   border: 0.125rem solid var(--hover-color);
 }
 
 .defaultIcon {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 50%;
   background-color: #666666;
   display: flex;
@@ -85,8 +86,8 @@
 
 .actionButtons {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0.625rem;
+  right: 0.625rem;
   display: flex;
   gap: 0.5rem;
 }
@@ -98,7 +99,6 @@
   border-radius: 50%;
   padding: 0.5rem;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 .editButton:hover,
@@ -108,5 +108,14 @@
 
 .editButton:focus,
 .deleteButton:focus {
-  outline: 2px solid var(--hover-color);
+  outline: 0.125rem solid var(--hover-color);
+}
+
+.channelCard a {
+  color: inherit; /* Inherit the color from the parent */
+  text-decoration: none; /* Remove underline by default */
+}
+
+.channelCard a:focus {
+  outline: none; /* Remove default focus outline */
 }

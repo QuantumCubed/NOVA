@@ -16,6 +16,59 @@
   margin: 0 auto;
 }
 
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.channelsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.channelCard {
+  flex: 1 1 300px; /* Wider cards */
+  max-width: calc(33.33% - 2rem);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  animation: popUp 0.5s ease forwards;
+}
+
+@keyframes popUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.createChannelButton {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--background-color);
+  background-color: #ffbade;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.createChannelButton:hover {
+  background-color: #ff90b3;
+  transform: translateY(-0.25rem);
+}
+
 .channelsMain {
   display: flex;
   flex-direction: column;
@@ -38,7 +91,7 @@
 }
 
 .channelCard {
-  flex: 1 1 250px; /* Grow and shrink with a base size of 250px */
+  flex: 1 1 350px; /* Grow and shrink with a base size of 250px */
   max-width: calc(33.33% - 1.5rem); /* Three columns on larger screens */
   min-width: 250px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -150,7 +203,46 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black overlay */
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black overlay */
   z-index: -1; /* Ensure the overlay stays behind the content */
   opacity: 1; /* Make overlay visible */
+}
+
+.channelsGrid {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.yourChannelsSection {
+  flex: 2;
+}
+
+.createChannelButtonContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.createChannelButton {
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--background-color);
+  background-color: #ffbade;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.createChannelButton:hover {
+  background-color: #ff90b3;
+  transform: translateY(-0.25rem);
+}
+
+.createChannelButton:active {
+  transform: translateY(0.125rem);
 }

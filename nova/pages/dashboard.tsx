@@ -1,12 +1,6 @@
 // pages/dashboard.tsx
 
-import {
-  useContext,
-  useEffect,
-  useState,
-  ChangeEvent,
-  useRef,
-} from "react";
+import { useContext, useEffect, useState, ChangeEvent, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
@@ -100,7 +94,9 @@ const Dashboard = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to upload profile picture.");
+        throw new Error(
+          errorData.message || "Failed to upload profile picture."
+        );
       }
 
       toast.success("Profile picture updated successfully!");
@@ -196,8 +192,8 @@ const Dashboard = () => {
             <div className="profile-picture-section">
               <Image
                 src={
-                  imageError
-                    ? "/default-profile-picture.png" // Fallback image
+                  imageError || !pfp_src
+                    ? "/anonymous.jpg" // Fallback for new users or image errors
                     : `http://localhost:3001/${UID}/profile_picture?${new Date().getTime()}`
                 }
                 alt="Profile Picture"
@@ -206,6 +202,7 @@ const Dashboard = () => {
                 className="profile-picture"
                 onError={handleImageError} // Handle image load errors
               />
+
               <button
                 className="edit-profile-picture-button"
                 onClick={handleButtonClick}
@@ -234,7 +231,9 @@ const Dashboard = () => {
                 {channels.map((channel) => (
                   <li key={channel._id}>
                     <Link
-                      href={`/channels/@${encodeURIComponent(channel.channel_name)}`}
+                      href={`/channels/@${encodeURIComponent(
+                        channel.channel_name
+                      )}`}
                       passHref
                       legacyBehavior
                     >

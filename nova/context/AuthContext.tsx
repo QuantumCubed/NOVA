@@ -122,12 +122,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Fetch full user profile using the token
-      const profileResponse = await fetch("http://localhost:3001/user/profile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const profileResponse = await fetch(
+        "http://localhost:3001/user/profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!profileResponse.ok) {
         const errorText = await profileResponse.text();
@@ -214,12 +217,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const profileResponse = await fetch("http://localhost:3001/user/profile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const profileResponse = await fetch(
+        "http://localhost:3001/user/profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!profileResponse.ok) {
         const errorText = await profileResponse.text();
@@ -266,12 +272,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const fetchUserProfile = async () => {
         try {
-          const profileResponse = await fetch("http://localhost:3001/user/profile", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const profileResponse = await fetch(
+            "http://localhost:3001/user/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
           if (!profileResponse.ok) {
             const errorText = await profileResponse.text();
@@ -312,7 +321,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, signup, login, logout, createChannel, refetchUser }} // Included refetchUser
+      value={{
+        user,
+        loading,
+        signup,
+        login,
+        logout,
+        createChannel,
+        refetchUser,
+      }} // Included refetchUser
     >
       {children}
     </AuthContext.Provider>

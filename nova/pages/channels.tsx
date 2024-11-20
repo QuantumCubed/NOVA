@@ -1,5 +1,3 @@
-// frontend/pages/channels.tsx
-
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useRouter } from "next/router";
@@ -15,7 +13,7 @@ interface Channel {
   subscriber_count: number;
   channel_icon_src: string;
   channel_banner_src: string;
-  videos: string[]; // vIDs
+  videos: string[];
 }
 
 export default function Channels() {
@@ -24,12 +22,6 @@ export default function Channels() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // States for creating a new channel
-  const [channelName, setChannelName] = useState("");
-  const [channelDescription, setChannelDescription] = useState("");
-  const [createError, setCreateError] = useState<string | null>(null);
-  const [creating, setCreating] = useState<boolean>(false);
 
   useEffect(() => {
     if (!authContext.loading && !authContext.user) {
@@ -74,62 +66,36 @@ export default function Channels() {
     }
   };
 
-  const handleCreateChannel = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCreateError(null);
-    setCreating(true);
-
-    if (channelName.trim() === "") {
-      setCreateError("Channel name is required.");
-      setCreating(false);
-      return;
+  const truncateDescription = (description: string) => {
+    if (description.length > 10) {
+      return description.slice(0, 11) + "...";
     }
+    return description;
+  };
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found.");
-      }
+  const truncateChannelName = (name: string) => {
+    if (name.length > 8) return name.slice(0, 10) + "...";
+    return name;
+  };
 
-      const response = await fetch("http://localhost:3001/channel/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          channel_name: channelName,
-          channel_description: channelDescription,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create channel.");
-      }
-
-      // Fetch the updated channels list
-      await fetchChannels();
-
-      // Reset form fields
-      setChannelName("");
-      setChannelDescription("");
-    } catch (error: any) {
-      console.error("Error creating channel:", error);
-      setCreateError(
-        error.message || "An error occurred while creating the channel."
-      );
-    } finally {
-      setCreating(false);
-    }
+  const redirectToCreateChannel = () => {
+    router.push("/create-channel");
   };
 
   return (
     <div className={styles.channelsPage}>
       <Navbar />
       <div className={styles.channelsContent}>
-        <main className={styles.channelsMain}>
+        <div className={styles.headerRow}>
           <h1>Your Channels</h1>
+          <button
+            className={styles.createChannelButton}
+            onClick={redirectToCreateChannel}
+          >
+            Create New Channel
+          </button>
+        </div>
+        <div className={styles.channelsGrid}>
           {loading ? (
             <p>Loading channels...</p>
           ) : error ? (
@@ -137,52 +103,20 @@ export default function Channels() {
           ) : channels.length > 0 ? (
             <div className={styles.channelsList}>
               {channels.map((channel) => (
-                <ChannelCard key={channel._id} channel={channel} />
+                <ChannelCard
+                  key={channel._id}
+                  channel={{
+                    ...channel,
+                    description: truncateDescription(channel.description),
+                    channel_name: truncateChannelName(channel.channel_name),
+                  }}
+                />
               ))}
             </div>
           ) : (
             <p>You have not created any channels yet.</p>
           )}
-
-          <div className={styles.createChannelSection}>
-            <h2>Create a New Channel</h2>
-            <form
-              onSubmit={handleCreateChannel}
-              className={styles.createChannelForm}
-            >
-              <div className={styles.formGroup}>
-                <label htmlFor="channelName">Channel Name:</label>
-                <input
-                  type="text"
-                  id="channelName"
-                  value={channelName}
-                  onChange={(e) => setChannelName(e.target.value)}
-                  required
-                  placeholder="Enter channel name"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="channelDescription">Description:</label>
-                <input
-                  id="channelDescription"
-                  value={channelDescription}
-                  onChange={(e) => setChannelDescription(e.target.value)}
-                  placeholder="Enter channel description"
-                />
-              </div>
-              {createError && (
-                <p className={styles.errorMessage}>{createError}</p>
-              )}
-              <button
-                type="submit"
-                disabled={creating}
-                className={styles.createButton}
-              >
-                {creating ? "Creating..." : "Create Channel"}
-              </button>
-            </form>
-          </div>
-        </main>
+        </div>
       </div>
     </div>
   );
