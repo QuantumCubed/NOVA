@@ -943,6 +943,7 @@ main {
   box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.1); /* 5px and 10px to rem */
   transition: background-color 0.125rem ease; /* 2px to rem */
   cursor: pointer;
+  width: 10rem;
 }
 
 .video-card:hover {
@@ -1009,31 +1010,31 @@ nav + main {
 
 /* Video Page Styles */
 .video-page {
-  max-width: 50rem; /* 800px to rem */
-  margin: 2rem auto; /* 32px to rem */
-  padding: 1rem; /* 16px to rem */
+  max-width: 50rem; /* 800px */
+  margin: 2rem auto;
+  padding: 1rem;
 }
 
 .video-page .video-title {
   font-size: 2rem;
-  margin-top: 1rem; /* 16px to rem */
+  margin-top: 1rem;
 }
 
 .video-page .channel-name {
   font-size: 1.125rem;
   color: var(--text-color);
-  margin-top: 0.5rem; /* 8px to rem */
+  margin-top: 0.5rem;
 }
 
 .video-page .metadata {
   font-size: 0.95rem;
   color: var(--text-color);
-  margin-top: 0.25rem; /* 4px to rem */
+  margin-top: 0.25rem;
 }
 
 .video-page .video-description {
   font-size: 1rem;
-  margin-top: 1rem; /* 16px to rem */
+  margin-top: 1rem;
   line-height: 1.5;
 }
 
@@ -1077,10 +1078,11 @@ video {
 
 /* Animation for the video grid */
 .video-grid {
-  display: flex;
+  display: grid;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.25rem; /* 20px to rem */
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 20px;
   animation: videoGridFadeIn 0.5s ease-in-out; /* Apply fade-in animation */
 }
 
@@ -1088,7 +1090,7 @@ video {
 @keyframes videoGridFadeIn {
   from {
     opacity: 0;
-    transform: translateY(1.25rem); /* 20px to rem */
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
