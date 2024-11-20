@@ -11,8 +11,8 @@ interface Video {
   thumbnail_src: string;
   channel_name: string;
   date_published: string;
-  view_count: number;
-  duration: number; // Duration in seconds
+  viewCount: number; // Updated from view_count to viewCount
+  duration: number; // Ensure this field exists in the backend
 }
 
 const formatDuration = (duration: number) => {
@@ -46,7 +46,7 @@ const VideoCard = ({ video }: { video: Video }) => {
             <h3 className={styles.videoTitle}>{video.title}</h3>
             <p className={styles.channelName}>@{video.channel_name}</p>
             <p className={styles.metadata}>
-              {video.view_count.toLocaleString()} views •{" "}
+              {video.viewCount?.toLocaleString() || '0'} views •{" "}
               {new Date(video.date_published).toLocaleDateString()}
             </p>
           </div>

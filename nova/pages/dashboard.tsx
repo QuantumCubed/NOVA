@@ -129,10 +129,12 @@ const Dashboard = () => {
   // **6. Render Component**
   if (loading || channelsLoading) {
     return (
+      <>
+      <Navbar />
       <div className="dashboard-container">
-        <Navbar />
         <p>Loading...</p>
       </div>
+      </>
     );
   }
 
@@ -151,8 +153,9 @@ const Dashboard = () => {
   } = user;
 
   return (
+    <>
+    <Navbar />
     <div className="dashboard-container">
-      <Navbar />
       <div className="dashboard-content">
         <h1 className="dashboard-title">Welcome to Your Dashboard</h1>
         <div className="cards-container">
@@ -253,6 +256,7 @@ const Dashboard = () => {
         {channelsError && <p className="error-message">{channelsError}</p>}
       </div>
     </div>
+    </>
   );
 };
 

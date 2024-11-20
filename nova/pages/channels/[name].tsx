@@ -17,7 +17,7 @@ interface Video {
   thumbnail_src: string;
   channel_name: string;
   date_published: string;
-  view_count: number;
+  viewCount: number; // Updated from view_count to viewCount
   duration: number;
 }
 

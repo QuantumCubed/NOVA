@@ -13,7 +13,7 @@ interface Video {
   thumbnail_src: string;
   channel_name: string;
   date_published: string;
-  view_count: number;
+  viewCount: number;
   duration: number; // Duration in seconds
 }
 
@@ -48,7 +48,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Exploring+the+Universe",
             channel_name: "SpaceTraveler",
             date_published: "2023-01-15",
-            view_count: 120345,
+            viewCount: 120345,
             duration: 3600, // 1 hour
           },
           {
@@ -61,7 +61,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=The+Beauty+of+Nature",
             channel_name: "NatureLover",
             date_published: "2023-02-10",
-            view_count: 95423,
+            viewCount: 95423,
             duration: 540, // 9 minutes
           },
           {
@@ -74,7 +74,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Cooking+101",
             channel_name: "ChefMaster",
             date_published: "2023-03-05",
-            view_count: 65789,
+            viewCount: 65789,
             duration: 780, // 13 minutes
           },
           {
@@ -87,7 +87,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Tech+Innovations",
             channel_name: "TechGuru",
             date_published: "2023-04-20",
-            view_count: 84567,
+            viewCount: 84567,
             duration: 420, // 7 minutes
           },
           {
@@ -100,7 +100,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -113,7 +113,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -126,7 +126,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -139,7 +139,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -152,7 +152,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -165,7 +165,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -178,7 +178,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -191,7 +191,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -204,7 +204,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -217,7 +217,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -230,7 +230,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -243,7 +243,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -256,7 +256,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -269,7 +269,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -282,7 +282,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           {
@@ -295,7 +295,7 @@ export default function Home() {
               "https://via.placeholder.com/320x180?text=Fitness+at+Home",
             channel_name: "FitLife",
             date_published: "2023-05-30",
-            view_count: 73210,
+            viewCount: 73210,
             duration: 1800, // 30 minutes
           },
           // Add more mock videos as needed
