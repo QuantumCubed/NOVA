@@ -155,14 +155,24 @@ const ChannelPage = () => {
         throw new Error(result.message || "Subscription failed.");
       }
 
-      setIsSubscribed(result.message === "Successfully Subscribed!");
-      setChannel((prevChannel) =>
-        prevChannel
-          ? { ...prevChannel, subscriber_count: result.subscriber_count }
-          : prevChannel
-      );
+      // Toggle subscription state based on current state
+      const newSubscriptionState = !isSubscribed;
+      setIsSubscribed(newSubscriptionState);
 
-      toast.success(result.message || "Subscription status updated.");
+      // Update subscriber count
+      setChannel((prevChannel) => {
+        if (!prevChannel) return null;
+        return {
+          ...prevChannel,
+          subscriber_count: newSubscriptionState
+            ? prevChannel.subscriber_count + 1
+            : prevChannel.subscriber_count - 1,
+        };
+      });
+
+      toast.success(
+        newSubscriptionState ? "Subscribed successfully!" : "Unsubscribed successfully!"
+      );
     } catch (error: any) {
       console.error("Subscription error:", error);
       setSubError(error.message);
@@ -630,7 +640,7 @@ const ChannelPage = () => {
                 "Processing..."
               ) : isSubscribed ? (
                 <>
-                  <FaCheck /> Subscribed
+                  <FaCheck /> Unsubscribe
                 </>
               ) : (
                 "Subscribe"
