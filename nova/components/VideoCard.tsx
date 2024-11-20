@@ -46,7 +46,7 @@ const VideoCard = ({ video }: { video: Video }) => {
             <h3 className={styles.videoTitle}>{video.title}</h3>
             <p className={styles.channelName}>@{video.channel_name}</p>
             <p className={styles.metadata}>
-              {video.viewCount.toLocaleString()} views •{" "}
+              {video.viewCount?.toLocaleString() || '0'} views •{" "}
               {new Date(video.date_published).toLocaleDateString()}
             </p>
           </div>
