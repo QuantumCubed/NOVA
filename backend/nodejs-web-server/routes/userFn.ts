@@ -243,41 +243,108 @@ router.post('/channel/create', authToken, async (req, res) => {
 
 // Endpoint to upload a video to the specified channel
 
-router.post('/:cid/upload', authToken, videoUpload.single('video_file'), async (req: any, res: any) => {
+// router.post('/channel/:cid/upload', authToken, videoUpload.single('video_file'), async (req: any, res: any) => {
 
-    if (!req.file) {
-        res.status(400).send('No file uploaded.');
-    }
+//     if (!req.file) {
+//         res.status(400).send('No file uploaded.');
+//     }
 
-    try {
+//     try {
 
-        const { title, description, tags, channel_name } = req.body;
+//         const { title, description, tags, channel_name } = req.body;
 
-        const filename = req.file.filename;
+//         const filename = req.file.filename;
 
-        // console.log(title, description, tags, channel_name, filename);
+//         // console.log(title, description, tags, channel_name, filename);
 
-        await MongoService.uploadVideo({
-            title: title,
-            description: description,
-            tags: tags,
-            user: String(req.user.UID),
-            channel_name: channel_name,
-            channel_id: req.params.cid
-        }, filename);
+//         await MongoService.uploadVideo({
+//             title: title,
+//             description: description,
+//             tags: tags,
+//             user: String(req.user.UID),
+//             channel_name: channel_name,
+//             channel_id: req.params.cid
+//         }, filename);
 
-        res.status(200).send(`File uploaded: ${req.file.filename}`);
+//         res.status(200).send(`File uploaded: ${req.file.filename}`);
 
-    } catch (error) {
-        console.error('Error uploading video:', error);
-        res.status(500).json({ message: 'Internal Server Error!' });
-    }
+//     } catch (error) {
+//         console.error('Error uploading video:', error);
+//         res.status(500).json({ message: 'Internal Server Error!' });
+//     }
 
+// });
+
+// [   { name : 'channel_icon', maxCount : 1 },
+//     { name : 'channel_banner', maxCount : 1 }
+// ]), async (req, res) => {
+
+router.post('/channel/:cid/upload', authToken, videoUpload.fields(
+    [
+        { name : 'video_file', maxCount : 1 },
+        { name : 'thumbnail', maxCount : 1 },
+    ]), async (req: any, res: any) => {
+
+        if (!req.files) {
+            res.status(400).send('No files uploaded.');
+        }
+
+        try {
+
+            const { title, description, tags, channel_name } = req.body;
+
+            // const filename = req.file.filename;
+
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+            if (!files['video_file']) {
+                res.status(400).send('Video File Required!');
+                return;
+            }
+
+            const vidFileName = files['video_file'][0].filename;
+
+            if (!files['thumbnail']) {
+                await MongoService.uploadVideo({
+                    title: title,
+                    description: description,
+                    tags: tags,
+                    user: String(req.user.UID),
+                    channel_name: channel_name,
+                    channel_id: req.params.cid
+                }, vidFileName, undefined);
+
+                res.status(200).json({ message : `Video Uploaded!` });
+                return;
+            }
+
+            // console.log(title, description, tags, channel_name, filename);
+
+            
+
+            const thumbnailFileName = files['thumbnail'][0].filename;
+
+            await MongoService.uploadVideo({
+                title: title,
+                description: description,
+                tags: tags,
+                user: String(req.user.UID),
+                channel_name: channel_name,
+                channel_id: req.params.cid
+            }, vidFileName, thumbnailFileName);
+
+            res.status(200).json({ message : `Video and Thumbnail Uploaded!` });
+
+        } catch (error) {
+            console.error('Error uploading video:', error);
+            res.status(500).json({ message: 'Internal Server Error!' });
+        }
+    
 });
 
 // Endpoint to upload a thumbnail to a video
 
-router.post('/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbnail'), async (req: any, res: any) => {
+router.post('/video/:vid/thumbnail/upload', authToken, thumbnailUpload.single('thumbnail'), async (req: any, res: any) => {
 
     if (!req.file) {
         return res.status(400).send('No file uploaded!');

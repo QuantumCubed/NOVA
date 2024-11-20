@@ -500,7 +500,7 @@ class DataBaseService {
             });
 
             if (thumbnailFileName) {
-                this.updateVideoThumbnail(vidMeta.user, newVideo._id.toString(), thumbnailFileName);
+                this.updateVideoThumbnail(vidMeta.user, newVideo._id.toString(), thumbnailFileName, path.join(__dirname, '..', 'uploads', 'videos', thumbnailFileName));
             }
 
             const result = await this.createVideoDirectory(newVideo._id.toString(), vidFileName);
@@ -602,7 +602,7 @@ class DataBaseService {
      * @returns 
      */
 
-    updateVideoThumbnail = async (uid: string, vid: string, filename: string) => {
+    updateVideoThumbnail = async (uid: string, vid: string, filename: string, thumbUploadPath? : string) => {
 
         try {
 
@@ -625,7 +625,7 @@ class DataBaseService {
             console.error('Error validating channel permissions:', error);
         }
 
-        const thumbnailUploadPath = path.join(__dirname, '..', 'uploads', 'thumbnails', filename);
+        const thumbnailUploadPath = thumbUploadPath || path.join(__dirname, '..', 'uploads', 'thumbnails', filename);
 
         const rawVideoPath = path.join(
             __dirname,
