@@ -211,7 +211,8 @@ p {
   flex-wrap: wrap; /* Adjusts layout on smaller screens */
 }
 
-.contact-details, .contact-form-container {
+.contact-details,
+.contact-form-container {
   flex: 1;
   padding: 20px;
   background-color: #fff;
@@ -255,7 +256,7 @@ p {
 
 /* google maps */
 
-iframe{
+iframe {
   width: 100%;
   height: 200px;
   border: none;
@@ -267,7 +268,8 @@ iframe{
   filter: invert(100%); /* Invert colors for dark mode */
 }
 
-iframe:hover, iframe:focus {
+iframe:hover,
+iframe:focus {
   box-shadow: 0 0 0.5rem var(--hover-color);
 }
 
@@ -300,7 +302,8 @@ label {
   color: #fff;
 }
 
-input, textarea{
+input,
+textarea {
   width: 100%;
   padding: 0.8rem;
   border: 1px solid black;
@@ -310,13 +313,15 @@ input, textarea{
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.contact-form-container .form-group input:focus, textarea:focus {
+.contact-form-container .form-group input:focus,
+textarea:focus {
   border-color: var(--hover-color);
   outline: none;
   box-shadow: 0 0 0.5rem var(--hover-color);
 }
 
-[data-theme="dark"] input, [data-theme="dark"] textarea {
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
   background-color: black;
   color: white;
   border-color: white;
@@ -361,8 +366,6 @@ textarea {
   background-color: #d66a8f;
   transform: translateY(0);
 }
-
-
 
 /* Keyframes for content fade-in */
 @keyframes contentFadeIn {
@@ -416,8 +419,8 @@ textarea {
   padding: 2rem;
   border-radius: 0.5rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2), /* 5px and 10px to rem */
-              0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2),
+    /* 5px and 10px to rem */ 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
@@ -467,7 +470,7 @@ textarea {
 
 /* Button Styling */
 .login-form button {
-  width: 100%;
+  width: 85%;
   padding: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -476,7 +479,8 @@ textarea {
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  transition: background-color 0.3s ease, transform 0.125rem ease,
+    box-shadow 0.125rem ease;
   box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2.5px and 5px to rem */
 }
 
@@ -527,8 +531,8 @@ textarea {
   padding: 2rem;
   border-radius: 0.75rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2), /* 5px and 10px to rem */
-              0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2),
+    /* 5px and 10px to rem */ 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
@@ -579,7 +583,7 @@ textarea {
 
 /* Button Styling for Signup */
 .signup-form button {
-  width: 100%;
+  width: 85%;
   padding: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -588,7 +592,8 @@ textarea {
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  transition: background-color 0.3s ease, transform 0.125rem ease,
+    box-shadow 0.125rem ease;
   box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.1); /* 2.5px and 5px to rem */
 }
 
@@ -603,9 +608,12 @@ textarea {
 
 /* DASHBOARD */
 
+.no-channels {
+  text-align: center;
+}
+
 /* Dashboard Container Styling */
 .dashboard-container {
-  display: flex;
   justify-content: center; /* Centers content horizontally */
   align-items: flex-start; /* Aligns items to the top */
   flex-direction: column;
@@ -641,7 +649,12 @@ textarea {
   margin: 2rem auto; /* Centers horizontally and adds top margin */
   padding: 2rem;
   border-radius: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.9); /* Light background with slight transparency */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Light background with slight transparency */
   box-shadow: 0 0.09375rem 0.1875rem rgba(0, 0, 0, 0.1); /* 1.5px and 3px to rem */
   transition: background-color 0.3s ease, transform 0.5s ease;
   opacity: 0;
@@ -696,8 +709,8 @@ textarea {
   padding: 1.5rem;
   border-radius: 0.75rem;
   background-color: var(--sidebar-background);
-  box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.15), /* 2.5px and 5px to rem */
-              0 0.1953125rem 0.390625rem rgba(0, 0, 0, 0.1); /* 3.125px and 6.25px to rem */
+  box-shadow: 0 0.15625rem 0.3125rem rgba(0, 0, 0, 0.15),
+    /* 2.5px and 5px to rem */ 0 0.1953125rem 0.390625rem rgba(0, 0, 0, 0.1); /* 3.125px and 6.25px to rem */
   transform: scale(0.95);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: popIn 0.7s 0.4s forwards ease-out;
@@ -729,7 +742,8 @@ textarea {
 }
 
 /* Responsive Adjustments */
-@media screen and (max-width: 48rem) { /* 768px to rem */
+@media screen and (max-width: 48rem) {
+  /* 768px to rem */
   .dashboard-container {
     justify-content: flex-start; /* Align items to the start on smaller screens */
     padding: 1rem; /* Add some padding */
@@ -772,7 +786,8 @@ textarea {
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 1.5rem;
-  margin-left: 3rem; /* 48px to rem */
+
+  margin-left: 2rem;
 }
 
 /* User Info */
@@ -820,9 +835,10 @@ textarea {
   font-size: 1rem; /* Modern font size */
   font-weight: 600; /* Bold font weight */
   cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  transition: background-color 0.3s ease, transform 0.125rem ease,
+    box-shadow 0.125rem ease;
   box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.2); /* 3px and 5px to rem */
-  margin-left: 3rem; /* 48px to rem */
+  margin-left: 2.4rem; /* 48px to rem */
 }
 
 .create-channel-button:hover {
@@ -875,7 +891,8 @@ textarea {
   font-size: 0.9rem; /* Slightly smaller font */
   font-weight: 600; /* Bold text */
   cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease, transform 0.125rem ease, box-shadow 0.125rem ease;
+  transition: background-color 0.3s ease, transform 0.125rem ease,
+    box-shadow 0.125rem ease;
   box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.2); /* 3px and 5px to rem */
 }
 
@@ -910,7 +927,8 @@ main {
 }
 
 /* Media query to adjust to 5 columns on larger screens */
-@media (min-width: 55rem) { /* 88rem was likely intended to be 55rem for 880px */
+@media (min-width: 55rem) {
+  /* 88rem was likely intended to be 55rem for 880px */
   .video-grid {
     max-width: 60rem; /* Adjusted max-width for larger screens */
     grid-template-columns: repeat(5, 1fr);
