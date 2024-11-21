@@ -78,7 +78,7 @@ export default function Contact() {
             {/* Contact Form */}
             <div className="contact-form-container">
               <h2>Contact Us</h2>
-              <form id="contactForm" noValidate>
+              <form action="https://formspree.io/f/xgveznjw" method="post" id="contactForm" noValidate>
                 <div className="form-group">
                   <label htmlFor="name">Name</label>
                   <input
