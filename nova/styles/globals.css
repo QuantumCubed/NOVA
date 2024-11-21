@@ -49,6 +49,7 @@ p {
 /* ABOUT PAGE */
 
 /* Light Mode (Default) */
+/* About Page Styling */
 .about-page {
   display: flex;
   flex-direction: column;
@@ -77,9 +78,8 @@ p {
 
 /* About Content Styling */
 .about-content {
-  margin-top: auto; /* Adjusted top margin */
   display: flex;
-  flex-grow: 1;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -106,6 +106,7 @@ p {
   max-width: 48rem; /* 768px */
   text-align: center;
   color: var(--text-color);
+  margin-bottom: 2rem; /* Creates space below the main content */
 }
 
 .about-main h1 {
@@ -120,7 +121,7 @@ p {
   font-size: 1.125rem;
   margin-bottom: 1rem;
   color: var(--text-color);
-  animation: textFadeIn 1s ease 1.2s forwards;
+  animation: textFadeIn 1s ease 1s forwards;
   opacity: 0;
 }
 
@@ -128,12 +129,65 @@ p {
   font-weight: 600;
 }
 
-/* Keyframes for text fade-in */
-@keyframes textFadeIn {
-  to {
-    opacity: 1;
-  }
+/* Image Gallery Section */
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: -2rem 0;
+  background-color: rgba(255, 255, 255, 0.9);
 }
+
+[data-theme="dark"] .image-gallery {
+  background-color: transparent;
+}
+
+.image-container {
+  display: flex;
+  gap: -2rem; /* Reduced gap between images */
+  justify-content: center;
+  flex-wrap: wrap; /* Responsive layout for smaller screens */
+  margin-top: 1rem; /* Adjusts the gap between "About Us" and images */
+}
+
+/* Gallery Item (Image + Caption) */
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Image Styling */
+.gallery-image {
+  width: 220px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 0.5rem; /* Space between image and caption */
+}
+
+/* Hover Effect */
+.gallery-image:hover {
+  transform: scale(1.05); /* Zooms on hover */
+  box-shadow: 0 0 0.5rem var(--hover-color);
+}
+
+/* Caption Styling */
+.gallery-caption {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.gallery-caption strong {
+  font-weight: 700;
+  color: var(--highlight-color); /* Optional: Use a highlight color for "50+" */
+}
+
+
+
 
 /* Contact Page Styles */
 .contact-page {
