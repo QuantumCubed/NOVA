@@ -9,7 +9,7 @@ backend default {
 
 sub vcl_recv {
     # Set X-Forwarded-Proto header
-    if (req.http.X-Forwarded-Proto) {
+    if (!req.http.X-Forwarded-Proto) {
         set req.http.X-Forwarded-Proto = "https";
     }
 }

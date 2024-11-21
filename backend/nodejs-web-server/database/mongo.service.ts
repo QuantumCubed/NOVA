@@ -218,7 +218,7 @@ class DataBaseService {
             // const video = await Video.findById(vid);
             // return video?.video_src?.toString();
 
-            return await Video.findById(vid, 'video_src');
+            return await Video.findById(vid);
 
         } catch (error) {
             console.error('Error fetching video:', error);

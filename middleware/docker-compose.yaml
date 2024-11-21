@@ -6,7 +6,8 @@ services:
     ports:
       - 80:80
     volumes:
-      - E:\Coding-Stuff\NOVA\middleware\varnish-proxy\default.vcl:/etc/varnish/default.vcl:ro
+      # - E:\Coding-Stuff\NOVA\middleware\varnish-proxy\default.vcl:/etc/varnish/default.vcl:ro
+      - ./varnish-proxy/default.vcl:/etc/varnish/default.vcl:ro
     #tmpfs:
     #  - /var/lib/varnish:exec
     environment:
@@ -24,7 +25,8 @@ services:
     ports:
       - 443:443
     volumes:
-      - E:\Coding-Stuff\NOVA\middleware\stunnel-encrypt\stunnel.conf:/etc/stunnel/stunnel.conf
+      # - E:\Coding-Stuff\NOVA\middleware\stunnel-encrypt\stunnel.conf:/etc/stunnel/stunnel.conf
+      - ./stunnel-encrypt/stunnel.conf:/etc/stunnel/stunnel.conf
     networks:
       - nova-net
     depends_on:
@@ -36,7 +38,7 @@ services:
     image: postgres:latest
     container_name: kong-routes-db-c
     env_file:
-      - \kong-api-gateway\routes\.env
+      - ./kong-api-gateway/routes/.env
     ports:
       - 5432:5432
     volumes:
@@ -53,7 +55,8 @@ services:
       - KONG_PG_USER=kong
       - KONG_PG_PASSWORD=kong
     volumes:
-      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
+      # - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
+      - ./kong-api-gateway/config/kong.conf:/etc/kong/kong.conf
     networks:
       - nova-net
     command: kong migrations bootstrap
@@ -65,7 +68,8 @@ services:
     image: kong/kong-gateway:latest
     container_name: kong-api-gateway-c
     env_file:
-      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\.env
+      # - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\.env
+      - ./kong-api-gateway/config/.env
     ports:
     #  - 8000:8000
       - 8001:8001
@@ -73,8 +77,10 @@ services:
     #  - 8443:8443
       - 8444:8444
     volumes:
-      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
-      - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\ssl:/etc/kong/ssl:ro
+      # - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\kong.conf:/etc/kong/kong.conf
+      # - E:\Coding-Stuff\NOVA\middleware\kong-api-gateway\config\ssl:/etc/kong/ssl:ro
+      - ./kong-api-gateway/config/kong.conf:/etc/kong/kong.conf
+      - ./kong-api-gateway/config/ssl:/etc/kong/ssl:ro
     networks:
       - nova-net
     depends_on:
