@@ -1,5 +1,4 @@
 // components/Navbar.tsx
-
 import Link from "next/link";
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -11,11 +10,11 @@ import {
   FaBars,
   FaSun,
   FaMoon,
-  FaTv, // Import TV icon
+  FaTv,
 } from "react-icons/fa";
 import styles from "./Navbar.module.css";
 import Sidebar from "./Sidebar";
-import { toast } from "react-toastify"; // Import toast
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -33,16 +32,19 @@ const Navbar = () => {
   };
 
   const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.setAttribute("data-theme", "light");
-      setIsDarkMode(false);
-      toast.info("Switched to Light Mode");
-    } else {
-      document.documentElement.setAttribute("data-theme", "dark");
-      setIsDarkMode(true);
-      toast.info("Switched to Dark Mode");
-    }
+    const newTheme = isDarkMode ? "light" : "dark"; // Determine new theme
+    document.documentElement.setAttribute("data-theme", newTheme); // Apply new theme
+    localStorage.setItem("theme", newTheme); // Save theme to localStorage
+    setIsDarkMode(!isDarkMode); // Update state
+    toast.info(`Switched to ${newTheme === "dark" ? "Dark" : "Light"} Mode`);
   };
+
+  useEffect(() => {
+    // On mount, initialize theme from localStorage
+    const savedTheme = localStorage.getItem("theme") || "light"; // Default to light
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    setIsDarkMode(savedTheme === "dark"); // Update state based on saved theme
+  }, []);
 
   const handleSearchInputChange = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -57,21 +59,13 @@ const Navbar = () => {
     }
 
     try {
-      // Use the actual backend URL directly
       const response = await fetch(
         `http://localhost:3001/search?search=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
-        // Attempt to parse error message from response
-        let errorMessage = "An error occurred during the search.";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch (parseError) {
-          console.error("Failed to parse error response:", parseError);
-        }
-        throw new Error(errorMessage);
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Search failed.");
       }
 
       const data = await response.json();
@@ -102,7 +96,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Handle Logout with toast
   const handleLogout = () => {
     authContext?.logout();
     toast.success("Logged out successfully!");
@@ -129,7 +122,6 @@ const Navbar = () => {
               <FaTv size={24} />
             </div>
           </Link>
-          {/* Removed the Upload button/icon from the Navbar */}
         </div>
         <div className={styles.navCenter}>
           <div className={styles.navbarSearch}>
@@ -161,7 +153,6 @@ const Navbar = () => {
           </div>
         </div>
         <div className={styles.navRight}>
-          {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
             className={styles.navItem}
@@ -171,7 +162,6 @@ const Navbar = () => {
           </button>
           {authContext?.user ? (
             <>
-              {/* Removed Upload Button from Navbar */}
               <button
                 onClick={handleLogout}
                 className={styles.navItem}
