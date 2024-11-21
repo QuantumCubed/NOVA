@@ -4,18 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/VideoPage.module.css";
-
-interface Video {
-  _id: string;
-  title: string;
-  description: string;
-  video_src: string;
-  thumbnail_src: string;
-  channel_name: string;
-  date_published: string;
-  view_count: number;
-  duration: number;
-}
+import { Video } from "../../interfaces/Video";
 
 export default function VideoPage() {
   const router = useRouter();
@@ -27,55 +16,109 @@ export default function VideoPage() {
   useEffect(() => {
     if (!id) return;
 
-    const fetchVideo = async () => {
+    const fetchVideoData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/watch/${id}`, {
-          method: 'POST',
-        });
-        if (!response.ok) {
+        // Fetch all videos
+        const videoResponse = await fetch("http://localhost:3001/load/videos");
+        if (!videoResponse.ok) {
+          throw new Error("Failed to fetch videos");
+        }
+        const videoDataArray = await videoResponse.json();
+        console.log("Fetched Video Data Array:", videoDataArray);
+
+        // Find the video with the matching ID
+        const videoData = videoDataArray.find((video: any) => video._id === id);
+        if (!videoData) {
           throw new Error("Video not found.");
         }
-        const data = await response.json();
-        console.log("Fetched Video Data:", data);
+        console.log("Matched Video Data:", videoData);
 
-        if (data.video_src && !data.video_src.startsWith('http')) {
-          data.video_src = `https://127.0.0.1:8443/watch/${id}/output.mpd`;
+        // Fetch all channels
+        const channelResponse = await fetch("http://localhost:3001/load/channels");
+        if (!channelResponse.ok) {
+          throw new Error("Failed to fetch channels");
+        }
+        const channelData = await channelResponse.json();
+        console.log("Fetched Channel Data:", channelData);
+
+        // Create a mapping from channel ID to channel name
+        const channelIdToNameMap: { [key: string]: string } = {};
+        channelData.forEach((channel: any) => {
+          channelIdToNameMap[String(channel._id)] = channel.channel_name;
+        });
+
+        // Get the channel name
+        const channelName =
+          channelIdToNameMap[String(videoData.channel)] || "Unknown Channel";
+
+        // Extract date_published
+        let datePublished = videoData.date_published;
+        if (datePublished && datePublished.$date) {
+          datePublished = datePublished.$date;
+        } else if (typeof datePublished === "string") {
+          datePublished = datePublished;
+        } else {
+          datePublished = null;
         }
 
-        setVideo(data);
+        // Construct video source URL using NGINX base URL
+        const videoSrc = `https://127.0.0.1:8443/watch/${id}/output.mpd`;
+
+        // Transform data to match the Video interface
+        const transformedVideo: Video = {
+          _id: videoData._id,
+          title: videoData.title,
+          description: videoData.description,
+          video_src: videoSrc,
+          thumbnail_src: videoData.thumbnail_src,
+          channel: videoData.channel,
+          channel_name: channelName,
+          date_published: datePublished,
+          view_count: videoData.viewCount || 0,
+          duration: Number(videoData.duration) || 0,
+        };
+
+        console.log("Transformed Video Data:", transformedVideo);
+
+        setVideo(transformedVideo);
       } catch (error: any) {
-        console.error("Error fetching video:", error);
+        console.error("Error fetching video data:", error);
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVideo();
+    fetchVideoData();
   }, [id]);
 
   useEffect(() => {
     if (video) {
-      import('dashjs').then(dashjs => {
-        const player = dashjs.MediaPlayer().create();
-        const videoElement = document.querySelector("#videoPlayer") as HTMLMediaElement | null;
-        if (videoElement) {
-          player.initialize(videoElement, video.video_src, true);
-        }
-        return () => {
-          player.reset();
-        };
-      }).catch(err => {
-        console.error("Failed to load dashjs:", err);
-      });
+      import("dashjs")
+        .then((dashjs) => {
+          const player = dashjs.MediaPlayer().create();
+          const videoElement = document.querySelector(
+            "#videoPlayer"
+          ) as HTMLMediaElement | null;
+          if (videoElement) {
+            player.initialize(videoElement, video.video_src, true);
+          }
+          return () => {
+            player.reset();
+          };
+        })
+        .catch((err) => {
+          console.error("Failed to load dashjs:", err);
+        });
     }
   }, [video]);
 
-  if (loading) return (
-    <div className={styles.loadingContainer}>
-      <div className={styles.spinner}></div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+      </div>
+    );
 
   if (error || !video) {
     return (
@@ -98,7 +141,9 @@ export default function VideoPage() {
           <p className={styles.channelName}>@{video.channel_name}</p>
           <p className={styles.metadata}>
             {video.view_count?.toLocaleString() || "0"} views •{" "}
-            {new Date(video.date_published).toLocaleDateString()}
+            {video.date_published
+              ? new Date(video.date_published).toLocaleDateString()
+              : "Unknown Date"}
           </p>
           <p className={styles.description}>{video.description}</p>
         </div>

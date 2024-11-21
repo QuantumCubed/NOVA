@@ -1,74 +1,81 @@
 // pages/index.tsx
 
 import { useEffect, useState } from "react";
-import Head from "next/head";
 import Navbar from "../components/Navbar";
 import VideoCard from "../components/VideoCard";
+import { Video } from "../interfaces/Video";
+import { useChannels } from "../hooks/useChannels";
+import styles from "../styles/Home.module.css";
 
-interface Video {
-  _id: string;
-  title: string;
-  description: string;
-  videoSrc: string;
-  thumbnailSrc: string;
-  channelName: string;
-  datePublished: string;
-  viewCount: number;
-  duration: number;
-}
-
-export default function Home() {
+const HomePage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchVideos = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/load/videos");
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch videos.");
-      }
-      const data: Video[] = await response.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("Invalid data format received.");
-      }
-
-      setVideos(data);
-    } catch (err: any) {
-      console.error("Error fetching videos:", err);
-      setError(err.message || "An error occurred while fetching videos.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [loadingVideos, setLoadingVideos] = useState<boolean>(true);
+  const { channels, loading: loadingChannels } = useChannels();
 
   useEffect(() => {
-    fetchVideos();
-  }, []);
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/load/videos");
+        if (!response.ok) {
+          throw new Error("Failed to fetch videos");
+        }
+        const videoData = await response.json();
+
+        // Create a mapping from channel ID to channel name
+        const channelIdToNameMap: { [key: string]: string } = {};
+        channels.forEach((channel: any) => {
+          channelIdToNameMap[channel._id] = channel.channel_name;
+        });
+
+        // Transform and map data to Video interface
+        const transformedVideos: Video[] = videoData.map((video: any) => ({
+          _id: video._id,
+          title: video.title,
+          description: video.description,
+          video_src: video.video_src,
+          thumbnail_src: video.thumbnail_src,
+          channel: video.channel,
+          channel_name:
+            channelIdToNameMap[video.channel] || "Unknown Channel",
+          date_published: video.date_published,
+          view_count: video.view_count || 0,
+          duration: Number(video.duration) || 0,
+        }));
+
+        setVideos(transformedVideos);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+      } finally {
+        setLoadingVideos(false);
+      }
+    };
+
+    if (!loadingChannels) {
+      fetchVideos();
+    }
+  }, [channels, loadingChannels]);
+
+  if (loadingVideos || loadingChannels) {
+    return (
+      <div>
+        <Navbar />
+        <p>Loading videos...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-    <Navbar />
-    <div className="home-container">
-      <Head>
-        <title>NOVA</title>
-      </Head>
-      <main>
-        {loading ? (
-          <p>Loading videos...</p>
-        ) : error ? (
-          <p className="error-message">{error}</p>
+    <div className={styles.homePage}>
+      <Navbar />
+      <main className={styles.videoGrid}>
+        {videos.length > 0 ? (
+          videos.map((video) => <VideoCard key={video._id} video={video} />)
         ) : (
-          <div className="video-grid">
-            {videos.map((video) => (
-              <VideoCard key={video._id} video={video} />
-            ))}
-          </div>
+          <p>No videos available.</p>
         )}
       </main>
     </div>
-    </>
   );
-}
+};
+
+export default HomePage;

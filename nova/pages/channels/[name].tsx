@@ -8,29 +8,8 @@ import styles from "../../styles/ChannelPage.module.css";
 import { AuthContext } from "../../context/AuthContext";
 import { FaUpload, FaEdit, FaTimes, FaCheck } from "react-icons/fa";
 import { toast } from "react-toastify";
-
-interface Video {
-  _id: string;
-  title: string;
-  description: string;
-  videoSrc: string;
-  thumbnailSrc: string;
-  channelName: string;
-  datePublished: string;
-  viewCount: number;
-  duration: number;
-}
-
-interface Channel {
-  _id: string;
-  owner: string;
-  channelName: string;
-  description: string;
-  subscriberCount: number;
-  channelIconSrc: string;
-  channelBannerSrc: string;
-  videos: Video[];
-}
+import { Video } from "../../interfaces/Video";
+import { Channel } from "../../interfaces/Channel"; // Optional: create interfaces/Channel.ts
 
 const ChannelPage = () => {
   const router = useRouter();
@@ -67,6 +46,13 @@ const ChannelPage = () => {
   const [iconUploadError, setIconUploadError] = useState<string | null>(null);
   const iconFileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Video upload form states
+  const [videoTitle, setVideoTitle] = useState<string>("");
+  const [videoDescription, setVideoDescription] = useState<string>("");
+  const [videoTags, setVideoTags] = useState<string>("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+
   useEffect(() => {
     if (!name) return;
 
@@ -89,28 +75,28 @@ const ChannelPage = () => {
 
         const data: any = await response.json();
 
-        // Transform video fields from snake_case to camelCase
+        // Transform video fields to match the Video interface
         const transformedChannel: Channel = {
           ...data,
-          channelName: data.channel_name,
-          subscriberCount: data.subscriber_count,
-          channelIconSrc: data.channel_icon_src,
-          channelBannerSrc: data.channel_banner_src,
+          channel_name: data.channel_name,
+          subscriber_count: data.subscriber_count,
+          channel_icon_src: data.channel_icon_src,
+          channel_banner_src: data.channel_banner_src,
           videos: data.videos.map((video: any) => ({
             _id: video._id,
             title: video.title,
             description: video.description,
-            videoSrc: video.video_src,
-            thumbnailSrc: video.thumbnail_src,
-            channelName: data.channel_name, // Assign channel name from channel data
-            datePublished: video.date_published,
-            viewCount: video.view_count,
-            duration: Number(video.duration) || 0, // Ensure duration is a number
+            video_src: video.video_src,
+            thumbnail_src: video.thumbnail_src,
+            channel_name: data.channel_name,
+            date_published: video.date_published,
+            view_count: video.view_count || 0,
+            duration: Number(video.duration) || 0,
           })),
         };
 
         setChannel(transformedChannel);
-        console.log("Fetched Channel Data:", transformedChannel); // Debugging
+        console.log("Fetched Channel Data:", transformedChannel);
 
         if (
           authContext?.user &&
@@ -193,9 +179,9 @@ const ChannelPage = () => {
         if (!prevChannel) return null;
         return {
           ...prevChannel,
-          subscriberCount: newSubscriptionState
-            ? prevChannel.subscriberCount + 1
-            : prevChannel.subscriberCount - 1,
+          subscriber_count: newSubscriptionState
+            ? prevChannel.subscriber_count + 1
+            : prevChannel.subscriber_count - 1,
         };
       });
 
@@ -230,13 +216,6 @@ const ChannelPage = () => {
     setUploadError(null);
   };
 
-  // Upload form states
-  const [videoTitle, setVideoTitle] = useState<string>("");
-  const [videoDescription, setVideoDescription] = useState<string>("");
-  const [videoTags, setVideoTags] = useState<string>("");
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -254,7 +233,7 @@ const ChannelPage = () => {
       formData.append("description", videoDescription);
       formData.append("tags", videoTags);
       formData.append("video_file", videoFile);
-      formData.append("channel_name", channel?.channelName || "");
+      formData.append("channel_name", channel?.channel_name || "");
       if (thumbnailFile) {
         formData.append("thumbnail", thumbnailFile);
       }
@@ -287,7 +266,7 @@ const ChannelPage = () => {
 
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channelName
+          channel.channel_name
         )}`
       );
 
@@ -297,27 +276,27 @@ const ChannelPage = () => {
 
       const updatedData: any = await updatedChannelResponse.json();
 
-      // Transform video fields from snake_case to camelCase
+      // Transform video fields to match the Video interface
       const updatedChannel: Channel = {
         ...updatedData,
-        channelName: updatedData.channel_name,
-        subscriberCount: updatedData.subscriber_count,
-        channelIconSrc: updatedData.channel_icon_src,
-        channelBannerSrc: updatedData.channel_banner_src,
+        channel_name: updatedData.channel_name,
+        subscriber_count: updatedData.subscriber_count,
+        channel_icon_src: updatedData.channel_icon_src,
+        channel_banner_src: updatedData.channel_banner_src,
         videos: updatedData.videos.map((video: any) => ({
           _id: video._id,
           title: video.title,
           description: video.description,
-          videoSrc: video.video_src,
-          thumbnailSrc: video.thumbnail_src,
-          channelName: updatedData.channel_name, // Assign channel name from channel data
-          datePublished: video.date_published,
-          viewCount: video.view_count,
-          duration: Number(video.duration) || 0, // Ensure duration is a number
+          video_src: video.video_src,
+          thumbnail_src: video.thumbnail_src,
+          channel_name: updatedData.channel_name,
+          date_published: video.date_published,
+          view_count: video.view_count || 0,
+          duration: Number(video.duration) || 0,
         })),
       };
 
-      console.log("Updated Channel After Video Upload:", updatedChannel); // Debugging
+      console.log("Updated Channel After Video Upload:", updatedChannel);
       setChannel(updatedChannel);
 
       closeUploadModal();
@@ -386,27 +365,27 @@ const ChannelPage = () => {
 
       const updatedData: any = responseData.updatedChannel;
 
-      // Transform video fields from snake_case to camelCase
+      // Transform video fields to match the Video interface
       const updatedChannel: Channel = {
         ...updatedData,
-        channelName: updatedData.channel_name,
-        subscriberCount: updatedData.subscriber_count,
-        channelIconSrc: updatedData.channel_icon_src,
-        channelBannerSrc: updatedData.channel_banner_src,
+        channel_name: updatedData.channel_name,
+        subscriber_count: updatedData.subscriber_count,
+        channel_icon_src: updatedData.channel_icon_src,
+        channel_banner_src: updatedData.channel_banner_src,
         videos: updatedData.videos.map((video: any) => ({
           _id: video._id,
           title: video.title,
           description: video.description,
-          videoSrc: video.video_src,
-          thumbnailSrc: video.thumbnail_src,
-          channelName: updatedData.channel_name, // Assign channel name from channel data
-          datePublished: video.date_published,
-          viewCount: video.view_count,
-          duration: Number(video.duration) || 0, // Ensure duration is a number
+          video_src: video.video_src,
+          thumbnail_src: video.thumbnail_src,
+          channel_name: updatedData.channel_name,
+          date_published: video.date_published,
+          view_count: video.view_count || 0,
+          duration: Number(video.duration) || 0,
         })),
       };
 
-      console.log("Updated Channel After Description Change:", updatedChannel); // Debugging
+      console.log("Updated Channel After Description Change:", updatedChannel);
       setChannel(updatedChannel);
       closeEditModal();
       toast.success("Channel description updated successfully!");
@@ -475,12 +454,12 @@ const ChannelPage = () => {
       }
 
       toast.success("Banner image updated successfully!");
-      console.log("Banner Upload Response Data:", responseData); // Debugging
+      console.log("Banner Upload Response Data:", responseData);
 
       // Refresh channel data
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channelName
+          channel.channel_name
         )}`
       );
 
@@ -490,27 +469,27 @@ const ChannelPage = () => {
 
       const updatedData: any = await updatedChannelResponse.json();
 
-      // Transform video fields from snake_case to camelCase
+      // Transform video fields to match the Video interface
       const updatedChannel: Channel = {
         ...updatedData,
-        channelName: updatedData.channel_name,
-        subscriberCount: updatedData.subscriber_count,
-        channelIconSrc: updatedData.channel_icon_src,
-        channelBannerSrc: updatedData.channel_banner_src,
+        channel_name: updatedData.channel_name,
+        subscriber_count: updatedData.subscriber_count,
+        channel_icon_src: updatedData.channel_icon_src,
+        channel_banner_src: updatedData.channel_banner_src,
         videos: updatedData.videos.map((video: any) => ({
           _id: video._id,
           title: video.title,
           description: video.description,
-          videoSrc: video.video_src,
-          thumbnailSrc: video.thumbnail_src,
-          channelName: updatedData.channel_name, // Assign channel name from channel data
-          datePublished: video.date_published,
-          viewCount: video.view_count,
-          duration: Number(video.duration) || 0, // Ensure duration is a number
+          video_src: video.video_src,
+          thumbnail_src: video.thumbnail_src,
+          channel_name: updatedData.channel_name,
+          date_published: video.date_published,
+          view_count: video.view_count || 0,
+          duration: Number(video.duration) || 0,
         })),
       };
 
-      console.log("Updated Channel After Banner Upload:", updatedChannel); // Debugging
+      console.log("Updated Channel After Banner Upload:", updatedChannel);
       setChannel(updatedChannel);
     } catch (error: any) {
       console.error("Banner upload error:", error);
@@ -580,12 +559,12 @@ const ChannelPage = () => {
       }
 
       toast.success("Channel icon updated successfully!");
-      console.log("Icon Upload Response Data:", responseData); // Debugging
+      console.log("Icon Upload Response Data:", responseData);
 
       // Refresh channel data
       const updatedChannelResponse = await fetch(
         `http://localhost:3001/channels/name/${encodeURIComponent(
-          channel.channelName
+          channel.channel_name
         )}`
       );
 
@@ -595,27 +574,27 @@ const ChannelPage = () => {
 
       const updatedData: any = await updatedChannelResponse.json();
 
-      // Transform video fields from snake_case to camelCase
+      // Transform video fields to match the Video interface
       const updatedChannel: Channel = {
         ...updatedData,
-        channelName: updatedData.channel_name,
-        subscriberCount: updatedData.subscriber_count,
-        channelIconSrc: updatedData.channel_icon_src,
-        channelBannerSrc: updatedData.channel_banner_src,
+        channel_name: updatedData.channel_name,
+        subscriber_count: updatedData.subscriber_count,
+        channel_icon_src: updatedData.channel_icon_src,
+        channel_banner_src: updatedData.channel_banner_src,
         videos: updatedData.videos.map((video: any) => ({
           _id: video._id,
           title: video.title,
           description: video.description,
-          videoSrc: video.video_src,
-          thumbnailSrc: video.thumbnail_src,
-          channelName: updatedData.channel_name, // Assign channel name from channel data
-          datePublished: video.date_published,
-          viewCount: video.view_count,
-          duration: Number(video.duration) || 0, // Ensure duration is a number
+          video_src: video.video_src,
+          thumbnail_src: video.thumbnail_src,
+          channel_name: updatedData.channel_name,
+          date_published: video.date_published,
+          view_count: video.view_count || 0,
+          duration: Number(video.duration) || 0,
         })),
       };
 
-      console.log("Updated Channel After Icon Upload:", updatedChannel); // Debugging
+      console.log("Updated Channel After Icon Upload:", updatedChannel);
       setChannel(updatedChannel);
     } catch (error: any) {
       console.error("Icon upload error:", error);
@@ -648,17 +627,18 @@ const ChannelPage = () => {
   }
 
   return (
+    <>
+    <Navbar />
     <div className={styles.channelPage} key={channel._id}>
-      <Navbar />
       <div className={styles.channelBanner}>
-        {channel.channelBannerSrc ? (
+        {channel.channel_banner_src ? (
           <img
             src={`http://localhost:3001/channel/${channel._id}/channel_banner?t=${Date.now()}`}
-            alt={`${channel.channelName} Banner`}
+            alt={`${channel.channel_name} Banner`}
             className={styles.bannerImage}
             onError={(e) => {
               console.error("Failed to load banner image:", e);
-              (e.target as HTMLImageElement).src = "/default-banner.png"; // Fallback image
+              (e.target as HTMLImageElement).src = "/default-banner.png";
             }}
           />
         ) : (
@@ -689,14 +669,14 @@ const ChannelPage = () => {
       </div>
       <div className={styles.channelInfo}>
         <div className={styles.channelIcon}>
-          {channel.channelIconSrc ? (
+          {channel.channel_icon_src ? (
             <img
               src={`http://localhost:3001/channel/${channel._id}/channel_icon?t=${Date.now()}`}
-              alt={`${channel.channelName} Icon`}
+              alt={`${channel.channel_name} Icon`}
               className={styles.iconImage}
               onError={(e) => {
                 console.error("Failed to load icon image:", e);
-                (e.target as HTMLImageElement).src = "/default-icon.png"; // Fallback icon
+                (e.target as HTMLImageElement).src = "/default-icon.png";
               }}
             />
           ) : (
@@ -727,7 +707,7 @@ const ChannelPage = () => {
           )}
         </div>
         <div className={styles.channelDetails}>
-          <h1>@{channel.channelName}</h1>
+          <h1>@{channel.channel_name}</h1>
           <div className={styles.descriptionContainer}>
             <p>{channel.description}</p>
             {isChannelOwner && (
@@ -740,10 +720,12 @@ const ChannelPage = () => {
               </button>
             )}
           </div>
-          <p className="channelInfo">
-            Subscribers: {channel.subscriberCount.toLocaleString()}
+          <p className={styles.channelInfo}>
+            Subscribers: {channel.subscriber_count.toLocaleString()}
           </p>
-          <p className="channelInfo">Videos: {channel.videos.length}</p>
+          <p className={styles.channelInfo}>
+            Videos: {channel.videos.length}
+          </p>
           {/* Subscribe/Unsubscribe Button */}
           {!isChannelOwner && (
             <button
@@ -847,7 +829,9 @@ const ChannelPage = () => {
                   id="thumbnailFile"
                   accept="image/*"
                   onChange={(e) =>
-                    setThumbnailFile(e.target.files ? e.target.files[0] : null)
+                    setThumbnailFile(
+                      e.target.files ? e.target.files[0] : null
+                    )
                   }
                 />
               </div>
@@ -910,6 +894,7 @@ const ChannelPage = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
