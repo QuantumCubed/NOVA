@@ -26,7 +26,7 @@ export default function VideoPage() {
 
   useEffect(() => {
     if (!id) return;
-
+  
     const fetchVideo = async () => {
       try {
         const response = await fetch(`http://localhost:3001/watch/${id}`, {
@@ -37,11 +37,12 @@ export default function VideoPage() {
         }
         const data = await response.json();
         console.log("Fetched Video Data:", data);
-
+  
         if (data.video_src && !data.video_src.startsWith('http')) {
+          // Set to the correct HTTPS path
           data.video_src = `https://127.0.0.1:8443/watch/${id}/output.mpd`;
         }
-
+  
         setVideo(data);
       } catch (error: any) {
         console.error("Error fetching video:", error);
@@ -50,7 +51,7 @@ export default function VideoPage() {
         setLoading(false);
       }
     };
-
+  
     fetchVideo();
   }, [id]);
 
