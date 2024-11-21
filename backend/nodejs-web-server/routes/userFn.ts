@@ -672,12 +672,14 @@ router.post('/watch/:vid', async (req, res) => {
 
     try {
 
-        const videoViews = await MongoService.incrementViewCount(String(req.params.vid));
+        await MongoService.incrementViewCount(String(req.params.vid));
 
-        res.status(200).json({ views : videoViews });
+        const video = await MongoService.queryVideoByID(String(req.params.vid));
+
+        res.status(200).json(video);
 
     } catch (error) {
-        console.error('Unable to increment views:', error);
+        console.error('Unable to load video:', error);
         res.status(500).json({ message: 'Internal Server Error!' });
     }
 
