@@ -77,7 +77,7 @@ export default function About() {
                 className="gallery-image"
               />
               <figcaption className="gallery-caption">
-                <strong>10+</strong> Gaming chanels
+                <strong>10+</strong> Gaming channels
               </figcaption>
             </figure>
             <figure className="gallery-item">
