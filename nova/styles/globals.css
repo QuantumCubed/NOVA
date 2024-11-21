@@ -186,9 +186,6 @@ p {
   color: var(--highlight-color); /* Optional: Use a highlight color for "50+" */
 }
 
-
-
-
 /* Contact Page Styles */
 .contact-page {
   display: flex;
@@ -1132,6 +1129,7 @@ video {
 
 /* Animation for the video grid */
 .video-grid {
+  margin-top: 5rem;
   display: grid;
   flex-wrap: wrap;
   justify-content: center;
