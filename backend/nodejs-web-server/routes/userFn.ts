@@ -452,14 +452,14 @@ router.get('/:uid/profile_picture', async (req, res) => {
 
     try {
 
-        const pfp_path = await MongoService.queryUserPFP(String(req.params.uid))
+        const pfp_url = await MongoService.queryUserPFP(String(req.params.uid))
 
-        if (!pfp_path) {
+        if (!pfp_url) {
             res.status(404).json({ message: 'Specified Resource Not Found!' });
             return;
         }
 
-        res.status(200).sendFile(pfp_path);
+        res.status(200).json({ imageURL : pfp_url });
 
     } catch (error) {
         console.error('Error fetching user pfp:', error);
@@ -560,6 +560,18 @@ router.get('/load/channels', async (req, res) => {
 
 });
 
+router.get('/load/videos', async (req, res) => {
+
+    try {
+        const videos = await MongoService.queryAllVideos(); // Exclude v field
+        res.status(200).json(videos);
+    } catch (error) {
+        console.error('Error fetching videos:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+});
+
 router.post('/:vid/like', authToken, async (req, res) => {
 
     if (!req.user) { 
@@ -640,14 +652,14 @@ router.get('/:vid/thumbnail', async (req, res) => {
 
     try {
 
-        const thumbnail_path = await MongoService.queryVideoThumbnail(String(req.params.vid))
+        const thumbnail_url = await MongoService.queryVideoThumbnail(String(req.params.vid))
     
-        if (!thumbnail_path || thumbnail_path === '') {
+        if (!thumbnail_url) {
             res.status(404).json({ message: 'Specified Resource Not Found!' });
             return;
         }
     
-        res.status(200).sendFile(thumbnail_path);
+        res.status(200).json({ imageURL : thumbnail_url });
     
     } catch (error) {
         console.error('Error fetching video thumbnail:', error);
@@ -660,9 +672,11 @@ router.post('/watch/:vid', async (req, res) => {
 
     try {
 
-        const videoViews = await MongoService.incrementViewCount(String(req.params.vid));
+        await MongoService.incrementViewCount(String(req.params.vid));
 
-        res.status(200).json({ views : videoViews });
+        const video = await MongoService.queryVideoByID(String(req.params.vid));
+
+        res.status(200).json(video);
 
     } catch (error) {
         console.error('Unable to increment views:', error);
@@ -732,14 +746,16 @@ router.post('/channel/:cid/visuals/upload', authToken,
 router.get('/channel/:cid/channel_icon', async (req, res) => {
 
     try {
-        const icon_src = await MongoService.queryChannelIcon(String(req.params.cid))
 
-        if (!icon_src || icon_src === '') {
+        const icon_url = await MongoService.queryChannelIcon(String(req.params.cid))
+
+        if (!icon_url) {
             res.status(404).json({ message: 'Specified Resource Not Found!' });
             return;
         }
 
-        res.status(200).sendFile(icon_src);
+        res.status(200).json({ imageURL : icon_url });
+
     } catch (error) {
         console.error('Unable to fetch channel_icon:', error);
     }
@@ -748,14 +764,16 @@ router.get('/channel/:cid/channel_icon', async (req, res) => {
 router.get('/channel/:cid/channel_banner', async (req, res) => {
 
     try {
-        const banner_src = await MongoService.queryChannelBanner(String(req.params.cid))
 
-        if (!banner_src || banner_src === '') {
+        const banner_url = await MongoService.queryChannelBanner(String(req.params.cid))
+
+        if (!banner_url) {
             res.status(404).json({ message: 'Specified Resource Not Found!' });
             return;
         }
 
-        res.status(200).sendFile(banner_src);
+        res.status(200).json({ imageURL : banner_url });
+
     } catch (error) {
         console.error('Unable to fetch channel_banner:', error);
     }

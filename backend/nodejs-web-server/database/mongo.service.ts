@@ -6,6 +6,7 @@ import User from './models/User';
 import Channel from './models/Channel';
 import bcrypt from 'bcrypt';
 import gRPC_Client from '../api/gRPC/gRPC';
+import { Bucket, Storage } from '@google-cloud/storage';
 
 interface VideoMetaData {
 
@@ -37,9 +38,19 @@ interface ChannelMetaData {
 class DataBaseService {
 
     private readonly URI: string;
+    private readonly storage: Storage
+    private readonly bucketName: string
+    private readonly bucket : Bucket
 
     constructor() {
         this.URI = process.env.URI || 'undefined'; // || "mongodb://localhost:27017/";
+        // this.storage = new Storage(); - USE WHEN DEPLOYED TO GOOGLE CLOUD RUN!!!
+        this.storage = new Storage({
+            // projectId: process.env.GCR_PID,
+            keyFilename: `./elegant-atom-442000-q0-d8e95dd970eb.json` // process.env.GCR_KEYFILE_PATH
+        });
+        this.bucketName = 'nova_data';
+        this.bucket = this.storage.bucket(this.bucketName);
     }
 
     /**
@@ -85,7 +96,16 @@ class DataBaseService {
 
             const user = await User.findById(uid, 'pfp_src');
 
-            return user?.pfp_src;
+            if(!user?.pfp_src) { throw new Error('PFP Query Error!'); }
+
+            const pfpFile = this.bucket.file(user.pfp_src);
+
+            const [url] = await pfpFile.getSignedUrl({
+                action: 'read', // Grant permission to read the file
+                expires: Date.now() + 3600 * 1000, // URL expires in 1 hour
+            });
+
+            return url
 
         } catch (error) {
             console.error('Unable to retrieve user pfp:', error);
@@ -100,7 +120,16 @@ class DataBaseService {
 
             const video = await Video.findById(vid, 'thumbnail_src');
 
-            return video?.thumbnail_src || '';
+            if(!video?.thumbnail_src) { throw new Error('Video Thumbnail Query Error!'); }
+
+            const thumbnailFile = this.bucket.file(video.thumbnail_src);
+
+            const [url] = await thumbnailFile.getSignedUrl({
+                action: 'read', // Grant permission to read the file
+                expires: Date.now() + 3600 * 1000, // URL expires in 1 hour
+            });
+
+            return url
 
         } catch (error) {
             console.error('Unable to retrieve video thumbnail:', error);
@@ -118,7 +147,20 @@ class DataBaseService {
     queryChannelIcon = async (cid: string) => {
 
         try {
-            return (await Channel.findById(cid, 'channel_icon_src'))?.channel_icon_src
+            
+            const channelIcon = await Channel.findById(cid, 'channel_icon_src');
+
+            if(!channelIcon?.channel_icon_src) { throw new Error('Channel Icon Query Error!'); }
+
+            const channelIconFile = this.bucket.file(channelIcon.channel_icon_src);
+
+            const [url] = await channelIconFile.getSignedUrl({
+                action: 'read', // Grant permission to read the file
+                expires: Date.now() + 3600 * 1000, // URL expires in 1 hour
+            });
+
+            return url
+
         } catch (error) {
             console.error('Unable to retrieve channel icon:', error);
             return null;
@@ -135,7 +177,20 @@ class DataBaseService {
     queryChannelBanner = async (cid: string) => {
 
         try {
-            return (await Channel.findById(cid, 'channel_banner_src'))?.channel_banner_src
+
+            const channelBanner = await Channel.findById(cid, 'channel_banner_src');
+
+            if(!channelBanner?.channel_banner_src) { throw new Error('Channel Banner Query Error!'); }
+
+            const channelBannerFile = this.bucket.file(channelBanner.channel_banner_src);
+
+            const [url] = await channelBannerFile.getSignedUrl({
+                action: 'read', // Grant permission to read the file
+                expires: Date.now() + 3600 * 1000, // URL expires in 1 hour
+            });
+
+            return url
+
         } catch (error) {
             console.error('Unable to retrieve channel banner:', error);
             return null;
@@ -196,6 +251,15 @@ class DataBaseService {
         }
     }
 
+    queryAllVideos = async () => {
+        try {
+            return await Video.find();
+        } catch (error) {
+            console.error('Unable to retrieve all videos:', error);
+            return null;
+        }
+    }
+
     /**
      * Queries a video based on videoID
      * @param vid userID
@@ -209,7 +273,7 @@ class DataBaseService {
             // const video = await Video.findById(vid);
             // return video?.video_src?.toString();
 
-            return await Video.findById(vid, 'video_src');
+            return await Video.findById(vid);
 
         } catch (error) {
             console.error('Error fetching video:', error);
@@ -300,10 +364,15 @@ class DataBaseService {
 
         // const dirPath = path.join(__dirname, '../../../', 'data', 'users', UID);
 
-        const dirPath = path.join('/', 'data', 'users', UID);
+        // const dirPath = path.join('/', 'data', 'users', UID);
+
+        const dirPath = `data/users/${UID}`;
 
         try {
-            await fs.promises.mkdir(dirPath, { recursive: true });
+            // await fs.promises.mkdir(dirPath, { recursive: true });
+            //await placeholderFile.delete();
+            const usrDir = this.bucket.file(`${dirPath}/placeholder`);
+            await usrDir.save('', { contentType: 'application/x-directory' });
             console.log('Account Directories Created!\n', dirPath);
         } catch (err: any) {
             console.error('Error Creating User Directories!', err.message);
@@ -320,13 +389,17 @@ class DataBaseService {
 
         // const dirPath = path.join(__dirname, '../../../', 'data', 'channels', channelID);
 
-        const dirPath = path.join('/', 'data', 'channels', channelID);
+        // const dirPath = path.join('/', 'data', 'channels', channelID);
+
+        const dirPath = `data/channels/${channelID}`;
 
         try {
-            await fs.promises.mkdir(dirPath, { recursive: true });
+            //await fs.promises.mkdir(dirPath, { recursive: true });
+            const channelDir = this.bucket.file(`${dirPath}/placeholder`);
+            await channelDir.save('', { contentType: 'application/x-directory' });
             console.log('Channel Directories Created!\n', dirPath);
         } catch (err: any) {
-            console.error('Error Creating User Directories!', err.message);
+            console.error('Error Creating Channel Directories!', err.message);
         }
 
     }
@@ -340,39 +413,30 @@ class DataBaseService {
 
     createVideoDirectory = async (videoID: string, videoFile: string) => {
 
+
         const dirPathUpload = path.join(__dirname, '..', 'uploads', 'videos', videoFile);
-
-        // const dirPathRaw = path.join(
-        //     __dirname,
-        //     '../../../',
-        //     'data',
-        //     'videos',
-        //     videoID,
-        //     'raw'
-        // );
-
-        const dirPathRaw = path.join('/', 'data', 'videos', videoID, 'raw');
-
-        // const dirPathOut = path.join(
-        //     __dirname,
-        //     '../../../',
-        //     'data',
-        //     'videos',
-        //     videoID,
-        //     'out'
-        // );
-
-        const dirPathOut = path.join('/', 'data', 'videos', videoID, 'out');
-
-        // console.log(path.join(dirPathRaw, videoFile));
+        const dirPathRaw = `data/videos/${videoID}/raw`;
+        const dirPathOut = `data/videos/${videoID}/out`;
 
         try {
 
-            await fs.promises.mkdir(dirPathRaw, { recursive: true });
-            await fs.promises.mkdir(dirPathOut, { recursive: true });
-            // await fs.promises.rename(dirPathUpload, path.join(dirPathRaw, videoFile));
-            await fs.promises.copyFile(dirPathUpload, path.join(dirPathRaw, videoFile));
+            const channelDirRaw = this.bucket.file(`${dirPathRaw}/placeholder`);
+            await channelDirRaw.save('', { contentType: 'application/x-directory' });
+
+            const channelDirOut = this.bucket.file(`${dirPathOut}/placeholder`);
+            await channelDirOut.save('', { contentType: 'application/x-directory' });
+
+            const originalVideo = this.bucket.file(`data/videos/${videoID}/raw/${videoFile}`);
+
+            await originalVideo.save(await fs.promises.readFile(dirPathUpload), {
+                gzip: true,
+                metadata: {
+                    contentType: 'application/octet-stream',
+                },
+            });
+        
             await fs.promises.unlink(dirPathUpload);
+
             console.log('Videos Directories Created!');
 
         } catch (err: any) {
@@ -380,15 +444,11 @@ class DataBaseService {
             return null;
         }
 
-        // console.log(path.join(dirPathRaw, videoFile), dirPathOut);
-
-        const videoBasePath = `/data/videos/${videoID}` // `/data/users/${ownerID}/channels/${channelID}/videos/${videoID}/`;
-
-        console.log((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`));
+        const videoBasePath = `data/videos/${videoID}`
 
         try {
 
-            await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
+            // await gRPC_Client((videoBasePath + `/raw/${videoFile}`), (videoBasePath + `/out/output.mpd`)); // UNIX FS : /data/UID/channels/CID/videos/VID
 
             return { status: 'OK', watchPath: (videoBasePath + `/out/output.mpd`) } // || 'Transcoding Server Offline!'
 
@@ -565,22 +625,38 @@ class DataBaseService {
 
         const pfpUploadPath = path.join(__dirname, '..', 'uploads', 'images', filename);
 
-        const rawProfilePath = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'users',
-            uid,
-        );
+        // const rawProfilePath = path.join(
+        //     __dirname,
+        //     '../../../',
+        //     'data',
+        //     'users',
+        //     uid,
+        // );
 
         try {
 
             // await fs.promises.rename(pfpUploadPath, path.join(rawProfilePath, filename));
-            await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
+            // await fs.promises.copyFile(pfpUploadPath, path.join(rawProfilePath, filename));
+            // await fs.promises.unlink(pfpUploadPath);
+
+            const profilePicture = this.bucket.file(`data/users/${uid}/${filename}`);
+
+            await profilePicture.save(await fs.promises.readFile(pfpUploadPath), {
+                gzip: true,
+                metadata: {
+                    contentType: 'image/jpeg',
+                },
+            });
+
             await fs.promises.unlink(pfpUploadPath);
+
+            // const fileUrl = `https://storage.googleapis.com/${this.bucketName}/users/${uid}/${filename}`;
+
+            const fileUrl = `data/users/${uid}/${filename}`;
+
             await User.findByIdAndUpdate(
                 uid,
-                { pfp_src: `/data/users/${uid}/${filename}` },
+                { pfp_src: fileUrl },
                 { new: true, runValidators: true }
             );
 
@@ -604,18 +680,9 @@ class DataBaseService {
 
         try {
 
-            const user = await User.findById(uid, 'channels_owned');
-            const userChannels: string[] | null = user ? user.channels_owned : null;
+            const isOwner = await Video.findById(vid).where('user').equals(uid);
 
-            const video = await Video.findById(vid, 'channel');
-            const videoChannel: string | null | undefined = video ? video.channel : null;
-
-            // console.log(user);
-            // console.log(userChannels);
-            // console.log(video);
-            // console.log(videoChannel);
-
-            if (!userChannels || !videoChannel || !(userChannels.includes(videoChannel))) {
+            if (!isOwner) {
                 throw new Error('User does not control that channel!');
             }
 
@@ -625,21 +692,22 @@ class DataBaseService {
 
         const thumbnailUploadPath = thumbUploadPath || path.join(__dirname, '..', 'uploads', 'thumbnails', filename);
 
-        const rawVideoPath = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'videos',
-            vid,
-        );
-
         try {
-            // await fs.promises.rename(thumbnailUploadPath, path.join(rawVideoPath, filename));
-            await fs.promises.copyFile(thumbnailUploadPath, path.join(rawVideoPath, filename));
+
+            const videoThumbnail = this.bucket.file(`data/videos/${vid}/${filename}`);
+
+            await videoThumbnail.save(await fs.promises.readFile(thumbnailUploadPath), {
+                gzip: true,
+                metadata: {
+                    contentType: 'image/jpeg',
+                },
+            });
+
             await fs.promises.unlink(thumbnailUploadPath);
+            
             await Video.findByIdAndUpdate(
                 vid,
-                { thumbnail_src: `/data/videos/${vid}/${filename}` },
+                { thumbnail_src: `data/videos/${vid}/${filename}` },
                 { new: true, runValidators: true }
             );
         } catch (err: any) {
@@ -669,40 +737,60 @@ class DataBaseService {
 
         const visualsUploadPath = path.join(__dirname, '..', 'uploads', 'channel_rec');
 
-        const rawChannelPath = path.join(
-            __dirname,
-            '../../../',
-            'data',
-            'channels',
-            cid
-        );
+        // const rawChannelPath = path.join(
+        //     __dirname,
+        //     '../../../',
+        //     'data',
+        //     'channels',
+        //     cid
+        // );
 
         try {
             
             if (icon_file) {
-                await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
+                // await fs.promises.copyFile(path.join(visualsUploadPath, icon_file), path.join(rawChannelPath, icon_file));
+
+                const channelIcon = this.bucket.file(`data/channels/${cid}/${icon_file}`);
+
+                await channelIcon.save(await fs.promises.readFile(path.join(visualsUploadPath, icon_file)), {
+                    gzip: true,
+                    metadata: {
+                        contentType: 'image/jpeg',
+                    },
+                });
+
                 await fs.promises.unlink(path.join(visualsUploadPath, icon_file));
+
                 await Channel.findByIdAndUpdate(
                     cid,
                     {
-                        channel_icon_src: `/data/channels/${cid}/${icon_file}`,
+                        channel_icon_src: `data/channels/${cid}/${icon_file}`,
                     },
                     { new: true, runValidators: true }
                 );
-                return;
             }
 
             if (banner_file) {
-                await fs.promises.copyFile(path.join(visualsUploadPath, banner_file), path.join(rawChannelPath, banner_file));
+                // await fs.promises.copyFile(path.join(visualsUploadPath, banner_file), path.join(rawChannelPath, banner_file));
+
+                const channelBanner = this.bucket.file(`data/channels/${cid}/${banner_file}`);
+
+                await channelBanner.save(await fs.promises.readFile(path.join(visualsUploadPath, banner_file)), {
+                    gzip: true,
+                    metadata: {
+                        contentType: 'image/jpeg',
+                    },
+                });
+
                 await fs.promises.unlink(path.join(visualsUploadPath, banner_file));
+
                 await Channel.findByIdAndUpdate(
                     cid,
                     {
-                        channel_banner_src: `/data/channels/${cid}/${banner_file}`
+                        channel_banner_src: `data/channels/${cid}/${banner_file}`
                     },
                     { new: true, runValidators: true }
                 );
-                return;
             }
 
             // await Channel.findByIdAndUpdate(
@@ -715,7 +803,6 @@ class DataBaseService {
             // );
         } catch (err: any) {
             console.error('Error Uploading Visuals:', err.message);
-            return;
         }
 
         console.log('Visuals Uploaded!');

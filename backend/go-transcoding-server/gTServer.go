@@ -8,6 +8,8 @@ import (
 
 	transcode "nova/transcoder/proto"
 
+	"cloud.google.com/go/storage"
+	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 )
 
@@ -55,7 +57,27 @@ func (s *server) TranscodeVideo(ctx context.Context, req *transcode.VidMetaData)
 
 }
 
+func gCSInit() {
+
+	ctx := context.Background()
+
+	jsonKeyPath := "E:/Coding-Stuff/NOVA/backend/go-transcoding-server/elegant-atom-442000-q0-d8e95dd970eb.json"
+
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(jsonKeyPath))
+
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	defer client.Close()
+
+	log.Println("Cloud Storage client initialized.")
+
+}
+
 func main() {
+
+	gCSInit()
 
 	lis, err := net.Listen("tcp", ":50051")
 

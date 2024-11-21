@@ -96,9 +96,9 @@ RUN cd nginx-1.27.2 && ./configure \
 
 ENV PATH=$PATH:/usr/share/nginx/sbin
 
-EXPOSE 443/tcp
+EXPOSE 8443/tcp
 
-EXPOSE 443/udp
+EXPOSE 8443/udp
 
 # COPY NGINX Docker Init Scripts
 
@@ -115,6 +115,10 @@ COPY ./scripts/15-local-resolvers.envsh /docker-entrypoint.d
 COPY ./scripts/20-envsubst-on-templates.sh /docker-entrypoint.d
 
 COPY ./scripts/30-tune-worker-processes.sh /docker-entrypoint.d
+
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+COPY ./http.conf /etc/nginx/conf.d/http.conf
 
 #COPY ./default.conf /etc/nginx/conf.d/default.conf
 
