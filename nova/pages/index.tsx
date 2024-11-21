@@ -1,11 +1,9 @@
 // pages/index.tsx
-
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import VideoCard from "../components/VideoCard";
 import { Video } from "../interfaces/Video";
 import { useChannels } from "../hooks/useChannels";
-import styles from "../styles/Home.module.css";
 
 const HomePage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -35,8 +33,7 @@ const HomePage = () => {
           video_src: video.video_src,
           thumbnail_src: video.thumbnail_src,
           channel: video.channel,
-          channel_name:
-            channelIdToNameMap[video.channel] || "Unknown Channel",
+          channel_name: channelIdToNameMap[video.channel] || "Unknown Channel",
           date_published: video.date_published,
           view_count: video.view_count || 0,
           duration: Number(video.duration) || 0,
@@ -65,9 +62,9 @@ const HomePage = () => {
   }
 
   return (
-    <div className={styles.homePage}>
+    <div className="home-container">
       <Navbar />
-      <main className={styles.videoGrid}>
+      <main className="video-grid">
         {videos.length > 0 ? (
           videos.map((video) => <VideoCard key={video._id} video={video} />)
         ) : (

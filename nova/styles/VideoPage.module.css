@@ -1,5 +1,10 @@
 /* styles/VideoPage.module.css */
 
+/* Font Imports */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+/* General Video Page Container */
 .videoContainer {
   display: flex;
   flex-direction: column;
@@ -12,9 +17,11 @@
   background-image: url("/Space.jpg");
   background-size: cover;
   background-position: center;
+  background-color: rgba(0, 0, 0, 0.4);
   background-repeat: no-repeat;
 }
 
+/* Video Player Styles */
 .videoPlayer {
   position: relative;
   width: 100%;
@@ -30,36 +37,54 @@
   z-index: 2; /* Ensure content appears above the overlay */
 }
 
+/* Video Details */
 .videoDetails {
   max-width: 800px;
   margin: 1rem auto;
   z-index: 2; /* Ensure content appears above the overlay */
+  font-weight: bold;
 }
 
+/* Video Title */
 .title {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   z-index: 2; /* Ensure content appears above the overlay */
+  color: var(--text-color); /* Dynamic text color */
 }
 
+/* Channel Name */
 .channelName {
   font-size: 1.2rem;
-  color: gray;
   margin-bottom: 0.5rem;
   z-index: 2; /* Ensure content appears above the overlay */
+  color: var(--text-color-light); /* Adjusts for theme */
 }
 
+/* Metadata (Date, Views, etc.) */
 .metadata {
   font-size: 1rem;
-  color: gray;
   margin-bottom: 1rem;
   z-index: 2; /* Ensure content appears above the overlay */
+  color: var(--text-color-light); /* Adjusts for theme */
 }
 
+/* Video Description */
 .description {
   font-size: 1rem;
   line-height: 1.5;
   z-index: 2; /* Ensure content appears above the overlay */
+  color: var(--text-color); /* Dynamic text color */
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .channelName,
+[data-theme="dark"] .metadata {
+  color: #cccccc; /* Light grey for better contrast in dark mode */
+}
+
+[data-theme="dark"] .description {
+  color: #ffffff; /* Pure white text for readability */
 }
 
 /* Loading Spinner Styles */
